@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Netlify Forms Helper</title>
+</head>
+<body>
+    <!-- 
+      This form is here so Netlify's build bots can detect the "contact" form.
+      The actual form submission is handled via React/Next.js in app/(marketing)/contact/page.tsx.
+    -->
+    <form name="contact" netlify netlify-honeypot="bot-field" hidden>
+        <input type="text" name="name" />
+        <input type="email" name="email" />
+        <input type="text" name="subject" />
+        <textarea name="message"></textarea>
+    </form>
+</body>
+</html>
