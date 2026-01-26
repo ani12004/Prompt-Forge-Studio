@@ -41,11 +41,12 @@ export default function AboutPage() {
                     <p className="text-gray-400 max-w-xl mx-auto">The engineers and designers behind the platform.</p>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-                    <TeamCard name="Alex Chen" role="Founder & CEO" />
-                    <TeamCard name="Sarah Miller" role="CTO" />
-                    <TeamCard name="David Kim" role="Head of Product" />
-                    <TeamCard name="Elena Rodriguez" role="Lead Prompt Engineer" />
+                <div className="flex justify-center">
+                    <TeamCard
+                        name="Anil Suthar"
+                        role="Founder & CEO"
+                        imageSrc="/anil_suthar_profile.jpg"
+                    />
                 </div>
             </div>
         </div>
@@ -62,13 +63,18 @@ function ValueCard({ title, desc }: { title: string, desc: string }) {
     )
 }
 
-function TeamCard({ name, role }: { name: string, role: string }) {
+import Image from "next/image"
+
+function TeamCard({ name, role, imageSrc }: { name: string, role: string, imageSrc: string }) {
     return (
-        <Card variant="interactive" className="p-6 text-center group bg-[#0A0A0A] border-white/5 hover:border-brand-purple/30">
-            <div className="w-24 h-24 rounded-full bg-white/5 mx-auto mb-6 overflow-hidden grayscale group-hover:grayscale-0 transition-all duration-500 border border-white/10 group-hover:border-brand-purple/50 shadow-lg">
-                <div className="w-full h-full flex items-center justify-center text-xs text-gray-600 font-mono uppercase bg-gradient-to-br from-white/5 to-white/0">
-                    Photo
-                </div>
+        <Card variant="interactive" className="p-6 text-center group bg-[#0A0A0A] border-white/5 hover:border-brand-purple/30 max-w-sm w-full">
+            <div className="w-32 h-32 rounded-full bg-white/5 mx-auto mb-6 overflow-hidden transition-all duration-500 border border-white/10 group-hover:border-brand-purple/50 shadow-lg relative">
+                <Image
+                    src={imageSrc}
+                    alt={name}
+                    fill
+                    className="object-cover grayscale group-hover:grayscale-0 transition-all duration-500"
+                />
             </div>
             <h3 className="font-bold text-lg text-white mb-1 group-hover:text-brand-purple transition-colors">{name}</h3>
             <p className="text-sm text-gray-500 mb-6 uppercase tracking-wider font-medium text-[10px]">{role}</p>
