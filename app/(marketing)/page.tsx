@@ -81,7 +81,7 @@ export default function HomePage() {
                         <InteractiveInputDemo />
 
                         {/* Floating Stats - Decoration */}
-                        <div className="absolute -left-12 top-20 hidden lg:block animate-float">
+                        <div className="absolute -left-12 top-0 hidden lg:block animate-float">
                             <div className="glass-panel p-4 rounded-2xl flex items-center gap-3 shadow-2xl">
                                 <div className="bg-green-500/20 p-2 rounded-xl"><CheckCircle2 className="text-green-500 h-6 w-6" /></div>
                                 <div>
@@ -90,7 +90,7 @@ export default function HomePage() {
                                 </div>
                             </div>
                         </div>
-                        <div className="absolute -right-12 bottom-20 hidden lg:block animate-float-delayed">
+                        <div className="absolute -right-12 bottom-0 hidden lg:block animate-float-delayed">
                             <div className="glass-panel p-4 rounded-2xl flex items-center gap-3 shadow-2xl">
                                 <div className="bg-brand-violet/20 p-2 rounded-xl"><Zap className="text-brand-violet h-6 w-6" /></div>
                                 <div>
