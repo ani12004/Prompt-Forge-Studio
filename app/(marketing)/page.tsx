@@ -50,11 +50,22 @@ export default function HomePage() {
                         Transform vague ideas into production-ready AI prompts in seconds using our advanced intent analysis engine.
                     </motion.p>
 
+                    {/* Interactive Demo */}
+                    <motion.div
+                        initial={{ opacity: 0, y: 40 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.7, delay: 0.4 }}
+                        className="relative mx-auto max-w-4xl"
+                    >
+                        <div className="absolute -inset-1 bg-gradient-to-b from-brand-purple/20 to-transparent rounded-2xl blur-xl opacity-30" />
+                        <InteractiveInputDemo />
+                    </motion.div>
+
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.5, delay: 0.4 }}
-                        className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8"
+                        transition={{ duration: 0.5, delay: 0.5 }}
+                        className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-8 mb-8"
                     >
                         <Link href="/studio">
                             <Button size="lg" className="h-14 px-10 text-lg shadow-glow hover:scale-105 transition-all duration-300 bg-brand-purple hover:bg-brand-purple/90 rounded-full">
@@ -68,17 +79,6 @@ export default function HomePage() {
                         >
                             <Play className="mr-2 h-4 w-4 fill-current" /> Watch Demo
                         </Button>
-                    </motion.div>
-
-                    {/* Interactive Demo */}
-                    <motion.div
-                        initial={{ opacity: 0, y: 40 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.7, delay: 0.5 }}
-                        className="relative mx-auto max-w-4xl"
-                    >
-                        <div className="absolute -inset-1 bg-gradient-to-b from-brand-purple/20 to-transparent rounded-2xl blur-xl opacity-30" />
-                        <InteractiveInputDemo />
                     </motion.div>
                 </div>
             </section>
