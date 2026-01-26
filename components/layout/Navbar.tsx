@@ -48,7 +48,7 @@ export function Navbar() {
                     >
                         {/* Logo */}
                         <Link href="/" className="flex items-center gap-3 group z-50">
-                            <div className="relative h-10 w-48">
+                            <div className="relative h-14 w-60">
                                 <Image
                                     src="/logo_navi.png"
                                     alt="PromptForge"
