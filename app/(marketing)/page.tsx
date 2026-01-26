@@ -79,26 +79,6 @@ export default function HomePage() {
                     >
                         <div className="absolute -inset-1 bg-gradient-to-b from-brand-purple/20 to-transparent rounded-2xl blur-xl opacity-30" />
                         <InteractiveInputDemo />
-
-                        {/* Floating Stats - Decoration */}
-                        <div className="absolute -left-12 top-0 hidden lg:block animate-float">
-                            <div className="glass-panel p-4 rounded-2xl flex items-center gap-3 shadow-2xl">
-                                <div className="bg-green-500/20 p-2 rounded-xl"><CheckCircle2 className="text-green-500 h-6 w-6" /></div>
-                                <div>
-                                    <div className="text-xl font-bold text-white">98%</div>
-                                    <div className="text-xs text-gray-400 uppercase tracking-wider">Rating</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="absolute -right-12 bottom-0 hidden lg:block animate-float-delayed">
-                            <div className="glass-panel p-4 rounded-2xl flex items-center gap-3 shadow-2xl">
-                                <div className="bg-brand-violet/20 p-2 rounded-xl"><Zap className="text-brand-violet h-6 w-6" /></div>
-                                <div>
-                                    <div className="text-xl font-bold text-white">10x</div>
-                                    <div className="text-xs text-gray-400 uppercase tracking-wider">Speed</div>
-                                </div>
-                            </div>
-                        </div>
                     </motion.div>
                 </div>
             </section>
