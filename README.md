@@ -1,3 +1,5 @@
+![PromptForge AI](public/logo_navi.png)
+
 # PromptForge AI
 
 PromptForge AI is a specialized middleware platform designed to bridge the gap between human intent and large language model (LLM) execution. It serves as an advanced development environment for prompt engineering, allowing developers and prompt engineers to structure, refine, and optimize raw inputs into production-grade instructions.
