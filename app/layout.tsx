@@ -2,8 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Poppins } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
-import { Navbar } from "@/components/layout/Navbar";
-import { Footer } from "@/components/layout/Footer";
+import { Shell } from "@/components/layout/Shell";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -43,11 +42,7 @@ export default function RootLayout({
         >
           {/* Subtle global gradient background */}
           <div className="fixed inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-brand-purple/10 via-brand-dark to-brand-dark pointer-events-none z-[-1]" />
-          <Navbar />
-          <main className="min-h-screen pt-24">
-            {children}
-          </main>
-          <Footer />
+          <Shell>{children}</Shell>
         </body>
       </html>
     </ClerkProvider >
