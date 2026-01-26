@@ -61,6 +61,17 @@ export function Navbar() {
 
                         {/* Desktop Nav */}
                         <nav className="hidden md:flex items-center gap-1 bg-white/[0.03] rounded-full p-1 border border-white/[0.05] backdrop-blur-md">
+                            <Link
+                                href="/studio"
+                                className={cn(
+                                    "relative px-5 py-2 text-sm font-medium transition-all duration-300 rounded-full",
+                                    pathname === "/studio"
+                                        ? "text-white bg-white/10 shadow-inner"
+                                        : "text-brand-purple hover:text-white hover:bg-white/5 font-semibold"
+                                )}
+                            >
+                                Studio
+                            </Link>
                             {NAV_LINKS.map((link) => (
                                 <Link
                                     key={link.href}
