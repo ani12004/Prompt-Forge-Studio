@@ -4,122 +4,51 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import { auth } from "@clerk/nextjs/server";
 import { createClerkSupabaseClient } from "@/lib/supabaseClient";
 
+type DetailLevel = "short" | "medium" | "detailed" | "granular";
+
+interface RefineOptions {
+    model?: string;
+}
+
 export async function refinePrompt(
     prompt: string,
-    detailLevel: string,
-    options: {
-        model?: string;
-        temperature?: number;
-        topP?: number;
-        topK?: number;
-    } = {}
+    detailLevel: DetailLevel,
+    options: RefineOptions = {}
 ) {
-    const {
-        model = "gemini-2.5-flash",
-        temperature = 0.7,
-        topP = 0.95,
-        topK = 40
-    } = options;
     if (!prompt || prompt.trim().length < 3) return null;
 
-    // Fallback for local dev / demo
-    if (!process.env.GEMINI_API_KEY) {
-        await new Promise(r => setTimeout(r, 1200));
-        return `[MOCK RESPONSE — GEMINI_API_KEY MISSING]
+    const { userId, getToken } = await auth();
+    if (!userId) throw new Error("Unauthorized");
 
-ROLE: Prompt Engineering System
-OBJECTIVE: Refine the following input into a high-quality prompt
+    const token = await getToken({ template: "supabase" });
+    const supabase = createClerkSupabaseClient(token);
 
-RAW INPUT:
-${prompt}
+    /* USAGE LIMIT CHECK */
+    const { data: usage } = await supabase
+        .from("usage")
+        .select("count")
+        .eq("user_id", userId)
+        .single();
 
-DETAIL LEVEL:
-${detailLevel}
-
-NOTE:
-This is a simulated response. In production, Gemini will generate a fully refined prompt.`;
+    if (usage && usage.count >= 50) {
+        throw new Error("Free tier limit reached");
     }
 
-    try {
-        // 0. Subscription & Quota Check
-        const { userId, getToken } = await auth();
+    /* DETAIL LEVEL MODIFIER */
+    const modifier =
+        detailLevel === "short"
+            ? "STRICT SHORT MODE: Under 50 words. Only core directives. No elaboration."
+            : detailLevel === "medium"
+                ? "MEDIUM MODE: Clear structure with strong defaults. Balanced length."
+                : detailLevel === "detailed"
+                    ? "DETAILED MODE: Professional-grade completeness with full section coverage."
+                    : `GRANULAR MODE:
+Expert-level depth with implementation hints, edge-case awareness, and production considerations.
+Increase insight, not length.
+Avoid repetition across sections.`;
 
-        if (userId) {
-            try {
-                const token = await getToken({ template: "supabase" });
-                const supabase = createClerkSupabaseClient(token);
-
-                // Check Subscription Tier
-                const { data: profile } = await supabase
-                    .from('profiles')
-                    .select('subscription_tier')
-                    .eq('user_id', userId)
-                    .single();
-
-                const tier = profile?.subscription_tier || 'free';
-
-                if (tier === 'free') {
-                    // Count prompts for current month
-                    const startOfMonth = new Date();
-                    startOfMonth.setDate(1);
-                    startOfMonth.setHours(0, 0, 0, 0);
-
-                    const { count } = await supabase
-                        .from('prompts')
-                        .select('*', { count: 'exact', head: true })
-                        .eq('user_id', userId)
-                        .gte('created_at', startOfMonth.toISOString());
-
-                    if (count !== null && count >= 30) {
-                        return "Error: Limit Reached. The Free tier is limited to 30 prompts per month. Please upgrade to Pro for unlimited access.";
-                    }
-                }
-            } catch (quotaErr) {
-                console.error("Quota check failed", quotaErr);
-                // Fail open? or fail closed? failing open for now to avoid blocking users on error
-            }
-        }
-
-        // Pool of keys for redundancy/failover
-        // Loaded securely from environment variables
-        const API_KEYS = [
-            process.env.GEMINI_API_KEY,      // Primary
-            process.env.GEMINI_API_KEY_2,    // Backup 1
-            process.env.GEMINI_API_KEY_3,    // Backup 2
-            process.env.GEMINI_API_KEY_4,    // Backup 3
-            process.env.GEMINI_API_KEY_5     // Backup 4 (Optional)
-        ].filter(k => k && k.trim().length > 0) as string[];
-
-        if (API_KEYS.length === 0) throw new Error("No valid API keys found");
-
-        // Prioritized list of models to attempt
-        const MODELS_TO_TRY = [
-            "gemini-2.5-flash",
-            "gemini-3-flash",
-            "gemini-2.5-flash-lite",
-            "gemini-1.5-flash"
-        ];
-
-        // Detail-level modifier
-        let modifier = "";
-        switch (detailLevel) {
-            case "Short":
-                modifier = "Low — minimal structure, concise constraints, under 50 words.";
-                break;
-            case "Medium":
-                modifier = "Medium — clear sections, essential constraints, one paragraph per section.";
-                break;
-            case "Detailed":
-                modifier = "High — fully structured, comprehensive constraints, examples included.";
-                break;
-            case "Granular":
-                modifier = "High — exhaustive, step-by-step instructions, edge cases, technical depth.";
-                break;
-            default:
-                modifier = "Medium — balanced structure and clarity.";
-        }
-
-        const systemInstruction = `
+    /* SYSTEM INSTRUCTION */
+    const systemInstruction = `
 You are PromptForge AI — a senior-level prompt engineering system used by professionals, founders, and product teams.
 
 CORE MISSION:
@@ -140,15 +69,12 @@ INTENT & EXECUTION PROTOCOL:
    - If the user asks to "make", "build", "design", or "create", assume EXECUTION MODE.
 
 2. Expert Assumption Policy
-   - When the domain is recognizable (e.g., websites, games, apps, branding, AI),
-     apply industry-standard best practices by default.
+   - Apply industry-standard best practices by default.
    - Do NOT downgrade output quality by asking basic clarification questions.
 
 3. Vision Elevation
    - Upgrade vague ideas into strong, outcome-driven objectives.
    - Replace generic wording with specific, high-signal language.
-   - Example:
-     "make a game site" → "design a cinematic AAA game marketing website"
 
 4. Constraint Engineering
    - Convert soft constraints into measurable rules.
@@ -170,24 +96,11 @@ INTENT & EXECUTION PROTOCOL:
 DETAIL LEVEL INTELLIGENCE MODE:
 ${modifier}
 
-DETAIL LEVEL BEHAVIOR:
-- Short: Minimal but decisive. No filler.
-- Medium: Clear structure, strong defaults.
-- Detailed: Deep reasoning, professional-grade completeness.
-- Granular: Expert-level depth, implementation hints, edge-case awareness.
-
 QUALITY BAR:
-Assume the output will be used by:
-- Professional designers
-- Developers
-- AI website builders
-- Product teams
+Assume the output will be used by professional designers, developers, AI website builders, and product teams.
 
 TONE:
-- Authoritative
-- Precise
-- Confident
-- Zero fluff
+Authoritative. Precise. Confident. Zero fluff.
 
 HARD RULES:
 - Return ONLY the refined prompt.
@@ -197,100 +110,91 @@ HARD RULES:
 - No meta commentary.
 
 VAGUE INPUT EXCEPTION:
-Only if the input is extremely vague (e.g., "help", "build AI"),
-generate a professional SYSTEM INTAKE TEMPLATE that actively guides the user forward.
+Only if the input is extremely vague, generate a SYSTEM INTAKE TEMPLATE that guides the user forward.
 `;
 
-        let lastError: any = null;
+    /* GEMINI CONFIG */
+    const apiKeys = [
+        process.env.GEMINI_API_KEY,
+        process.env.GEMINI_API_KEY_1,
+        process.env.GEMINI_API_KEY_2,
+        process.env.GEMINI_API_KEY_3,
+        process.env.GEMINI_API_KEY_4,
+        process.env.GEMINI_API_KEY_5
+    ].filter(Boolean) as string[];
 
-        // Failover Logic: Try Key 1 -> Key 2 -> ... -> Key N
-        for (const apiKey of API_KEYS) {
-            const genAI = new GoogleGenerativeAI(apiKey);
-            let keyFailed = false; // Flag to skip remaining models for this key if quota/auth fails
+    if (apiKeys.length === 0) {
+        return `ROLE
+You are PromptForge AI operating in simulated mode.
 
-            // For each key, we try our list of models (to handle model availability)
+OBJECTIVE
+Demonstrate the expected structure and quality of a refined prompt.
+
+RAW USER INPUT
+${prompt}
+
+DETAIL LEVEL
+${detailLevel}
+
+OUTPUT REQUIREMENTS
+This is a simulated response generated without a live model.`;
+    }
+
+    const MODELS_TO_TRY = options.model
+        ? [options.model, "gemini-2.5-flash", "gemini-1.5-flash"]
+        : [
+            "gemini-2.5-flash",
+            "gemini-3-flash",
+            "gemini-2.5-flash-lite",
+            "gemini-1.5-flash"
+        ];
+
+    let refinedPrompt: string | null = null;
+
+    /* MODEL EXECUTION LOOP */
+    for (const key of apiKeys) {
+        try {
+            const genAI = new GoogleGenerativeAI(key);
+
             for (const modelName of MODELS_TO_TRY) {
-                if (keyFailed) break;
-
                 try {
-                    const geminiModel = genAI.getGenerativeModel({
-                        model: modelName,
-                        generationConfig: {
-                            temperature,
-                            topK,
-                            topP,
-                        }
-                    });
+                    const model = genAI.getGenerativeModel({ model: modelName });
 
-                    const result = await geminiModel.generateContent([
+                    const result = await model.generateContent([
                         systemInstruction,
                         `RAW USER INPUT:\n${prompt}`
                     ]);
 
-                    const text = result.response.text();
-                    if (!text) throw new Error("Empty response");
-
-                    // --- Success! ---
-
-                    // Save to Supabase (Blocking/Awaited to ensure persistence)
-                    if (userId) {
-                        try {
-                            const token = await getToken({ template: "supabase" });
-                            const supabase = createClerkSupabaseClient(token);
-
-                            const { error } = await supabase.from("prompts").insert({
-                                user_id: userId,
-                                original_prompt: prompt,
-                                refined_prompt: text.trim(),
-                                intent: "General",
-                                detail_level: detailLevel,
-                                model_used: modelName
-                            });
-
-                            if (error) {
-                                console.error("Supabase insert error:", error);
-                            }
-                        } catch (saveErr) {
-                            console.error("Failed to save prompt history:", saveErr);
-                        }
-                    }
-
-                    return text.trim();
-
-                } catch (err: any) {
-                    console.warn(`[Key Ending ...${apiKey.slice(-4)}] Model ${modelName} failed:`, err.message);
-                    lastError = err;
-
-                    const msg = (err.message || "").toLowerCase();
-
-                    // If it's a Key error (Quota, Auth), mark key as failed and break model loop
-                    // to immediately try the NEXT KEY.
-                    if (msg.includes("429") || msg.includes("quota") || msg.includes("api key") || msg.includes("forbidden")) {
-                        console.warn(`Key quota exceeded or invalid. Switching API key...`);
-                        keyFailed = true;
-                        break;
-                    }
-
-                    // If it's a Model error (404 Not Found, 503 Overloaded), continue loop to try next model with SAME KEY.
+                    refinedPrompt = result.response.text().trim();
+                    if (refinedPrompt) break;
+                } catch {
+                    continue;
                 }
             }
+
+            if (refinedPrompt) break;
+        } catch {
+            continue;
         }
-
-        throw lastError || new Error("All API keys and models failed. Please try again later.");
-
-    } catch (error: any) {
-        console.error("Gemini System Failure:", error);
-
-        if (error.message?.includes("Limit Reached")) {
-            return error.message;
-        }
-        if (error.message?.includes("API key"))
-            return "Error: Invalid or missing GEMINI_API_KEY in environment.";
-        if (error.message?.includes("not found"))
-            return "Error: Requested Gemini model not found.";
-        if (error.message?.includes("fetch"))
-            return "Error: Network connection failed.";
-
-        return "Error: " + (error.message || "Unknown generation failure.");
     }
+
+    if (!refinedPrompt) {
+        throw new Error("All Gemini models failed");
+    }
+
+    /* USAGE TRACKING */
+    await supabase.from("usage").upsert({
+        user_id: userId,
+        count: (usage?.count ?? 0) + 1
+    });
+
+    await supabase.from("prompts").insert({
+        user_id: userId,
+        original_prompt: prompt,
+        refined_prompt: refinedPrompt,
+        detail_level: detailLevel,
+        intent: "Inferred"
+    });
+
+    return refinedPrompt;
 }
