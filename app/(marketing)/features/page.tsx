@@ -1,6 +1,8 @@
 import { Zap, Sliders, Trophy, Sparkles, Wand2 } from "lucide-react"
 import { Button } from "@/components/ui/Button"
 import { Card } from "@/components/ui/Card"
+import { ABTestingVisual } from "@/components/marketing/ABTestingArena"
+import { GranularControlsVisual } from "@/components/marketing/GranularControls"
 
 export default function FeaturesPage() {
     return (
@@ -58,11 +60,7 @@ export default function FeaturesPage() {
                     </div>
                     <div className="flex-1 w-full">
                         <div className="relative group">
-                            <div className="absolute -inset-1 bg-gradient-to-r from-cyan-500/20 to-blue-500/20 rounded-3xl blur opacity-20 group-hover:opacity-40 transition duration-500" />
-                            <Card variant="static" className="min-h-[400px] flex items-center justify-center border-white/10 bg-[#0F0F13] p-0 overflow-hidden relative">
-                                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_var(--tw-gradient-stops))] from-cyan-500/10 via-transparent to-transparent opacity-50" />
-                                <img src="/feature-sliders.png" alt="Granular Controls UI" className="w-full h-full object-cover opacity-80 hover:scale-105 transition-transform duration-700" />
-                            </Card>
+                            <GranularControlsVisual />
                         </div>
                     </div>
                 </div>
@@ -81,11 +79,7 @@ export default function FeaturesPage() {
                     </div>
                     <div className="flex-1 w-full">
                         <div className="relative group">
-                            <div className="absolute -inset-1 bg-gradient-to-r from-brand-purple/20 to-brand-violet/20 rounded-3xl blur opacity-20 group-hover:opacity-40 transition duration-500" />
-                            <Card variant="static" className="min-h-[400px] flex items-center justify-center border-white/10 bg-[#0F0F13] p-0 overflow-hidden relative">
-                                <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_right,_var(--tw-gradient-stops))] from-brand-purple/10 via-transparent to-transparent opacity-50" />
-                                <img src="/feature-ab-testing.png" alt="A/B Testing UI" className="w-full h-full object-cover opacity-80 hover:scale-105 transition-transform duration-700" />
-                            </Card>
+                            <ABTestingVisual />
                         </div>
                     </div>
                 </div>

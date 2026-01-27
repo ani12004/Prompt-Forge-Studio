@@ -6,6 +6,9 @@ import { PromptEditor } from "@/components/studio/PromptEditor"
 import { PromptResult } from "@/components/studio/PromptResult"
 import { CognitiveStatus } from "@/components/studio/CognitiveStatus"
 import { motion, AnimatePresence } from "framer-motion"
+import { GranularOptions } from "@/components/studio/AdvancedControls"
+import { VersionComparator } from "@/components/studio/VersionComparator"
+import { Sparkles, Trophy } from "lucide-react"
 
 // Types
 interface Version {
@@ -21,6 +24,15 @@ export default function StudioPage() {
     const [detailLevel, setDetailLevel] = useState("Medium")
     const [isGenerating, setIsGenerating] = useState(false)
     const [versions, setVersions] = useState<Version[]>([])
+
+    // Granular Options State
+    const [granularOptions, setGranularOptions] = useState<GranularOptions>({
+        temperature: 0.7,
+        topP: 0.95,
+        topK: 40
+    })
+
+    const [showComparator, setShowComparator] = useState(false)
 
     // Toast State
     const [toast, setToast] = useState<{ msg: string; type: ToastType; visible: boolean }>({
@@ -55,7 +67,7 @@ export default function StudioPage() {
 
         try {
             // Race: Action vs Timeout
-            const actionPromise = refinePrompt(prompt, detailLevel)
+            const actionPromise = refinePrompt(prompt, detailLevel, granularOptions)
 
             const [_, result] = await Promise.all([
                 minTime,
@@ -130,11 +142,18 @@ export default function StudioPage() {
             {/* LEFT PANEL: Construction Surface */}
             <div className={`flex-1 flex flex-col min-h-[50vh] lg:min-h-auto border-b lg:border-b-0 lg:border-r border-white/5 relative z-10 transition-all duration-500 ease-in-out ${isGenerating ? "opacity-40 grayscale pointer-events-none" : "opacity-100"}`}>
                 <div className="flex-1 p-6 md:p-8 flex flex-col max-w-4xl mx-auto w-full">
-                    <header className="mb-4">
+                    <header className="mb-4 flex items-center justify-between">
                         <h1 className="text-3xl font-bold text-white tracking-tight flex items-center gap-3">
                             <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400">Prompt Studio</span>
                             <span className="px-2 py-0.5 rounded-md text-[10px] font-bold tracking-wider bg-brand-purple/20 border border-brand-purple/30 text-brand-purple uppercase shadow-glow-sm">PRO</span>
                         </h1>
+                        <button
+                            onClick={() => setShowComparator(true)}
+                            className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-white/10 text-xs font-mono text-gray-400 hover:text-white hover:bg-white/5 transition-colors"
+                        >
+                            <Trophy className="w-3 h-3" />
+                            BENCHMARK
+                        </button>
                     </header>
 
                     <div className="flex-1 h-full min-h-0">
@@ -145,6 +164,8 @@ export default function StudioPage() {
                             setDetailLevel={setDetailLevel}
                             onGenerate={handleGenerate}
                             isGenerating={isGenerating}
+                            granularOptions={granularOptions}
+                            setGranularOptions={setGranularOptions}
                         />
                     </div>
                 </div>
@@ -182,6 +203,13 @@ export default function StudioPage() {
                     </AnimatePresence>
                 </div>
             </div>
+            {/* A/B Testing Overlay */}
+            {showComparator && (
+                <VersionComparator
+                    versions={versions}
+                    onClose={() => setShowComparator(false)}
+                />
+            )}
         </div>
     )
 }

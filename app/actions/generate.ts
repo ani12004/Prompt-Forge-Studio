@@ -7,8 +7,19 @@ import { createClerkSupabaseClient } from "@/lib/supabaseClient";
 export async function refinePrompt(
     prompt: string,
     detailLevel: string,
-    model: string = "gemini-2.5-flash"
+    options: {
+        model?: string;
+        temperature?: number;
+        topP?: number;
+        topK?: number;
+    } = {}
 ) {
+    const {
+        model = "gemini-2.5-flash",
+        temperature = 0.7,
+        topP = 0.95,
+        topK = 40
+    } = options;
     if (!prompt || prompt.trim().length < 3) return null;
 
     // Fallback for local dev / demo
@@ -179,9 +190,9 @@ generate a structured SYSTEM TEMPLATE that:
                     const geminiModel = genAI.getGenerativeModel({
                         model: modelName,
                         generationConfig: {
-                            temperature: 0.7,
-                            topK: 40,
-                            topP: 0.95,
+                            temperature,
+                            topK,
+                            topP,
                         }
                     });
 

@@ -1,8 +1,9 @@
 "use client"
 import { useState, useEffect, useRef } from "react"
-import { Sparkles, Zap, Layers, Target, Shield, ArrowRight } from "lucide-react"
+import { Sparkles, Zap, Layers, Target, Shield, ArrowRight, Settings2 } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 import { LiveAnalysis } from "./LiveAnalysis"
+import { AdvancedControls, GranularOptions } from "./AdvancedControls"
 
 interface PromptEditorProps {
     prompt: string
@@ -11,6 +12,8 @@ interface PromptEditorProps {
     setDetailLevel: (value: string) => void
     onGenerate: () => void
     isGenerating: boolean
+    granularOptions: GranularOptions
+    setGranularOptions: (opts: GranularOptions) => void
 }
 
 const DETAIL_LEVELS = [
@@ -20,10 +23,19 @@ const DETAIL_LEVELS = [
     { label: "Granular", desc: "Maximum depth & edges.", icon: Shield },
 ]
 
-export function PromptEditor({ prompt, setPrompt, detailLevel, setDetailLevel, onGenerate, isGenerating }: PromptEditorProps) {
+export function PromptEditor({
+    prompt,
+    setPrompt,
+    detailLevel,
+    setDetailLevel,
+    onGenerate,
+    isGenerating,
+    granularOptions,
+    setGranularOptions
+}: PromptEditorProps) {
     const textareaRef = useRef<HTMLTextAreaElement>(null)
     const [focused, setFocused] = useState(false)
-
+    const [showAdvanced, setShowAdvanced] = useState(false)
     // Heuristic State
     const [stats, setStats] = useState({
         hasGoal: false,
@@ -63,11 +75,30 @@ export function PromptEditor({ prompt, setPrompt, detailLevel, setDetailLevel, o
                     <span className="text-xs font-mono text-gray-500 uppercase tracking-widest">Construction Surface</span>
                     {stats.score > 80 && <span className="text-[10px] bg-green-500/10 text-green-400 border border-green-500/20 px-2 py-0.5 rounded-full font-mono">OPTIMIZED</span>}
                 </div>
-                <LiveAnalysis score={stats.score} />
+                <div className="flex items-center gap-4">
+                    <button
+                        onClick={() => setShowAdvanced(!showAdvanced)}
+                        className={`text-xs font-mono flex items-center gap-2 transition-colors ${showAdvanced ? "text-brand-purple" : "text-gray-500 hover:text-white"}`}
+                    >
+                        <Settings2 className="w-3 h-3" />
+                        {showAdvanced ? "HIDE CONTROLS" : "GRANULAR CONTROLS"}
+                    </button>
+                    <LiveAnalysis score={stats.score} />
+                </div>
             </div>
 
+            {/* Advanced Controls */}
+            <AnimatePresence>
+                {showAdvanced && (
+                    <AdvancedControls
+                        options={granularOptions}
+                        onChange={setGranularOptions}
+                    />
+                )}
+            </AnimatePresence>
+
             {/* Smart Editor Surface */}
-            <div className={`relative flex-1 rounded-xl bg-[#0F0F0F] border transition-all duration-300 group overflow-hidden ${focused ? "border-brand-purple/50 shadow-glow" : "border-white/10 hover:border-white/20"}`}>
+            <div className={`relative flex-1 rounded-xl bg-[#0F0F0F] border transition-all duration-300 group overflow-hidden ${focused ? "border-brand-purple/50 shadow-glow" : "border-white/10 hover:border-white/20"} ${showAdvanced ? "rounded-t-none border-t-0" : ""}`}>
 
                 {/* Background Semantic Hints (Visual only) */}
                 <div className="absolute inset-0 pointer-events-none p-6 opacity-20">
