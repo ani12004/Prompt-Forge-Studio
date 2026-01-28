@@ -8,7 +8,7 @@ import Image from "next/image"
 import { cn } from "@/lib/utils"
 import { NAV_LINKS } from "@/lib/constants"
 import { Button } from "@/components/ui/Button"
-import { SignedIn, SignedOut, SignInButton, SignUpButton, UserButton } from "@clerk/nextjs"
+import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs"
 
 export function Navbar() {
     const [isOpen, setIsOpen] = React.useState(false)
@@ -82,16 +82,16 @@ export function Navbar() {
                         {/* Actions */}
                         <div className="flex items-center gap-3 z-50">
                             <SignedOut>
-                                <SignInButton mode="modal">
+                                <Link href="/login">
                                     <Button variant="ghost" className="hidden sm:inline-flex text-gray-300 hover:text-white hover:bg-white/5">
                                         Log in
                                     </Button>
-                                </SignInButton>
-                                <SignUpButton mode="modal">
+                                </Link>
+                                <Link href="/signup">
                                     <Button className="h-10 px-5 bg-white text-brand-dark hover:bg-gray-100 font-semibold shadow-xl shadow-white/5 border-0 rounded-xl">
                                         Get Started
                                     </Button>
-                                </SignUpButton>
+                                </Link>
                             </SignedOut>
                             <SignedIn>
                                 <UserButton
@@ -154,12 +154,16 @@ export function Navbar() {
                                 transition={{ delay: 0.4 }}
                                 className="mt-8 flex flex-col gap-4"
                             >
-                                <Button className="w-full justify-center h-12 text-lg font-semibold bg-brand-purple hover:bg-brand-purple/90" size="lg">
-                                    Get Started Now
-                                </Button>
-                                <Button variant="secondary" className="w-full justify-center h-12 text-lg bg-white/5 hover:bg-white/10 border-white/10" size="lg">
-                                    Log in
-                                </Button>
+                                <Link href="/signup" className="w-full">
+                                    <Button className="w-full justify-center h-12 text-lg font-semibold bg-brand-purple hover:bg-brand-purple/90" size="lg">
+                                        Get Started Now
+                                    </Button>
+                                </Link>
+                                <Link href="/login" className="w-full">
+                                    <Button variant="secondary" className="w-full justify-center h-12 text-lg bg-white/5 hover:bg-white/10 border-white/10" size="lg">
+                                        Log in
+                                    </Button>
+                                </Link>
                             </motion.div>
                         </nav>
 
