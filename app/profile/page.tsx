@@ -26,7 +26,7 @@ export default function ProfilePage() {
         )
     }
 
-    const githubAccount = user.externalAccounts.find(acc => acc.provider === "oauth_github")
+    const githubAccount = user.externalAccounts.find(acc => acc.provider.includes("github"))
 
     return (
         <div className="min-h-screen bg-[#050508] text-white p-8">
