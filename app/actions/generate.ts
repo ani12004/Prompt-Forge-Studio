@@ -73,6 +73,11 @@ This is a simulated response. In production, Gemini will generate a fully refine
                     if (count !== null && count >= 30) {
                         return "Error: Limit Reached. The Free tier is limited to 30 prompts per month. Please upgrade to Pro for unlimited access.";
                     }
+
+                    // Granular is Pro only
+                    if (detailLevel === "Granular") {
+                        return "Error: Limit Reached. Granular Mode is available only on the Pro plan.";
+                    }
                 }
             } catch (quotaErr) {
                 console.error("Quota check failed", quotaErr);

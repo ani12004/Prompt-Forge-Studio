@@ -9,6 +9,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import { GranularOptions } from "@/components/studio/AdvancedControls"
 import { VersionComparator } from "@/components/studio/VersionComparator"
 import { UpgradeModal } from "@/components/studio/UpgradeModal"
+import { getUserSubscription } from "@/app/actions/subscription"
 import { Sparkles, Trophy } from "lucide-react"
 
 // Types
@@ -35,6 +36,11 @@ export default function StudioPage() {
 
     const [showComparator, setShowComparator] = useState(false)
     const [showUpgradeModal, setShowUpgradeModal] = useState(false)
+    const [subscriptionTier, setSubscriptionTier] = useState<string | null>(null)
+
+    useEffect(() => {
+        getUserSubscription().then(setSubscriptionTier)
+    }, [])
 
     // Toast State
     const [toast, setToast] = useState<{ msg: string; type: ToastType; visible: boolean }>({
@@ -153,7 +159,12 @@ export default function StudioPage() {
                     <header className="mb-4 flex items-center justify-between">
                         <h1 className="text-3xl font-bold text-white tracking-tight flex items-center gap-3">
                             <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400">Prompt Studio</span>
-                            <span className="px-2 py-0.5 rounded-md text-[10px] font-bold tracking-wider bg-brand-purple/20 border border-brand-purple/30 text-brand-purple uppercase shadow-glow-sm">PRO</span>
+                            {subscriptionTier === 'pro' && (
+                                <span className="px-3 py-1 rounded-full text-[10px] font-bold tracking-wider bg-brand-purple/10 border border-brand-purple/20 text-brand-purple uppercase shadow-[0_0_15px_-3px_rgba(168,85,247,0.15)]">PRO</span>
+                            )}
+                            {subscriptionTier === 'free' && (
+                                <span className="px-3 py-1 rounded-full text-[10px] font-bold tracking-wider bg-white/5 border border-white/10 text-gray-400 uppercase">FREE</span>
+                            )}
                         </h1>
                         <button
                             onClick={() => setShowComparator(true)}

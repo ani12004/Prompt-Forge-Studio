@@ -49,6 +49,7 @@ export default function PricingPage() {
                     <Button variant="primary" className="w-full mb-8 shadow-glow rounded-xl h-12 font-medium bg-brand-purple hover:bg-brand-purple/90">Start Pro Trial</Button>
                     <ul className="space-y-4">
                         <FeatureItem active>Unlimited Prompts</FeatureItem>
+                        <FeatureItem active>Granular & Expert Modes</FeatureItem>
                         <FeatureItem active>Advanced Intent Analysis</FeatureItem>
                         <FeatureItem active>A/B Testing Suite</FeatureItem>
                         <FeatureItem active>API Access</FeatureItem>
