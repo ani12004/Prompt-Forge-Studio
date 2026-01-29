@@ -8,6 +8,7 @@ import { CognitiveStatus } from "@/components/studio/CognitiveStatus"
 import { motion, AnimatePresence } from "framer-motion"
 import { GranularOptions } from "@/components/studio/AdvancedControls"
 import { VersionComparator } from "@/components/studio/VersionComparator"
+import { UpgradeModal } from "@/components/studio/UpgradeModal"
 import { Sparkles, Trophy } from "lucide-react"
 
 // Types
@@ -33,6 +34,7 @@ export default function StudioPage() {
     })
 
     const [showComparator, setShowComparator] = useState(false)
+    const [showUpgradeModal, setShowUpgradeModal] = useState(false)
 
     // Toast State
     const [toast, setToast] = useState<{ msg: string; type: ToastType; visible: boolean }>({
@@ -80,6 +82,12 @@ export default function StudioPage() {
                 const elapsed = Date.now() - startTime
 
                 let finalMessage = "System Error: Unable to complete enhancement."
+
+                if (rawError.includes("Limit Reached")) {
+                    setShowUpgradeModal(true)
+                    setIsGenerating(false)
+                    return
+                }
 
                 if (rawError.includes("failed to fetch") || rawError.includes("Connection failed")) {
                     // Heuristic: If it failed FAST (< 2s), likely network/DNS. If SLOW, likely timeout/overload.
@@ -210,6 +218,12 @@ export default function StudioPage() {
                     onClose={() => setShowComparator(false)}
                 />
             )}
+
+            {/* Upgrade Modal */}
+            <UpgradeModal
+                isOpen={showUpgradeModal}
+                onClose={() => setShowUpgradeModal(false)}
+            />
         </div>
     )
 }
