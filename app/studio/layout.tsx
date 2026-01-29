@@ -63,7 +63,7 @@ export default async function StudioLayout({
                 {/* User Profile */}
                 <div className="p-2 flex items-center gap-3 border-t border-white/5 pt-4">
                     <div className="w-full">
-                        <UserMenu showUpwards={true} />
+                        <UserMenu />
                     </div>
                 </div>
             </aside>
