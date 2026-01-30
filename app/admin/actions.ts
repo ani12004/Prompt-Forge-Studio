@@ -50,8 +50,8 @@ export async function getUsers() {
     const { data, error } = await supabase
         .from('profiles')
         .select('*')
-        .order('created_at', { ascending: false }) // Assuming created_at exists, if not maybe just order by default
-        .limit(100) // Safety limit
+        .order('created_at', { ascending: false })
+        .limit(100)
 
     if (error) {
         console.error("Error fetching users", error)
@@ -67,7 +67,7 @@ export async function getContactMessages() {
     const { data, error } = await supabase
         .from('contact_messages')
         .select('*')
-        .order('created_at', { ascending: false }) // Newest first
+        .order('created_at', { ascending: false })
         .limit(100)
 
     if (error) {
@@ -92,31 +92,42 @@ export async function sendBroadcastEmail(prevState: any, formData: FormData) {
     const { data: users, error: fetchError } = await supabase
         .from('profiles')
         .select('email, full_name')
-        .not('email', 'is', null) // Ensure email exists
+        .not('email', 'is', null)
 
     if (fetchError || !users) {
         return { error: "Failed to fetch user list" }
     }
 
-    const emails = users.map(u => u.email).filter(Boolean) as string[]
+    const allEmails = users.map(u => u.email).filter(Boolean) as string[]
 
-    if (emails.length === 0) {
+    if (allEmails.length === 0) {
         return { error: "No users found to email" }
     }
 
-    // Send emails in batches of 50 (Resend limit is usually 100/batch but simpler to loop for now if small list, 
-    // or use batch endpoint logic. For safety and simplicity with current key, 
-    // we will loop. Note: Free tier might have rate limits.
-    // Actually, `resend.batch.send` is better.
-    // But let's act as if we are broadcasting. `bcc` is also an option if privacy is concern, 
-    // but better to send individual emails or use 'to' if batching.
-    // Actually, resend recommends sending individually for transactional, or batch for marketing.
-    // Let's use simple loop for now as this is a "Start" feature.
-    // Wait, batch API is: `resend.batch.send([{from, to, subject, html}, ...])`
+    // Resend Onboarding Limitations
+    const senderEmail = "PromptForge Updates <onboarding@resend.dev>"
+    const allowedEmails = (process.env.ADMIN_EMAILS || "").split(",")
+
+    let targetEmails = allEmails
+    let isOnboarding = false
+
+    if (senderEmail.includes("onboarding@resend.dev")) {
+        console.log("Using Resend Onboarding Domain. Restricting recipients to ADMIN_EMAILS.")
+        targetEmails = allEmails.filter(email => allowedEmails.includes(email))
+        isOnboarding = true
+
+        if (targetEmails.length === 0) {
+            return { error: "Onboarding Mode: No users found in ADMIN_EMAILS list. Add your email to .env.local" }
+        }
+
+        if (targetEmails.length < allEmails.length) {
+            console.warn(`Filtered out ${allEmails.length - targetEmails.length} users due to onboarding restriction.`)
+        }
+    }
 
     // Construct batch payload
-    const batchPayload = emails.map(email => ({
-        from: "PromptForge Updates <onboarding@resend.dev>", // Or update if they have a domain
+    const batchPayload = targetEmails.map(email => ({
+        from: senderEmail,
         to: email,
         subject: `[Announcement] ${subject}`,
         html: `
@@ -131,7 +142,7 @@ export async function sendBroadcastEmail(prevState: any, formData: FormData) {
         `
     }))
 
-    // Chunk into 100s if list is big (Resend max batch size)
+    // Chunk into 100s for Resend batch limit
     const chunkSize = 100
     let successCount = 0
     let failureCount = 0
@@ -143,18 +154,19 @@ export async function sendBroadcastEmail(prevState: any, formData: FormData) {
 
             if (error) {
                 console.error("Batch send error", error)
-                failureCount += chunk.length // roughly
+                failureCount += chunk.length
+                return { error: `Broadcast failed: ${error.message || error.name || "Unknown error"}` }
             } else {
                 successCount += (data?.data?.length || 0)
             }
         }
-    } catch (e) {
+    } catch (e: any) {
         console.error("Broadcast exception", e)
-        return { error: "Failed to complete broadcast" }
+        return { error: `Failed to complete broadcast: ${e.message}` }
     }
 
     return {
         success: true,
-        message: `Sent to ${successCount} users. Failed: ${failureCount}.`
+        message: `Sent to ${successCount} users ${isOnboarding ? "(Admin Only Mode)" : ""}. Failed: ${failureCount}.`
     }
 }
