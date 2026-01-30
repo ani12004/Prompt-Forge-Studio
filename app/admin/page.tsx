@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import { Users, Mail, BarChart3, Send, Loader2 } from "lucide-react"
 import { cn } from "@/lib/utils"
 // We will simple fetch on load for simplicity in this V1
-import { getAdminStats, getUsers, getContactMessages, sendBroadcastEmail } from "./actions"
+import { getAdminStats, getUsers, getContactMessages, sendBroadcastNotification } from "./actions"
 import { useActionState } from "react"
 
 export default function AdminDashboard() {
@@ -16,7 +16,7 @@ export default function AdminDashboard() {
     const [loading, setLoading] = React.useState(true)
 
     // Broadcast form state
-    const [broadcastState, broadcastAction, isBroadcasting] = useActionState(sendBroadcastEmail, null)
+    const [broadcastState, broadcastAction, isBroadcasting] = useActionState(sendBroadcastNotification, null)
 
     React.useEffect(() => {
         const loadmv = async () => {
@@ -153,19 +153,19 @@ export default function AdminDashboard() {
                     {activeTab === "broadcast" && (
                         <div className="max-w-2xl mx-auto">
                             <div className="bg-[#18181b] border border-white/10 rounded-xl p-6">
-                                <h2 className="text-xl font-semibold mb-4 text-white">Send Broadcast Email</h2>
+                                <h2 className="text-xl font-semibold mb-4 text-white">Publish Global Notification</h2>
                                 <p className="text-gray-400 mb-6 text-sm">
-                                    Send an email to all {stats?.totalUsers} registered users. Use carefully!
+                                    This will appear in the Notifications sidebar for <strong>ALL</strong> users.
                                 </p>
 
                                 <form action={broadcastAction} className="space-y-4">
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-300 mb-1">Subject</label>
+                                        <label className="block text-sm font-medium text-gray-300 mb-1">Title</label>
                                         <input
                                             name="subject"
                                             required
                                             className="w-full bg-black/50 border border-white/10 rounded-lg px-4 py-2 text-white placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-brand-purple/50"
-                                            placeholder="Announcement: New Features..."
+                                            placeholder="New Feature Alert"
                                         />
                                     </div>
                                     <div>
@@ -175,7 +175,7 @@ export default function AdminDashboard() {
                                             required
                                             rows={6}
                                             className="w-full bg-black/50 border border-white/10 rounded-lg px-4 py-2 text-white placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-brand-purple/50"
-                                            placeholder="Hello everyone..."
+                                            placeholder="We have just launched..."
                                         />
                                     </div>
 
@@ -194,12 +194,12 @@ export default function AdminDashboard() {
                                         {isBroadcasting ? (
                                             <>
                                                 <Loader2 className="h-4 w-4 animate-spin" />
-                                                Sending...
+                                                Publishing...
                                             </>
                                         ) : (
                                             <>
                                                 <Send className="h-4 w-4" />
-                                                Send Broadcast
+                                                Publish Notification
                                             </>
                                         )}
                                     </button>
