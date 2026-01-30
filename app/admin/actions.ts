@@ -124,3 +124,71 @@ export async function updateMessageStatus(id: string, status: 'read' | 'unread')
 
     return { success: true }
 }
+
+import { Resend } from 'resend';
+
+const resend = new Resend(process.env.RESEND_API_KEY);
+
+export async function sendEmailReply(to: string, subject: string, message: string, replyContent: string) {
+    await checkAdmin()
+
+    if (!process.env.RESEND_API_KEY) {
+        return { error: "RESEND_API_KEY is missing" }
+    }
+
+    try {
+        const { data, error } = await resend.emails.send({
+            from: 'PromptForge AI <admin@promptforge.ai>', // Update this if user has custom domain
+            to: [to],
+            // Ensure subject starts with Re: if not present
+            subject: subject.startsWith('Re:') ? subject : `Re: ${subject}`,
+            html: `
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <style>
+                    body { font-family: 'Inter', sans-serif; background-color: #000000; color: #ffffff; margin: 0; padding: 0; }
+                    .container { max-width: 600px; margin: 0 auto; padding: 20px; background-color: #18181b; border: 1px solid #333; border-radius: 12px; margin-top: 40px; }
+                    .header { text-align: center; padding-bottom: 20px; border-bottom: 1px solid #333; margin-bottom: 20px; }
+                    .logo { height: 40px; }
+                    .content { font-size: 16px; line-height: 1.6; color: #e5e7eb; }
+                    .quote { margin-top: 20px; padding: 15px; background-color: #27272a; border-left: 4px solid #8b5cf6; color: #9ca3af; font-size: 14px; border-radius: 4px; }
+                    .footer { margin-top: 30px; text-align: center; font-size: 12px; color: #6b7280; border-top: 1px solid #333; padding-top: 20px; }
+                </style>
+            </head>
+            <body>
+                <div class="container">
+                    <div class="header">
+                         <!-- Assuming public folder is served at root domain. If not, user needs updates -->
+                        <img src="${process.env.NEXT_PUBLIC_APP_URL || 'https://promptforge.ai'}/logo_navi.png" alt="PromptForge AI" class="logo" />
+                    </div>
+                    
+                    <div class="content">
+                        ${replyContent.replace(/\n/g, '<br/>')}
+                    </div>
+
+                    <div class="quote">
+                        <strong>On ${new Date().toLocaleDateString()}, you wrote:</strong><br/>
+                        ${message}
+                    </div>
+
+                    <div class="footer">
+                        &copy; ${new Date().getFullYear()} PromptForge AI. All rights reserved.
+                    </div>
+                </div>
+            </body>
+            </html>
+            `
+        });
+
+        if (error) {
+            console.error("Resend Error:", error);
+            return { error: error.message };
+        }
+
+        return { success: true };
+    } catch (e) {
+        console.error("Failed to send email:", e);
+        return { error: "Internal Server Error" };
+    }
+}

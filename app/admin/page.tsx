@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import { Users, Mail, BarChart3, Send, Loader2 } from "lucide-react"
 import { cn } from "@/lib/utils"
 // We will simple fetch on load for simplicity in this V1
-import { getAdminStats, getUsers, getContactMessages, sendBroadcastNotification, updateMessageStatus } from "./actions"
+import { getAdminStats, getUsers, getContactMessages, sendBroadcastNotification, updateMessageStatus, sendEmailReply } from "./actions"
 import { useActionState } from "react"
 
 export default function AdminDashboard() {
@@ -19,12 +19,43 @@ export default function AdminDashboard() {
     const [broadcastState, broadcastAction, isBroadcasting] = useActionState(sendBroadcastNotification, null)
 
     const [selectedMessage, setSelectedMessage] = React.useState<any>(null)
+    const [replyMode, setReplyMode] = React.useState(false)
+    const [replyContent, setReplyContent] = React.useState("")
+    const [sendingReply, setSendingReply] = React.useState(false)
+
+    // Reset when modal closes
+    React.useEffect(() => {
+        if (!selectedMessage) {
+            setReplyMode(false)
+            setReplyContent("")
+        }
+    }, [selectedMessage])
 
     const handleMarkAsRead = async (id: string) => {
         await updateMessageStatus(id, 'read')
         // Optimistic update
         setMessages(msgs => msgs.map(m => m.id === id ? { ...m, status: 'read' } : m))
         setSelectedMessage(null)
+    }
+
+    const handleSendReply = async () => {
+        if (!replyContent.trim()) return
+
+        setSendingReply(true)
+        const res = await sendEmailReply(
+            selectedMessage.email,
+            selectedMessage.subject,
+            selectedMessage.message,
+            replyContent
+        )
+        setSendingReply(false)
+
+        if (res.error) {
+            alert("Failed to send reply: " + res.error)
+        } else {
+            alert("Reply sent successfully!")
+            setSelectedMessage(null) // Close modal
+        }
     }
 
     React.useEffect(() => {
@@ -288,22 +319,58 @@ export default function AdminDashboard() {
                                 </div>
                             </div>
 
-                            <div className="flex items-center gap-3 pt-4 border-t border-white/10">
-                                <a
-                                    href={`mailto:${selectedMessage.email}?subject=Re: ${selectedMessage.subject}`}
-                                    className="flex-1 flex items-center justify-center gap-2 bg-white text-black font-semibold py-2.5 rounded-xl hover:bg-gray-100 transition-colors"
-                                >
-                                    <Send className="w-4 h-4" />
-                                    Reply via Email
-                                </a>
-                                {selectedMessage.status === 'unread' && (
-                                    <button
-                                        onClick={() => handleMarkAsRead(selectedMessage.id)}
-                                        className="flex-1 flex items-center justify-center gap-2 bg-white/5 hover:bg-white/10 text-white font-semibold py-2.5 rounded-xl border border-white/10 transition-colors"
-                                    >
-                                        <Mail className="w-4 h-4" />
-                                        Mark as Read
-                                    </button>
+                            <div className="pt-4 border-t border-white/10">
+                                {replyMode ? (
+                                    <div className="space-y-3">
+                                        <textarea
+                                            value={replyContent}
+                                            onChange={(e) => setReplyContent(e.target.value)}
+                                            placeholder="Write your reply..."
+                                            rows={4}
+                                            className="w-full bg-black/50 border border-white/10 rounded-xl p-3 text-white placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-brand-purple/50 resize-none"
+                                            autoFocus
+                                        />
+                                        <div className="flex items-center gap-3">
+                                            <button
+                                                onClick={handleSendReply}
+                                                disabled={sendingReply || !replyContent.trim()}
+                                                className="flex-1 bg-white text-black font-semibold py-2 rounded-lg hover:bg-gray-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                                            >
+                                                {sendingReply ? (
+                                                    <Loader2 className="h-4 w-4 animate-spin" />
+                                                ) : (
+                                                    <Send className="h-4 w-4" />
+                                                )}
+                                                Send Reply
+                                            </button>
+                                            <button
+                                                onClick={() => setReplyMode(false)}
+                                                disabled={sendingReply}
+                                                className="px-4 py-2 text-sm text-gray-400 hover:text-white transition-colors"
+                                            >
+                                                Cancel
+                                            </button>
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <div className="flex items-center gap-3">
+                                        <button
+                                            onClick={() => setReplyMode(true)}
+                                            className="flex-1 flex items-center justify-center gap-2 bg-white text-black font-semibold py-2.5 rounded-xl hover:bg-gray-100 transition-colors"
+                                        >
+                                            <Send className="w-4 h-4" />
+                                            Reply
+                                        </button>
+                                        {selectedMessage.status === 'unread' && (
+                                            <button
+                                                onClick={() => handleMarkAsRead(selectedMessage.id)}
+                                                className="flex-1 flex items-center justify-center gap-2 bg-white/5 hover:bg-white/10 text-white font-semibold py-2.5 rounded-xl border border-white/10 transition-colors"
+                                            >
+                                                <Mail className="w-4 h-4" />
+                                                Mark as Read
+                                            </button>
+                                        )}
+                                    </div>
                                 )}
                             </div>
                         </motion.div>
