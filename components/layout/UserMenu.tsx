@@ -8,7 +8,11 @@ import { motion, AnimatePresence } from "framer-motion"
 import { cn } from "@/lib/utils"
 import { getUserSubscription } from "@/app/actions/subscription"
 
-export function UserMenu() {
+interface UserMenuProps {
+    withDropdown?: boolean;
+}
+
+export function UserMenu({ withDropdown = true }: UserMenuProps) {
     const { user } = useUser()
     const { signOut } = useClerk()
     const [isOpen, setIsOpen] = React.useState(false)
@@ -34,8 +38,11 @@ export function UserMenu() {
     return (
         <div className="relative" ref={menuRef}>
             <button
-                onClick={() => setIsOpen(!isOpen)}
-                className="flex items-center gap-3 pl-2 pr-3 py-1.5 rounded-full bg-[#18181b] border border-white/5 hover:border-white/10 transition-colors text-left w-full"
+                onClick={() => withDropdown && setIsOpen(!isOpen)}
+                className={cn(
+                    "flex items-center gap-3 pl-2 pr-3 py-1.5 rounded-full bg-[#18181b] border border-white/5 transition-colors text-left w-full",
+                    withDropdown ? "hover:border-white/10 cursor-pointer" : "cursor-default"
+                )}
             >
                 <div className="h-8 w-8 rounded-full bg-brand-purple/20 border border-brand-purple/30 overflow-hidden relative shrink-0">
                     {user.imageUrl ? (
@@ -58,10 +65,12 @@ export function UserMenu() {
                         {tier === 'pro' ? 'Pro Plan' : 'Free Plan'}
                     </span>
                 </div>
-                <ChevronDown className={cn(
-                    "h-4 w-4 text-gray-400 ml-1 transition-transform duration-200 shrink-0",
-                    isOpen && "rotate-180"
-                )} />
+                {withDropdown && (
+                    <ChevronDown className={cn(
+                        "h-4 w-4 text-gray-400 ml-1 transition-transform duration-200 shrink-0",
+                        isOpen && "rotate-180"
+                    )} />
+                )}
             </button>
 
             <AnimatePresence>

@@ -1,49 +1,79 @@
 "use server"
-import { Resend } from 'resend';
-import { z } from 'zod';
 
-// Schema for validation
-const ContactSchema = z.object({
-    name: z.string().min(2),
-    email: z.string().email(),
-    subject: z.string().min(5),
-    message: z.string().min(10),
-});
+import { Resend } from "resend"
+import { z } from "zod"
 
-export async function sendContactEmail(prevState: any, formData: FormData) {
-    const resend = new Resend(process.env.RESEND_API_KEY);
+const resend = new Resend(process.env.RESEND_API_KEY)
 
+const contactFormSchema = z.object({
+    name: z.string().min(1, "Name is required"),
+    email: z.string().email("Invalid email address"),
+    subject: z.string().min(1, "Subject is required"),
+    message: z.string().min(10, "Message must be at least 10 characters"),
+})
+
+export type ContactFormState = {
+    success?: boolean
+    error?: string
+    validationErrors?: {
+        name?: string[]
+        email?: string[]
+        subject?: string[]
+        message?: string[]
+    }
+}
+
+export async function submitContactForm(prevState: ContactFormState, formData: FormData): Promise<ContactFormState> {
     const rawData = {
-        name: formData.get('name'),
-        email: formData.get('email'),
-        subject: formData.get('subject'),
-        message: formData.get('message'),
-    };
+        name: formData.get("name"),
+        email: formData.get("email"),
+        subject: formData.get("subject"),
+        message: formData.get("message"),
+    }
 
-    const validatedFields = ContactSchema.safeParse(rawData);
+    const validatedFields = contactFormSchema.safeParse(rawData)
 
     if (!validatedFields.success) {
-        return { success: false, errors: validatedFields.error.flatten().fieldErrors };
+        return {
+            validationErrors: validatedFields.error.flatten().fieldErrors,
+        }
+    }
+
+    const { name, email, subject, message } = validatedFields.data
+    const contactEmail = process.env.CONTACT_EMAIL
+
+    if (!contactEmail) {
+        console.error("CONTACT_EMAIL environment variable is not set")
+        return { error: "Configuration error. Please try again later." }
     }
 
     try {
-        if (!process.env.RESEND_API_KEY) {
-            console.log("MOCK EMAIL SEND:", validatedFields.data);
-            // Return success in dev mode without key
-            return { success: true, message: "Email sent (Mock Mode)" };
+        const { error } = await resend.emails.send({
+            from: "PromptForge Contact <onboarding@resend.dev>",
+            to: contactEmail,
+            subject: `[Contact Form] ${subject}`,
+            replyTo: email,
+            html: `
+                <div>
+                    <h2>New Contact Form Submission</h2>
+                    <p><strong>Name:</strong> ${name}</p>
+                    <p><strong>Email:</strong> ${email}</p>
+                    <p><strong>Subject:</strong> ${subject}</p>
+                    <hr />
+                    <h3>Message:</h3>
+                    <p>${message.replace(/\n/g, "<br>")}</p>
+                </div>
+            `,
+        })
+
+        if (error) {
+            console.error("Resend error:", error)
+            return { error: "Failed to send message. Please try again." }
         }
 
-        const { name, email, subject, message } = validatedFields.data;
-
-        await resend.emails.send({
-            from: 'PromptForge Contact <onboarding@resend.dev>',
-            to: 'delivered@resend.dev', // Replace with user's real email when verified
-            subject: `[Contact Form] ${subject}`,
-            text: `Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`,
-        });
-
-        return { success: true, message: "Email sent successfully!" };
+        return { success: true }
     } catch (error) {
-        return { success: false, message: "Failed to send email." };
+        console.error("Server action error:", error)
+        return { error: "Something went wrong. Please try again." }
     }
 }

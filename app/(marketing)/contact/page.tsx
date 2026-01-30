@@ -1,31 +1,29 @@
 "use client"
+
 import * as React from "react"
+import { useActionState } from "react"
 import { Button } from "@/components/ui/Button"
 import { Input } from "@/components/ui/Input"
-import { CheckCircle2, MessageSquare, Mail } from "lucide-react"
+import { CheckCircle2, MessageSquare, Mail, AlertCircle, Loader2 } from "lucide-react"
+import { submitContactForm } from "@/app/actions/contact"
+
+const initialState = {
+    success: false,
+    error: "",
+    validationErrors: {}
+}
 
 export default function ContactPage() {
-    const [submitted, setSubmitted] = React.useState(false)
+    const [state, dispatch, isPending] = useActionState(submitContactForm, initialState)
+    const [justSubmitted, setJustSubmitted] = React.useState(false)
 
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault()
-
-        const form = e.currentTarget
-        const formData = new FormData(form)
-
-        try {
-            await fetch("/", {
-                method: "POST",
-                headers: { "Content-Type": "application/x-www-form-urlencoded" },
-                body: new URLSearchParams(formData as any).toString(),
-            })
-            setSubmitted(true)
-            form.reset()
-            setTimeout(() => setSubmitted(false), 5000)
-        } catch (error) {
-            console.error("Form submission error:", error)
+    React.useEffect(() => {
+        if (state.success) {
+            setJustSubmitted(true)
+            const timer = setTimeout(() => setJustSubmitted(false), 5000)
+            return () => clearTimeout(timer)
         }
-    }
+    }, [state.success])
 
     return (
         <div className="pb-32 pt-32 px-6">
@@ -44,7 +42,7 @@ export default function ContactPage() {
                 </div>
 
                 <div className="glass-panel p-8 md:p-12 rounded-3xl relative overflow-hidden ring-1 ring-white/10 shadow-2xl shadow-brand-purple/5">
-                    {submitted ? (
+                    {justSubmitted ? (
                         <div className="absolute inset-0 z-10 bg-[#0A0A0A]/90 backdrop-blur-sm flex flex-col items-center justify-center animate-in fade-in zoom-in duration-300">
                             <div className="bg-green-500/20 p-4 rounded-full mb-6">
                                 <CheckCircle2 className="h-12 w-12 text-green-500" />
@@ -54,28 +52,64 @@ export default function ContactPage() {
                         </div>
                     ) : null}
 
-                    <form
-                        name="contact"
-                        method="POST"
-                        data-netlify="true"
-                        onSubmit={handleSubmit}
-                        className="space-y-6"
-                    >
-                        <input type="hidden" name="form-name" value="contact" />
+                    <form action={dispatch} className="space-y-6">
+                        {state.error && (
+                            <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm flex items-center gap-2">
+                                <AlertCircle className="h-4 w-4" />
+                                {state.error}
+                            </div>
+                        )}
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <Input name="name" label="Full Name" required className="bg-white/[0.03] border-white/10 focus:border-brand-purple/50 focus:bg-brand-purple/[0.02]" />
-                            <Input name="email" label="Email Address" type="email" required className="bg-white/[0.03] border-white/10 focus:border-brand-purple/50 focus:bg-brand-purple/[0.02]" />
-                        </div>
-                        <Input name="subject" label="Subject" required className="bg-white/[0.03] border-white/10 focus:border-brand-purple/50 focus:bg-brand-purple/[0.02]" />
+                            <div className="space-y-1">
+                                <Input
+                                    name="name"
+                                    label="Full Name"
+                                    required
+                                    className="bg-white/[0.03] border-white/10 focus:border-brand-purple/50 focus:bg-brand-purple/[0.02]"
+                                    disabled={isPending}
+                                />
+                                {state.validationErrors?.name && (
+                                    <p className="text-xs text-red-400 ml-1">{state.validationErrors.name[0]}</p>
+                                )}
+                            </div>
 
-                        <div className="relative group">
+                            <div className="space-y-1">
+                                <Input
+                                    name="email"
+                                    label="Email Address"
+                                    type="email"
+                                    required
+                                    className="bg-white/[0.03] border-white/10 focus:border-brand-purple/50 focus:bg-brand-purple/[0.02]"
+                                    disabled={isPending}
+                                />
+                                {state.validationErrors?.email && (
+                                    <p className="text-xs text-red-400 ml-1">{state.validationErrors.email[0]}</p>
+                                )}
+                            </div>
+                        </div>
+
+                        <div className="space-y-1">
+                            <Input
+                                name="subject"
+                                label="Subject"
+                                required
+                                className="bg-white/[0.03] border-white/10 focus:border-brand-purple/50 focus:bg-brand-purple/[0.02]"
+                                disabled={isPending}
+                            />
+                            {state.validationErrors?.subject && (
+                                <p className="text-xs text-red-400 ml-1">{state.validationErrors.subject[0]}</p>
+                            )}
+                        </div>
+
+                        <div className="space-y-1 relative group">
                             <textarea
-                                className="peer block w-full rounded-xl border border-white/10 bg-white/[0.03] px-4 py-4 text-sm text-white focus:border-brand-purple/50 focus:bg-brand-purple/[0.02] focus:outline-none focus:ring-1 focus:ring-brand-purple/50 min-h-[160px] resize-y placeholder-transparent transition-all duration-200"
+                                className="peer block w-full rounded-xl border border-white/10 bg-white/[0.03] px-4 py-4 text-sm text-white focus:border-brand-purple/50 focus:bg-brand-purple/[0.02] focus:outline-none focus:ring-1 focus:ring-brand-purple/50 min-h-[160px] resize-y placeholder-transparent transition-all duration-200 disabled:opacity-50"
                                 placeholder="Message"
                                 name="message"
                                 id="message"
                                 required
+                                disabled={isPending}
                             ></textarea>
                             <label
                                 htmlFor="message"
@@ -83,10 +117,25 @@ export default function ContactPage() {
                             >
                                 How can we help?
                             </label>
+                            {state.validationErrors?.message && (
+                                <p className="text-xs text-red-400 ml-1">{state.validationErrors.message[0]}</p>
+                            )}
                         </div>
 
-                        <Button type="submit" size="lg" className="w-full h-14 text-lg font-medium shadow-glow bg-brand-purple hover:bg-brand-purple/90 rounded-xl">
-                            Send Message
+                        <Button
+                            type="submit"
+                            size="lg"
+                            className="w-full h-14 text-lg font-medium shadow-glow bg-brand-purple hover:bg-brand-purple/90 rounded-xl disabled:opacity-70"
+                            disabled={isPending}
+                        >
+                            {isPending ? (
+                                <>
+                                    <Loader2 className="h-5 w-5 animate-spin mr-2" />
+                                    Sending...
+                                </>
+                            ) : (
+                                "Send Message"
+                            )}
                         </Button>
                     </form>
 
@@ -100,3 +149,4 @@ export default function ContactPage() {
         </div>
     )
 }
+
