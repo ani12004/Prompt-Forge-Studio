@@ -14,9 +14,6 @@ export async function getNotifications() {
     // The RLS policy I gave the user handles this automatically `(auth.uid() = user_id or user_id is null)`
     // So we just select * from notifications.
 
-    // However, Supabase JS client might need explicit filter if RLS isn't perfectly trusted or for optimization?
-    // Actually, RLS is enough. But let's order by created_at.
-
     const { data, error } = await supabase
         .from('notifications')
         .select('*')
