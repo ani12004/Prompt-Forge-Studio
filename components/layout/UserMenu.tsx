@@ -10,9 +10,10 @@ import { getUserSubscription } from "@/app/actions/subscription"
 
 interface UserMenuProps {
     withDropdown?: boolean;
+    direction?: 'up' | 'down' | 'right';
 }
 
-export function UserMenu({ withDropdown = true }: UserMenuProps) {
+export function UserMenu({ withDropdown = true, direction = 'up' }: UserMenuProps) {
     const { user } = useUser()
     const { signOut } = useClerk()
     const [isOpen, setIsOpen] = React.useState(false)
@@ -34,6 +35,35 @@ export function UserMenu({ withDropdown = true }: UserMenuProps) {
     }, [])
 
     if (!user) return null
+
+    const getMenuStyles = () => {
+        switch (direction) {
+            case 'right':
+                return {
+                    className: "absolute left-full ml-2 bottom-0 w-64 p-2 rounded-xl bg-[#18181b] border border-white/10 shadow-xl overflow-hidden z-50 origin-bottom-left",
+                    initial: { opacity: 0, x: -10, scale: 0.95 },
+                    animate: { opacity: 1, x: 0, scale: 1 },
+                    exit: { opacity: 0, x: -10, scale: 0.95 }
+                }
+            case 'down':
+                return {
+                    className: "absolute top-full mt-2 right-0 w-64 p-2 rounded-xl bg-[#18181b] border border-white/10 shadow-xl overflow-hidden z-50 origin-top-right",
+                    initial: { opacity: 0, y: -10, scale: 0.95 },
+                    animate: { opacity: 1, y: 0, scale: 1 },
+                    exit: { opacity: 0, y: -10, scale: 0.95 }
+                }
+            case 'up':
+            default:
+                return {
+                    className: "absolute bottom-full mb-2 left-0 w-full min-w-[200px] p-2 rounded-xl bg-[#18181b] border border-white/10 shadow-xl overflow-hidden z-50 origin-bottom-left",
+                    initial: { opacity: 0, y: 10, scale: 0.95 },
+                    animate: { opacity: 1, y: 0, scale: 1 },
+                    exit: { opacity: 0, y: 10, scale: 0.95 }
+                }
+        }
+    }
+
+    const menuConfig = getMenuStyles()
 
     return (
         <div className="relative" ref={menuRef}>
@@ -76,11 +106,11 @@ export function UserMenu({ withDropdown = true }: UserMenuProps) {
             <AnimatePresence>
                 {isOpen && (
                     <motion.div
-                        initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                        animate={{ opacity: 1, y: 0, scale: 1 }}
-                        exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                        initial={menuConfig.initial}
+                        animate={menuConfig.animate}
+                        exit={menuConfig.exit}
                         transition={{ duration: 0.15, ease: "easeOut" }}
-                        className="absolute bottom-full mb-2 left-0 w-full min-w-[200px] p-2 rounded-xl bg-[#18181b] border border-white/10 shadow-xl overflow-hidden z-50 origin-bottom-left"
+                        className={menuConfig.className}
                     >
                         <div className="px-3 py-3 border-b border-white/5 mb-2">
                             <p className="text-sm font-medium text-white truncate">

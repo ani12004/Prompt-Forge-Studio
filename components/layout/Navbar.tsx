@@ -101,7 +101,7 @@ export function Navbar() {
                                 </Link>
                             </SignedOut>
                             <SignedIn>
-                                <UserMenu />
+                                <UserMenu direction="down" />
                             </SignedIn>
 
                             <button

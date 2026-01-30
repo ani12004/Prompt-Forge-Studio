@@ -48,22 +48,72 @@ export async function submitContactForm(prevState: ContactFormState, formData: F
     }
 
     try {
+        // Read the logo file
+        const fs = await import("fs")
+        const path = await import("path")
+        const logoPath = path.join(process.cwd(), "public", "logo_navi.png")
+        const logoBuffer = await fs.promises.readFile(logoPath)
+        const logoBase64 = logoBuffer.toString("base64")
+
         const { error } = await resend.emails.send({
             from: "PromptForge Contact <onboarding@resend.dev>",
             to: contactEmail,
             subject: `[Contact Form] ${subject}`,
             replyTo: email,
             html: `
-                <div>
-                    <h2>New Contact Form Submission</h2>
-                    <p><strong>Name:</strong> ${name}</p>
-                    <p><strong>Email:</strong> ${email}</p>
-                    <p><strong>Subject:</strong> ${subject}</p>
-                    <hr />
-                    <h3>Message:</h3>
-                    <p>${message.replace(/\n/g, "<br>")}</p>
-                </div>
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <style>
+                        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #e4e4e7; background-color: #050508; margin: 0; padding: 20px; }
+                        .container { max-width: 600px; margin: 0 auto; background: #18181b; padding: 40px; border-radius: 16px; border: 1px solid #27272a; box-shadow: 0 4px 20px rgba(139, 92, 246, 0.1); }
+                        .header { text-align: center; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 1px solid #27272a; }
+                        .logo { max-height: 40px; width: auto; }
+                        .field { margin-bottom: 20px; }
+                        .label { font-weight: 600; color: #a1a1aa; font-size: 0.85em; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; }
+                        .value { font-size: 1.1em; color: #ffffff; }
+                        .message-box { background: #27272a; padding: 20px; border-radius: 12px; border: 1px solid #3f3f46; margin-top: 5px; color: #ffffff; }
+                        .footer { margin-top: 40px; pt: 20px; border-top: 1px solid #27272a; text-align: center; color: #52525b; font-size: 0.8em; }
+                        .highlight { color: #8b5cf6; }
+                    </style>
+                </head>
+                <body>
+                    <div class="container">
+                        <div class="header">
+                            <img src="cid:logo_navi" alt="PromptForge AI" class="logo" />
+                        </div>
+                        
+                        <div class="field">
+                            <div class="label">Subject</div>
+                            <div class="value">${subject}</div>
+                        </div>
+
+                        <div class="field">
+                            <div class="label">Active User</div>
+                            <div class="value">${name} <span style="color: #71717a; font-size: 0.9em;">(${email})</span></div>
+                        </div>
+
+                        <div class="field">
+                            <div class="label">Message</div>
+                            <div class="message-box">
+                                ${message.replace(/\n/g, "<br>")}
+                            </div>
+                        </div>
+
+                        <div class="footer">
+                            <p>Sent via PromptForge AI Contact Form</p>
+                        </div>
+                    </div>
+                </body>
+                </html>
             `,
+            attachments: [
+                {
+                    filename: 'logo_navi.png',
+                    content: logoBase64,
+                    contentId: 'logo_navi',
+                },
+            ],
         })
 
         if (error) {

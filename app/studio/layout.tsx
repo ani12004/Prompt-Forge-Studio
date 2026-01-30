@@ -37,7 +37,7 @@ export default async function StudioLayout({
             <div className="fixed inset-0 bg-[radial-gradient(ellipse_at_top_left,_var(--tw-gradient-stops))] from-brand-purple/10 via-brand-dark to-brand-dark pointer-events-none z-0" />
 
             {/* Sidebar */}
-            <aside className="w-16 md:w-64 border-r border-white/5 bg-white/[0.02] backdrop-blur-xl flex flex-col justify-between p-4 z-10 relative">
+            <aside className="w-16 md:w-64 border-r border-white/5 bg-white/[0.02] backdrop-blur-xl flex flex-col justify-between p-4 z-20 relative">
                 <div className="flex flex-col gap-8">
                     {/* Nav Items */}
                     <nav className="flex flex-col gap-2 pt-4">
@@ -63,7 +63,7 @@ export default async function StudioLayout({
                 {/* User Profile */}
                 <div className="p-2 flex items-center gap-3 border-t border-white/5 pt-4">
                     <div className="w-full">
-                        <UserMenu withDropdown={false} />
+                        <UserMenu direction="right" />
                     </div>
                 </div>
             </aside>
