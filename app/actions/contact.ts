@@ -2,6 +2,7 @@
 
 import { Resend } from "resend"
 import { z } from "zod"
+import { createAdminClient } from "@/lib/supabaseAdmin"
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 
@@ -48,6 +49,24 @@ export async function submitContactForm(prevState: ContactFormState, formData: F
     }
 
     try {
+        // Save to Supabase
+        const supabase = createAdminClient()
+        const { error: dbError } = await supabase
+            .from('contact_messages')
+            .insert({
+                name,
+                email,
+                subject,
+                message,
+                status: 'unread',
+            })
+
+        if (dbError) {
+            console.error("Failed to save contact message to DB:", dbError)
+            // We continue to send the email even if DB save fails, or should we return error?
+            // User likely wants the email more. We will log it.
+        }
+
         // Read the logo file
         const fs = await import("fs")
         const path = await import("path")
