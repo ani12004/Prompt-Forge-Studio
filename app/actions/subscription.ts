@@ -17,7 +17,7 @@ export async function getUserSubscription() {
             .eq('user_id', userId)
             .single();
 
-        return profile?.subscription_tier || "free";
+        return (profile?.subscription_tier || "free").toLowerCase();
     } catch (error) {
         console.error("Error fetching subscription:", error);
         return "free";

@@ -11,24 +11,10 @@ export default async function StudioLayout({
     children: React.ReactNode
 }) {
     const { userId, getToken } = await auth();
-    let planName = "Free Plan";
-
     if (userId) {
-        try {
-            const token = await getToken({ template: "supabase" });
-            const supabase = createClerkSupabaseClient(token);
-            const { data: profile } = await supabase
-                .from('profiles')
-                .select('subscription_tier')
-                .eq('user_id', userId)
-                .single();
-
-            if (profile?.subscription_tier === 'pro') {
-                planName = "Pro Plan";
-            }
-        } catch (error) {
-            console.error("Failed to fetch plan:", error);
-        }
+        // Hydrate Clerk Supabase Client
+        const token = await getToken({ template: "supabase" });
+        createClerkSupabaseClient(token);
     }
 
     return (

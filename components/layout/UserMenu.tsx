@@ -95,7 +95,7 @@ export function UserMenu({ withDropdown = true, direction = 'up' }: UserMenuProp
                         {user.firstName || user.username}
                     </span>
                     <span className="text-[10px] font-bold text-brand-purple uppercase tracking-wider mt-0.5 whitespace-nowrap">
-                        {tier === 'pro' ? 'Pro Plan' : 'Free Plan'}
+                        {tier === 'pro' ? 'PRO PLAN' : 'FREE PLAN'}
                     </span>
                 </div>
                 {withDropdown && (
