@@ -2,37 +2,43 @@
 
 # PromptForge AI
 
-PromptForge AI is a specialized middleware platform designed to bridge the gap between human intent and large language model (LLM) execution. It serves as an advanced development environment for prompt engineering, allowing developers and prompt engineers to structure, refine, and optimize raw inputs into production-grade instructions.
+**PromptForge AI** is a specialized middleware platform designed to bridge the gap between human intent and large language model (LLM) execution. It serves as an advanced development environment (ADE) for prompt engineering, allowing developers and prompt engineers to structure, refine, and optimize raw inputs into production-grade instructions.
 
-The system leverages heuristic analysis and semantic understanding to detect ambiguity in natural language, automatically restructuring requests into high-fidelity prompts that improve model performance, consistency, and reduced latency across various LLM providers.
+The system leverages heuristic analysis and semantic understanding to detect ambiguity in natural language, automatically restructuring requests into high-fidelity prompts that improve model performance, consistency, and reduced latency.
 
 ## Key Features
 
-### Semantic Intent Analysis
-The core engine analyzes user input to determine the underlying objective—whether it be code generation, creative writing, or data analysis. It identifies vague constraints and negative patterns, replacing them with precise, enforceable instructions.
+### 🚀 Advanced Studio Environment
+A dedicated, IDE-like workspace for crafting and iterating on prompts.
+- **Cognitive Depth Control**: Switch between 'Short', 'Medium', 'Detailed', and 'Granular' modes to control query expansion.
+- **Real-time Status**: Status indicators for Goal, Context, and Constraints injection.
+- **Split-View Comparison**: A sidebar history to drag-and-drop previous versions.
 
-### Studio Environment
-A dedicated workspace for crafting and iterating on prompts. The Studio offers real-time feedback, version history, and "cognitive status" updates that visualize the refinement process as it happens.
+### 🧪 A/B Testing Laboratory (Benchmark)
+Compare two prompt variations side-by-side to analyze structural differences and predicted performance.
+- **Visual Diffing**: Clean split-view layout to spot differences instantly.
+- **Heuristic Scoring**: Automated scoring based on constraint definition and complexity.
+- **Winner Declaration**: AI-driven insight on which variation is likely to perform better.
 
-### Subscription & Quota Management
-Integrated limits ensure fair usage across the platform:
-- **Hobbyist Tier**: Access to standard refinement tools with a monthly cap on generations.
-- **Pro Engineer Tier**: Unlimited access to the refinement engine, priority processing, and advanced intent analysis features.
+### 🛡️ AI Prompt Auditor
+Built-in critique engine that analyzes your prompt *before* you ship it.
+- **Security & Clarity Checks**: Detects vague instructions or potential injection vulnerabilities.
+- **Actionable Feedback**: Provides a sub-step checklist of improvements.
 
-### Robust History & Persistence
-All generated prompts and their versions are stored securely. Users can revisit previous iterations, compare outputs, and retrieve optimized prompts for immediate use in production workflows.
+### 📊 Analytics & Versioning
+- **Token Tracking**: Real-time cost estimation and token usage stats.
+- **Version History**: Every generation is saved as an immutable version. Rollback anytime.
+- **Performance Dashboard**: Track your most effective prompts over time.
 
-### Secure Architecture
-Built with enterprise-grade security in mind:
-- **Authentication**: Managed via Clerk with strict session handling.
-- **Data Storage**: Row Level Security (RLS) enabled on Supabase to ensure complete data isolation between users.
-- **Encryption**: API keys and sensitive configuration data are managed via secure environment variables.
+### 💎 Subscription & Roles
+- **Hobbyist Tier**: Access to standard refinement tools.
+- **Pro Engineer Tier**: Unlimited access, priority processing, and "Pro" badge with Admin Crown for elevated users.
 
 ## Technology Stack
 
-- **Frontend**: Next.js 15 (App Router), React 19, Tailwind CSS
+- **Frontend**: Next.js 15 (App Router), React 19, Framer Motion, Tailwind CSS
 - **Backend**: Server Actions, Supabase (PostgreSQL), Clerk Webhooks
-- **AI / Logic**: Google Gemini 1.5 Pro/Flash models
+- **AI / Logic**: Google Gemini 1.5 Pro & Flash models
 - **Infrastructure**: Vercel-ready architecture
 
 ## License
