@@ -62,7 +62,7 @@ export async function POST(req: Request) {
         const { error } = await supabase
             .from('profiles')
             .upsert({
-                user_id: id,
+                id: id,
                 email: email,
                 full_name: fullName,
                 avatar_url: image_url,
@@ -76,7 +76,7 @@ export async function POST(req: Request) {
         const { error } = await supabase
             .from('profiles')
             .delete()
-            .eq('user_id', id);
+            .eq('id', id);
 
         if (error) console.error('Supabase delete error:', error);
     }

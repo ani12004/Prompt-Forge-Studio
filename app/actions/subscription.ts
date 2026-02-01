@@ -14,7 +14,7 @@ export async function getUserSubscription() {
         const { data: profile } = await supabase
             .from('profiles')
             .select('subscription_tier')
-            .eq('user_id', userId)
+            .eq('id', userId)
             .single();
 
         return (profile?.subscription_tier || "free").toLowerCase();
