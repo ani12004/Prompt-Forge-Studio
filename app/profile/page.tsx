@@ -13,10 +13,18 @@ export default function ProfilePage() {
     const { signOut } = useClerk()
     const router = useRouter()
     const [role, setRole] = useState<string | null>(null)
+    const [isEditing, setIsEditing] = useState(false)
+    const [firstName, setFirstName] = useState("")
+    const [lastName, setLastName] = useState("")
+    const [isSaving, setIsSaving] = useState(false)
 
     useEffect(() => {
-        getUserRole().then(setRole)
-    }, [])
+        if (isLoaded && user) {
+            setFirstName(user.firstName || "")
+            setLastName(user.lastName || "")
+            getUserRole().then(setRole)
+        }
+    }, [isLoaded, user])
 
     useEffect(() => {
         if (isLoaded && !isSignedIn) {
@@ -31,6 +39,39 @@ export default function ProfilePage() {
             </div>
         )
     }
+
+    const handleUpdateProfile = async () => {
+        setIsSaving(true)
+        try {
+            await user.update({
+                firstName: firstName,
+                lastName: lastName,
+            })
+            setIsEditing(false)
+        } catch (error) {
+            console.error("Error updating profile:", error)
+        } finally {
+            setIsSaving(false)
+        }
+    }
+
+    const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0]
+        if (!file) return
+
+        setIsSaving(true)
+        try {
+            await user.setProfileImage({ file })
+        } catch (error) {
+            console.error("Error updating image:", error)
+        } finally {
+            setIsSaving(false)
+        }
+    }
+
+    // Note: Clerk client SDK doesn't natively support "delete image" to revert to placeholder easily 
+    // without using the <UserProfile /> component or backend API. 
+    // We will focus on "Update" / "Add" as requested, effectively "replacing" the image.
 
     const githubAccount = user.externalAccounts.find(acc => acc.provider.includes("github"))
 
@@ -52,34 +93,98 @@ export default function ProfilePage() {
                     <div className="absolute top-0 right-0 w-64 h-64 bg-brand-purple/5 blur-[80px] rounded-full pointer-events-none" />
 
                     <div className="flex items-start gap-6 relative z-10">
-                        <div className="relative">
+                        <div className="relative group">
                             <img
                                 src={user.imageUrl}
                                 alt={user.fullName || "User"}
-                                className="w-24 h-24 rounded-full border-2 border-white/10"
+                                className="w-24 h-24 rounded-full border-2 border-white/10 object-cover"
                             />
-                            {githubAccount && (
-                                <div className="absolute -bottom-1 -right-1 bg-[#181717] p-1.5 rounded-full border border-white/10">
-                                    <Github className="w-4 h-4 text-white" />
+                            <div className="absolute inset-0 bg-black/50 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
+                                <label className="text-xs text-white font-medium cursor-pointer">
+                                    Change
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        className="hidden"
+                                        onChange={handleImageUpload}
+                                        disabled={isSaving}
+                                    />
+                                </label>
+                            </div>
+                            {isSaving && (
+                                <div className="absolute inset-0 bg-black/50 rounded-full flex items-center justify-center">
+                                    <Loader2 className="w-6 h-6 animate-spin text-white" />
                                 </div>
                             )}
                         </div>
 
-                        <div className="flex-1 space-y-1">
-                            <div className="flex items-center gap-2">
-                                <h2 className="text-2xl font-semibold text-white">
-                                    {user.fullName || user.username || "User"}
-                                </h2>
-                                {role === 'admin' && (
-                                    <img
-                                        src="/admin-crown.png"
-                                        alt="Admin"
-                                        className="w-5 h-5 object-contain -mt-1"
-                                        title="Administrator"
-                                    />
-                                )}
-                            </div>
-                            <p className="text-gray-400">{user.primaryEmailAddress?.emailAddress}</p>
+                        <div className="flex-1 space-y-4">
+                            {!isEditing ? (
+                                <div>
+                                    <div className="flex items-center gap-2">
+                                        <h2 className="text-2xl font-semibold text-white">
+                                            {user.fullName || user.username || "User"}
+                                        </h2>
+                                        {role === 'admin' && (
+                                            <img
+                                                src="/admin-crown.png"
+                                                alt="Admin"
+                                                className="w-5 h-5 object-contain -mt-1"
+                                                title="Administrator"
+                                            />
+                                        )}
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            className="ml-2 text-brand-purple hover:bg-brand-purple/10 h-8 px-2"
+                                            onClick={() => setIsEditing(true)}
+                                        >
+                                            Edit
+                                        </Button>
+                                    </div>
+                                    <p className="text-gray-400">{user.primaryEmailAddress?.emailAddress}</p>
+                                </div>
+                            ) : (
+                                <div className="space-y-4 max-w-sm animate-in fade-in slide-in-from-top-2 duration-200">
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div className="space-y-1">
+                                            <label className="text-xs text-gray-400">First Name</label>
+                                            <input
+                                                value={firstName}
+                                                onChange={(e) => setFirstName(e.target.value)}
+                                                className="w-full bg-white/5 border border-white/10 rounded-md px-3 py-2 text-sm focus:outline-none focus:border-brand-purple/50"
+                                            />
+                                        </div>
+                                        <div className="space-y-1">
+                                            <label className="text-xs text-gray-400">Last Name</label>
+                                            <input
+                                                value={lastName}
+                                                onChange={(e) => setLastName(e.target.value)}
+                                                className="w-full bg-white/5 border border-white/10 rounded-md px-3 py-2 text-sm focus:outline-none focus:border-brand-purple/50"
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="flex gap-2">
+                                        <Button
+                                            size="sm"
+                                            onClick={handleUpdateProfile}
+                                            disabled={isSaving}
+                                            className="bg-brand-purple hover:bg-brand-purple/90"
+                                        >
+                                            {isSaving ? <Loader2 className="w-3 h-3 animate-spin mr-2" /> : null}
+                                            Save
+                                        </Button>
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            onClick={() => setIsEditing(false)}
+                                            disabled={isSaving}
+                                        >
+                                            Cancel
+                                        </Button>
+                                    </div>
+                                </div>
+                            )}
 
                             {githubAccount && (
                                 <div className="flex items-center gap-2 mt-3 text-sm bg-green-500/10 text-green-400 px-3 py-1 rounded-full w-fit border border-green-500/20">
