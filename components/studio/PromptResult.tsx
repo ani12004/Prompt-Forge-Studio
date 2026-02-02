@@ -1,6 +1,6 @@
 "use client"
 import { motion, AnimatePresence } from "framer-motion"
-import { Copy, Save, Check, GitBranch, Terminal } from "lucide-react"
+import { Copy, Check, GitBranch, Terminal } from "lucide-react"
 import { useState } from "react"
 import { Toast } from "@/components/ui/Toast"
 

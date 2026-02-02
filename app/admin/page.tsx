@@ -144,7 +144,7 @@ export default function AdminDashboard() {
                                                 {user.full_name || "N/A"}
                                             </td>
                                             <td className="p-4">{user.email}</td>
-                                            <td className="p-4">{new Date(user.created_at || Date.now()).toLocaleDateString()}</td>
+                                            <td className="p-4">{user.created_at ? new Date(user.created_at).toLocaleDateString() : 'N/A'}</td>
                                         </tr>
                                     ))}
                                 </tbody>

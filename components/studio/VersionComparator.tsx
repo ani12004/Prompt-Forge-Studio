@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useState } from "react"
-import { X, Trophy, Split, CheckCircle2, FlaskConical, ArrowRight, Copy } from "lucide-react"
+import { X, Trophy, Split, FlaskConical, Copy } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { motion, AnimatePresence } from "framer-motion"
 

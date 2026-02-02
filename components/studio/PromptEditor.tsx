@@ -1,8 +1,7 @@
 "use client"
-import { useState, useEffect, useRef } from "react"
+import { useState, useRef } from "react"
 import { Sparkles, Zap, Layers, Target, Shield, ArrowRight, Settings2, Fingerprint, Activity } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
-import { LiveAnalysis } from "./LiveAnalysis"
 import { AdvancedControls, GranularOptions } from "./AdvancedControls"
 
 interface PromptEditorProps {
@@ -42,27 +41,19 @@ export function PromptEditor({
     const [showAdvanced, setShowAdvanced] = useState(false)
 
     // Heuristic State
-    const [stats, setStats] = useState({
-        hasGoal: false,
-        hasContext: false,
-        hasConstraints: false,
-        score: 0
-    })
+    // Derived State (Heuristics)
+    const lower = prompt.toLowerCase()
+    const hasGoal = lower.length > 10 && (lower.includes("create") || lower.includes("write") || lower.includes("generate") || lower.includes("act as"))
+    const hasContext = prompt.length > 50 && (lower.includes("for") || lower.includes("because") || lower.includes("context") || lower.includes("using"))
+    const hasConstraints = lower.includes("no ") || lower.includes("without") || lower.includes("only") || lower.includes("must") || lower.includes("format")
 
-    useEffect(() => {
-        const lower = prompt.toLowerCase()
-        const hasGoal = lower.length > 10 && (lower.includes("create") || lower.includes("write") || lower.includes("generate") || lower.includes("act as"))
-        const hasContext = prompt.length > 50 && (lower.includes("for") || lower.includes("because") || lower.includes("context") || lower.includes("using"))
-        const hasConstraints = lower.includes("no ") || lower.includes("without") || lower.includes("only") || lower.includes("must") || lower.includes("format")
+    let score = 0
+    if (hasGoal) score += 30
+    if (hasContext) score += 40
+    if (hasConstraints) score += 30
+    if (prompt.length < 10) score = 0 // Baseline
 
-        let score = 0
-        if (hasGoal) score += 30
-        if (hasContext) score += 40
-        if (hasConstraints) score += 30
-        if (prompt.length < 10) score = 0 // Baseline
-
-        setStats({ hasGoal, hasContext, hasConstraints, score })
-    }, [prompt])
+    const stats = { hasGoal, hasContext, hasConstraints, score }
 
     const handleKeyDown = (e: React.KeyboardEvent) => {
         if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
@@ -123,7 +114,7 @@ export function PromptEditor({
                             <Fingerprint className="w-12 h-12 text-gray-600" />
                             <div className="space-y-1">
                                 <p className="text-sm font-medium text-gray-400">Start typing your raw idea...</p>
-                                <p className="text-xs text-gray-600">We'll help you structure it.</p>
+                                <p className="text-xs text-gray-600">We&apos;ll help you structure it.</p>
                             </div>
                         </div>
                     )}

@@ -1,6 +1,6 @@
 "use client"
 
-import { History, Search, Calendar, Ghost, Copy, Trash2 } from "lucide-react"
+import { History, Search, Calendar, Ghost, Copy } from "lucide-react"
 import { useAuth } from "@clerk/nextjs"
 import { useEffect, useState } from "react"
 import { createClerkSupabaseClient } from "@/lib/supabaseClient"

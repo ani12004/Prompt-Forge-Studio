@@ -55,7 +55,7 @@ export function UpgradeModal({ isOpen, onClose }: UpgradeModalProps) {
                                         Unlock Unlimited Potential
                                     </h2>
                                     <p className="text-gray-400 text-sm leading-relaxed">
-                                        You've hit the monthly limit on the Free plan. <br />
+                                        You&apos;ve hit the monthly limit on the Free plan. <br />
                                         Upgrade to Pro for unlimited prompts, faster generations, and exclusive models.
                                     </p>
                                 </div>

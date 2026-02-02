@@ -2,6 +2,7 @@
 
 import * as React from "react"
 import Link from "next/link"
+import Image from "next/image"
 import { useUser, useClerk } from "@clerk/nextjs"
 import { Settings, User, LayoutDashboard, LogOut, ChevronDown, ShieldAlert } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
@@ -79,10 +80,11 @@ export function UserMenu({ withDropdown = true, direction = 'up' }: UserMenuProp
             >
                 <div className="h-8 w-8 rounded-full bg-brand-purple/20 border border-brand-purple/30 overflow-hidden relative shrink-0">
                     {user.imageUrl ? (
-                        <img
+                        <Image
                             src={user.imageUrl}
                             alt={user.fullName || "User"}
-                            className="h-full w-full object-cover"
+                            fill
+                            className="object-cover"
                         />
                     ) : (
                         <div className="h-full w-full flex items-center justify-center text-brand-purple text-xs font-bold">

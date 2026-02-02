@@ -1,7 +1,6 @@
 import { UserMenu } from "@/components/layout/UserMenu"
 import { Sparkles, History, Settings, Home, LogOut, Bell } from "lucide-react"
 import Link from "next/link"
-import Image from "next/image"
 import { auth } from "@clerk/nextjs/server"
 import { createClerkSupabaseClient } from "@/lib/supabaseClient"
 
