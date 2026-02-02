@@ -11,6 +11,31 @@ export const metadata: Metadata = {
 // Data derived from CHANGELOG.md
 const RELEASES = [
     {
+        version: "1.3.0",
+        date: "February 03, 2026",
+        title: "Strategy & Aesthetics",
+        description: "Official rollout of our India-first pricing strategy and a complete visual polish of the core experience.",
+        type: "major",
+        changes: [
+            {
+                type: "changed",
+                items: [
+                    "**Pricing Strategy**: Introduced new ₹0 Hobbyist vs ₹99/mo Pro plans (India-First).",
+                    "**Home Page**: Applied premium fade-in animations to all major sections for a seamless flow.",
+                    "**Admin Profile**: Replaced generic crown icon with the official 'Approved' badge."
+                ]
+            },
+            {
+                type: "added",
+                items: [
+                    "**4-Key API Architecture**: Intelligent load balancing with dedicated keys for Fixer, Playground, and Analysis.",
+                    "**Usage Limits**: Implemented soft-limits for Pro (500/day) and hard-limits for Free (15/day).",
+                    "**Safety Logic**: Graceful degradation during high traffic instead of raw error messages."
+                ]
+            }
+        ]
+    },
+    {
         version: "1.2.0",
         date: "February 02, 2026",
         title: "Gamification & Playground",
