@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import React, { useState } from "react"
-import { Sparkles, Zap, Sliders, Trophy, ArrowRight, CheckCircle2, ChevronDown, Lock, Shield, Play } from "lucide-react"
+import { Sparkles, Zap, Sliders, Trophy, ArrowRight, CheckCircle2, ChevronDown, Lock, Shield, Play, Gamepad2 } from "lucide-react"
 import { Button } from "@/components/ui/Button"
 import { Card } from "@/components/ui/Card"
 import { cn } from "@/lib/utils"
@@ -74,13 +74,15 @@ export default function HomePage() {
                                 Start Forging Free <ArrowRight className="ml-2 h-5 w-5" />
                             </Button>
                         </Link>
-                        <Button
-                            variant="secondary"
-                            size="lg"
-                            className="h-14 px-10 text-lg rounded-full bg-white/[0.05] border-white/10 hover:bg-white/10 backdrop-blur-md"
-                        >
-                            <Play className="mr-2 h-4 w-4 fill-current" /> Watch Demo
-                        </Button>
+                        <Link href="/playground">
+                            <Button
+                                variant="secondary"
+                                size="lg"
+                                className="h-14 px-10 text-lg rounded-full bg-white/[0.05] border-white/10 hover:bg-white/10 backdrop-blur-md"
+                            >
+                                <Gamepad2 className="mr-2 h-5 w-5 fill-current" /> Playground
+                            </Button>
+                        </Link>
                     </motion.div>
                 </div>
             </section>
