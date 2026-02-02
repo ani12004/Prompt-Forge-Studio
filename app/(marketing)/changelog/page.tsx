@@ -1,5 +1,5 @@
-import { Badge } from "@/components/ui/Badge"
-import { Separator } from "@/components/ui/Separator"
+import { Badge } from "../../../components/ui/Badge"
+import { Separator } from "../../../components/ui/Separator"
 import { Metadata } from "next"
 import { CheckCircle2, Gamepad2, Sparkles, Zap, Bug, GitCommit } from "lucide-react"
 
