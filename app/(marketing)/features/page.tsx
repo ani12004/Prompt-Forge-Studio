@@ -26,7 +26,7 @@ export default function FeaturesPage() {
                 >
                     <h1 className="text-4xl md:text-5xl lg:text-6xl font-medium text-white mb-8 tracking-tight leading-tight">
                         Tools designed to make you think better, <br className="hidden md:block" />
-                        <span className="text-gray-500">not just type harder.</span>
+                        <span className="text-brand-purple">not just type harder.</span>
                     </h1>
                     <p className="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto leading-relaxed">
                         PromptForge is a thinking system. It deconstructs your intent,

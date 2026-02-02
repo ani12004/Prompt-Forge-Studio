@@ -90,173 +90,199 @@ export default function HomePage() {
 
 
             {/* Features Section */}
-            <section className="container mx-auto px-6 max-w-7xl">
-                <div className="text-center mb-20">
-                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-purple/10 border border-brand-purple/20 mb-6">
-                        <span className="text-xs font-bold text-brand-purple uppercase tracking-wider">Features</span>
+            <FadeInSection>
+                <section className="container mx-auto px-6 max-w-7xl">
+                    <div className="text-center mb-20">
+                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-purple/10 border border-brand-purple/20 mb-6">
+                            <span className="text-xs font-bold text-brand-purple uppercase tracking-wider">Features</span>
+                        </div>
+                        <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white">Forge Better Prompts</h2>
+                        <p className="text-gray-400 max-w-2xl mx-auto text-lg">
+                            Our platform provides the tools you need to optimize, manage, and scale your AI interactions with precision.
+                        </p>
                     </div>
-                    <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white">Forge Better Prompts</h2>
-                    <p className="text-gray-400 max-w-2xl mx-auto text-lg">
-                        Our platform provides the tools you need to optimize, manage, and scale your AI interactions with precision.
-                    </p>
-                </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    <FeatureCard
-                        icon={<Zap className="h-6 w-6 text-amber-400" />}
-                        title="Intent Analysis"
-                        description="Our engine understands what you mean, not just what you say. It decodes ambiguity and restructures your intent into clear instructions."
-                    />
-                    <FeatureCard
-                        icon={<Sliders className="h-6 w-6 text-cyan-400" />}
-                        title="Granular Control"
-                        description="Adjust verbosity, creativity, and structure with precision sliders. Tweak every aspect of the output to match your needs."
-                    />
-                    <FeatureCard
-                        icon={<Trophy className="h-6 w-6 text-brand-purple" />}
-                        title="A/B Testing"
-                        description="Generate multiple variations and test them against each other. Use data to find the winning prompt structure."
-                    />
-                    <FeatureCard
-                        icon={<Sparkles className="h-6 w-6 text-pink-400" />}
-                        title="Auto-Refinement"
-                        description="One-click optimization to fix common prompt engineering pitfalls using our proprietary heuristics engine."
-                    />
-                    <FeatureCard
-                        icon={<Lock className="h-6 w-6 text-emerald-400" />}
-                        title="Enterprise Security"
-                        description="Your prompts and data are encrypted at rest and in transit. Role-based access control for team collaboration."
-                    />
-                    <FeatureCard
-                        icon={<Shield className="h-6 w-6 text-indigo-400" />}
-                        title="Model Agnostic"
-                        description="Optimized presets for GPT-4, Claude 3, and Gemini. Write once, deploy everywhere with model-specific tuning."
-                    />
-                </div>
-            </section>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        <FeatureCard
+                            icon={<Zap className="h-6 w-6 text-amber-400" />}
+                            title="Intent Analysis"
+                            description="Our engine understands what you mean, not just what you say. It decodes ambiguity and restructures your intent into clear instructions."
+                        />
+                        <FeatureCard
+                            icon={<Sliders className="h-6 w-6 text-cyan-400" />}
+                            title="Granular Control"
+                            description="Adjust verbosity, creativity, and structure with precision sliders. Tweak every aspect of the output to match your needs."
+                        />
+                        <FeatureCard
+                            icon={<Trophy className="h-6 w-6 text-brand-purple" />}
+                            title="A/B Testing"
+                            description="Generate multiple variations and test them against each other. Use data to find the winning prompt structure."
+                        />
+                        <FeatureCard
+                            icon={<Sparkles className="h-6 w-6 text-pink-400" />}
+                            title="Auto-Refinement"
+                            description="One-click optimization to fix common prompt engineering pitfalls using our proprietary heuristics engine."
+                        />
+                        <FeatureCard
+                            icon={<Lock className="h-6 w-6 text-emerald-400" />}
+                            title="Enterprise Security"
+                            description="Your prompts and data are encrypted at rest and in transit. Role-based access control for team collaboration."
+                        />
+                        <FeatureCard
+                            icon={<Shield className="h-6 w-6 text-indigo-400" />}
+                            title="Model Agnostic"
+                            description="Optimized presets for GPT-4, Claude 3, and Gemini. Write once, deploy everywhere with model-specific tuning."
+                        />
+                    </div>
+                </section>
+            </FadeInSection>
 
-            <ABTestingArena />
-            <GranularControls />
+            <FadeInSection delay={0.2}>
+                <ABTestingArena />
+            </FadeInSection>
+
+            <FadeInSection delay={0.2}>
+                <GranularControls />
+            </FadeInSection>
 
             {/* Interface Preview Section */}
-            <section className="container mx-auto px-6 max-w-7xl">
-                <div className="relative rounded-3xl border border-white/10 bg-[#0A0A0A] overflow-hidden shadow-2xl shadow-brand-purple/10">
-                    <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-white/5 to-transparent opacity-50" />
+            <FadeInSection>
+                <section className="container mx-auto px-6 max-w-7xl">
+                    <div className="relative rounded-3xl border border-white/10 bg-[#0A0A0A] overflow-hidden shadow-2xl shadow-brand-purple/10">
+                        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-white/5 to-transparent opacity-50" />
 
-                    <div className="grid lg:grid-cols-2 gap-12 p-8 md:p-16 items-center relative z-10">
-                        <div className="order-2 lg:order-1">
-                            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-indigo/10 border border-brand-indigo/20 mb-6">
-                                <span className="text-xs font-bold text-brand-indigo uppercase tracking-wider">Workflow</span>
+                        <div className="grid lg:grid-cols-2 gap-12 p-8 md:p-16 items-center relative z-10">
+                            <div className="order-2 lg:order-1">
+                                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-indigo/10 border border-brand-indigo/20 mb-6">
+                                    <span className="text-xs font-bold text-brand-indigo uppercase tracking-wider">Workflow</span>
+                                </div>
+                                <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">Built for consistency.</h2>
+                                <p className="text-gray-400 text-lg leading-relaxed mb-8">
+                                    Stop guessing. PromptForge gives you a structured environment to build, test, and version your prompts.
+                                    ensuring reliability across all your AI configurations.
+                                </p>
+                                <ul className="space-y-4 mb-8">
+                                    {['Version Control for Prompts', 'Real-time Cost Estimation', 'Collaborative Workspaces'].map((item) => (
+                                        <li key={item} className="flex items-center gap-3 text-gray-300">
+                                            <div className="bg-brand-purple/20 p-1 rounded-full"><CheckCircle2 className="h-4 w-4 text-brand-purple" /></div>
+                                            {item}
+                                        </li>
+                                    ))}
+                                </ul>
+                                <Link href="/docs">
+                                    <Button variant="secondary" className="bg-white/10 hover:bg-white/20 border-white/10 text-white rounded-xl h-12 px-6">
+                                        Explore Documentation
+                                    </Button>
+                                </Link>
                             </div>
-                            <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">Built for consistency.</h2>
-                            <p className="text-gray-400 text-lg leading-relaxed mb-8">
-                                Stop guessing. PromptForge gives you a structured environment to build, test, and version your prompts.
-                                ensuring reliability across all your AI configurations.
-                            </p>
-                            <ul className="space-y-4 mb-8">
-                                {['Version Control for Prompts', 'Real-time Cost Estimation', 'Collaborative Workspaces'].map((item) => (
-                                    <li key={item} className="flex items-center gap-3 text-gray-300">
-                                        <div className="bg-brand-purple/20 p-1 rounded-full"><CheckCircle2 className="h-4 w-4 text-brand-purple" /></div>
-                                        {item}
-                                    </li>
-                                ))}
-                            </ul>
-                            <Link href="/docs">
-                                <Button variant="secondary" className="bg-white/10 hover:bg-white/20 border-white/10 text-white rounded-xl h-12 px-6">
-                                    Explore Documentation
-                                </Button>
-                            </Link>
-                        </div>
 
-                        <div className="order-1 lg:order-2 relative">
-                            {/* Abstract UI Representation */}
-                            <div className="relative aspect-square md:aspect-[4/3] rounded-xl bg-[#0F0F0F] border border-white/10 shadow-2xl overflow-hidden group">
-                                {/* Header Fake */}
-                                <div className="h-12 border-b border-white/5 bg-white/[0.02] flex items-center px-4 gap-2">
-                                    <div className="h-3 w-3 rounded-full bg-red-500/20" />
-                                    <div className="h-3 w-3 rounded-full bg-yellow-500/20" />
-                                    <div className="h-3 w-3 rounded-full bg-green-500/20" />
-                                </div>
-                                {/* Content Fake */}
-                                <div className="p-6 space-y-4">
-                                    <div className="h-8 w-1/3 bg-white/10 rounded-lg animate-pulse" />
-                                    <div className="space-y-2">
-                                        <div className="h-4 w-full bg-white/5 rounded animate-pulse delay-75" />
-                                        <div className="h-4 w-5/6 bg-white/5 rounded animate-pulse delay-100" />
-                                        <div className="h-4 w-4/6 bg-white/5 rounded animate-pulse delay-150" />
+                            <div className="order-1 lg:order-2 relative">
+                                {/* Abstract UI Representation */}
+                                <div className="relative aspect-square md:aspect-[4/3] rounded-xl bg-[#0F0F0F] border border-white/10 shadow-2xl overflow-hidden group">
+                                    {/* Header Fake */}
+                                    <div className="h-12 border-b border-white/5 bg-white/[0.02] flex items-center px-4 gap-2">
+                                        <div className="h-3 w-3 rounded-full bg-red-500/20" />
+                                        <div className="h-3 w-3 rounded-full bg-yellow-500/20" />
+                                        <div className="h-3 w-3 rounded-full bg-green-500/20" />
                                     </div>
-                                    <div className="pt-8 grid grid-cols-2 gap-4">
-                                        <div className="h-24 bg-brand-purple/5 border border-brand-purple/20 rounded-xl p-4">
-                                            <div className="h-6 w-8 bg-brand-purple/40 rounded mb-2" />
-                                            <div className="h-3 w-16 bg-white/10 rounded" />
+                                    {/* Content Fake */}
+                                    <div className="p-6 space-y-4">
+                                        <div className="h-8 w-1/3 bg-white/10 rounded-lg animate-pulse" />
+                                        <div className="space-y-2">
+                                            <div className="h-4 w-full bg-white/5 rounded animate-pulse delay-75" />
+                                            <div className="h-4 w-5/6 bg-white/5 rounded animate-pulse delay-100" />
+                                            <div className="h-4 w-4/6 bg-white/5 rounded animate-pulse delay-150" />
                                         </div>
-                                        <div className="h-24 bg-white/5 border border-white/5 rounded-xl p-4">
-                                            <div className="h-6 w-8 bg-white/20 rounded mb-2" />
-                                            <div className="h-3 w-16 bg-white/10 rounded" />
+                                        <div className="pt-8 grid grid-cols-2 gap-4">
+                                            <div className="h-24 bg-brand-purple/5 border border-brand-purple/20 rounded-xl p-4">
+                                                <div className="h-6 w-8 bg-brand-purple/40 rounded mb-2" />
+                                                <div className="h-3 w-16 bg-white/10 rounded" />
+                                            </div>
+                                            <div className="h-24 bg-white/5 border border-white/5 rounded-xl p-4">
+                                                <div className="h-6 w-8 bg-white/20 rounded mb-2" />
+                                                <div className="h-3 w-16 bg-white/10 rounded" />
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
 
-                                {/* Hover Glow */}
-                                <div className="absolute inset-0 bg-brand-purple/20 blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
+                                    {/* Hover Glow */}
+                                    <div className="absolute inset-0 bg-brand-purple/20 blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </section>
+                </section>
+            </FadeInSection>
 
             {/* FAQ Section */}
-            <section className="container mx-auto px-6 max-w-3xl">
-                <div className="text-center mb-12">
-                    <h2 className="text-3xl md:text-5xl font-bold mb-6 text-white">Frequently Asked Questions</h2>
-                </div>
-                <div className="space-y-4">
-                    <FAQItem
-                        question="How does the intent analysis work?"
-                        answer="Our proprietary NLP engine analyzes the semantic structure of your input, identifying ambiguity and vague terms. It then maps these to proven prompt patterns to generate a precise, optimized instruction set."
-                    />
-                    <FAQItem
-                        question="Can I use this for any model?"
-                        answer="Yes! PromptForge is model-agnostic. While we have specific optimizations for GPT-4, Claude, and Gemini, the core engineering principles we apply improve performance across all Large Language Models."
-                    />
-                    <FAQItem
-                        question="Is my data secure?"
-                        answer="Absolutely. We do not use your prompt data to train our own models. All processing is done via secure, encrypted channels, and enterprise plans offer private instance options."
-                    />
-                    <FAQItem
-                        question="What is the difference between Basic and Expert modes?"
-                        answer="Basic mode handles all the complexity for you, making best-guess assumptions. Expert mode gives you full control over parameters like temperature, top-p, and specific rhetorical structures within the prompt."
-                    />
-                </div>
-            </section>
+            <FadeInSection>
+                <section className="container mx-auto px-6 max-w-3xl">
+                    <div className="text-center mb-12">
+                        <h2 className="text-3xl md:text-5xl font-bold mb-6 text-white">Frequently Asked Questions</h2>
+                    </div>
+                    <div className="space-y-4">
+                        <FAQItem
+                            question="How does the intent analysis work?"
+                            answer="Our proprietary NLP engine analyzes the semantic structure of your input, identifying ambiguity and vague terms. It then maps these to proven prompt patterns to generate a precise, optimized instruction set."
+                        />
+                        <FAQItem
+                            question="Can I use this for any model?"
+                            answer="Yes! PromptForge is model-agnostic. While we have specific optimizations for GPT-4, Claude, and Gemini, the core engineering principles we apply improve performance across all Large Language Models."
+                        />
+                        <FAQItem
+                            question="Is my data secure?"
+                            answer="Absolutely. We do not use your prompt data to train our own models. All processing is done via secure, encrypted channels, and enterprise plans offer private instance options."
+                        />
+                        <FAQItem
+                            question="What is the difference between Basic and Expert modes?"
+                            answer="Basic mode handles all the complexity for you, making best-guess assumptions. Expert mode gives you full control over parameters like temperature, top-p, and specific rhetorical structures within the prompt."
+                        />
+                    </div>
+                </section>
+            </FadeInSection>
 
             {/* Final CTA */}
-            <section className="container mx-auto px-6">
-                <div className="relative max-w-5xl mx-auto rounded-3xl overflow-hidden bg-brand-purple p-12 md:p-24 text-center">
-                    <div className="absolute inset-0 bg-[url('/noise.png')] opacity-20 mix-blend-overlay" />
-                    <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/40" />
+            <FadeInSection>
+                <section className="container mx-auto px-6">
+                    <div className="relative max-w-5xl mx-auto rounded-3xl overflow-hidden bg-brand-purple p-12 md:p-24 text-center">
+                        <div className="absolute inset-0 bg-[url('/noise.png')] opacity-20 mix-blend-overlay" />
+                        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/40" />
 
-                    {/* Glowing effect */}
-                    <div className="absolute -top-[50%] -left-[20%] w-[100%] h-[100%] bg-white/20 blur-[100px] rounded-full mix-blend-overlay pointer-events-none" />
+                        {/* Glowing effect */}
+                        <div className="absolute -top-[50%] -left-[20%] w-[100%] h-[100%] bg-white/20 blur-[100px] rounded-full mix-blend-overlay pointer-events-none" />
 
-                    <div className="relative z-10">
-                        <h2 className="text-4xl md:text-6xl font-bold text-white mb-8 tracking-tight">
-                            Ready to master your AI?
-                        </h2>
-                        <p className="text-xl text-white/80 mb-10 max-w-2xl mx-auto">
-                            Join thousands of developers and creators who are already forging the future.
-                        </p>
-                        <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                            <Link href="/studio">
-                                <Button size="lg" className="h-16 px-12 text-xl font-bold bg-white text-brand-purple hover:bg-white/90 shadow-xl shadow-black/20 rounded-full border-0">
-                                    Get Started Now
-                                </Button>
-                            </Link>
+                        <div className="relative z-10">
+                            <h2 className="text-4xl md:text-6xl font-bold text-white mb-8 tracking-tight">
+                                Ready to master your AI?
+                            </h2>
+                            <p className="text-xl text-white/80 mb-10 max-w-2xl mx-auto">
+                                Join thousands of developers and creators who are already forging the future.
+                            </p>
+                            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                                <Link href="/studio">
+                                    <Button size="lg" className="h-16 px-12 text-xl font-bold bg-white text-brand-purple hover:bg-white/90 shadow-xl shadow-black/20 rounded-full border-0">
+                                        Get Started Now
+                                    </Button>
+                                </Link>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </section>
+                </section>
+            </FadeInSection>
         </div >
+    )
+}
+
+function FadeInSection({ children, delay = 0 }: { children: React.ReactNode, delay?: number }) {
+    return (
+        <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.7, delay, ease: "easeOut" }}
+        >
+            {children}
+        </motion.div>
     )
 }
 
