@@ -9,7 +9,7 @@ import { ModeFixer } from "./modes/ModeFixer"
 import { ModeBuilder } from "./modes/ModeBuilder"
 import { ModeBattle } from "./modes/ModeBattle"
 import { ModePrecision } from "./modes/ModePrecision"
-import { Confetti } from "@/components/ui/Confetti" // Assuming or needing a confetti component, but I'll skip it for now or implement inline simple effect
+
 
 export function PlaygroundClient() {
     // Game State
