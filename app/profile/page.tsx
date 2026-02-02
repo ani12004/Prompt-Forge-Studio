@@ -1,12 +1,15 @@
 "use client"
 
 import { useUser, useClerk } from "@clerk/nextjs"
-import { Loader2, Shield, User, LogOut, Github } from "lucide-react"
+import { Loader2, Shield, User, LogOut, Github, Trophy } from "lucide-react"
 import { Button } from "@/components/ui/Button"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import Link from "next/link"
 import { getUserRole } from "@/app/actions/auth"
+import { getBadges } from "@/app/actions/gamification"
+import { Badge, UserBadge } from "@/components/playground/types"
+import { BadgeGrid } from "@/components/gamification/BadgeGrid"
 
 export default function ProfilePage() {
     const { user, isLoaded, isSignedIn } = useUser()
@@ -18,11 +21,23 @@ export default function ProfilePage() {
     const [lastName, setLastName] = useState("")
     const [isSaving, setIsSaving] = useState(false)
 
+    // Badges State
+    const [badges, setBadges] = useState<Badge[]>([])
+    const [userBadges, setUserBadges] = useState<UserBadge[]>([])
+    const [isLoadingBadges, setIsLoadingBadges] = useState(true)
+
     useEffect(() => {
         if (isLoaded && user) {
             setFirstName(user.firstName || "")
             setLastName(user.lastName || "")
             getUserRole().then(setRole)
+
+            // Fetch Badges
+            getBadges().then(data => {
+                setBadges(data.badges)
+                setUserBadges(data.userBadges)
+                setIsLoadingBadges(false)
+            })
         }
     }, [isLoaded, user])
 
@@ -77,11 +92,11 @@ export default function ProfilePage() {
 
     return (
         <div className="min-h-screen bg-[#050508] text-white p-8">
-            <div className="max-w-2xl mx-auto space-y-8">
+            <div className="max-w-4xl mx-auto space-y-8">
                 <header className="flex items-center justify-between">
                     <div>
                         <h1 className="text-3xl font-bold mb-2">Profile</h1>
-                        <p className="text-gray-400">Manage your personal information</p>
+                        <p className="text-gray-400">Manage your personal information & achievements</p>
                     </div>
                     <Link href="/dashboard">
                         <Button variant="outline" size="sm">Back to Dashboard</Button>
@@ -193,6 +208,22 @@ export default function ProfilePage() {
                                 </div>
                             )}
                         </div>
+                    </div>
+
+                    {/* Achievements Section */}
+                    <div className="mt-12 pt-8 border-t border-white/10">
+                        <h3 className="text-lg font-medium text-white mb-6 flex items-center gap-2">
+                            <Trophy className="w-5 h-5 text-amber-500" />
+                            Achievements & Badges
+                        </h3>
+
+                        {isLoadingBadges ? (
+                            <div className="flex items-center justify-center p-12">
+                                <Loader2 className="w-6 h-6 animate-spin text-brand-purple" />
+                            </div>
+                        ) : (
+                            <BadgeGrid badges={badges} userBadges={userBadges} />
+                        )}
                     </div>
 
                     <div className="mt-8 pt-8 border-t border-white/10">

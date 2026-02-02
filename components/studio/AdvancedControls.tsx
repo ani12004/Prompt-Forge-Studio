@@ -30,9 +30,9 @@ export function AdvancedControls({ options, onChange }: AdvancedControlsProps) {
         >
             <div className="flex items-center gap-2 mb-2">
                 <h3 className="text-sm font-bold text-white uppercase tracking-wider">Granular Configuration</h3>
-                <div className="group relative">
+                <div className="group/tooltip relative">
                     <Info className="h-3 w-3 text-gray-500 cursor-help" />
-                    <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 p-3 bg-black border border-white/10 rounded-lg text-xs text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
+                    <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 p-3 bg-black border border-white/10 rounded-lg text-xs text-gray-400 opacity-0 group-hover/tooltip:opacity-100 transition-opacity pointer-events-none z-50">
                         Adjusting these values controls the creativity (Temperature), diversity (Top-P), and probability filtering (Top-K) of the AI model.
                     </div>
                 </div>

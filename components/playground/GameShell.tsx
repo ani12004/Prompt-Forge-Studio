@@ -10,10 +10,11 @@ interface GameShellProps {
     xp: number;
     level: number;
     onBack: () => void;
+    onHowToPlay: () => void;
     children: React.ReactNode;
 }
 
-export function GameShell({ title, description, xp, level, onBack, children }: GameShellProps) {
+export function GameShell({ title, description, xp, level, onBack, onHowToPlay, children }: GameShellProps) {
     const xpForNextLevel = level * 1000;
     const xpProgress = (xp % 1000) / 10; // Simple % calculation
 
@@ -34,6 +35,16 @@ export function GameShell({ title, description, xp, level, onBack, children }: G
                 </div>
 
                 <div className="flex items-center gap-6">
+                    <button
+                        onClick={onHowToPlay}
+                        className="text-xs font-bold text-gray-400 hover:text-white transition-colors border border-white/10 hover:bg-white/5 px-3 py-1.5 rounded-lg flex items-center gap-2"
+                    >
+                        <span className="w-4 h-4 rounded-full border border-gray-500 flex items-center justify-center text-[10px] font-mono">?</span>
+                        HOW TO PLAY
+                    </button>
+
+                    <div className="h-8 w-px bg-white/5" />
+
                     <div className="text-right">
                         <div className="text-xs font-medium text-brand-purple uppercase tracking-wider mb-1">Level {level}</div>
                         <div className="w-48 h-2 bg-white/5 rounded-full overflow-hidden">

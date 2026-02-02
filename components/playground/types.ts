@@ -68,3 +68,19 @@ export interface AnalysisResult {
     improvements: string;
     tips: string[];
 }
+
+export interface Badge {
+    id: string;
+    name: string;
+    description: string;
+    icon: string; // Lucide icon name or path
+    rarity: 'Common' | 'Skilled' | 'Advanced' | 'Expert' | 'Legendary';
+    unlock_condition: string;
+}
+
+export interface UserBadge {
+    user_id: string;
+    badge_id: string;
+    earned_at: string;
+    badge?: Badge; // Joined data
+}
