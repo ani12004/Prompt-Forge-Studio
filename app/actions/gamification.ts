@@ -12,15 +12,32 @@ export async function getBadges() {
     const supabase = createClerkSupabaseClient(token)
 
     // Fetch all badges
-    const { data: badges, error: badgesError } = await supabase
+    // Fetch all badges
+    const { data: badgesData, error: badgesError } = await supabase
         .from('badges')
         .select('*')
-        .order('rarity', { ascending: true }) // You might want custom order
 
     if (badgesError) {
         console.error("Error fetching badges:", badgesError)
         return { badges: [], userBadges: [] }
     }
+
+    // Sort manually by rarity weight
+    const RARITY_WEIGHTS: Record<string, number> = {
+        'Common': 1,
+        'Skilled': 2,
+        'Advanced': 3,
+        'Expert': 4,
+        'Legendary': 5
+    }
+
+    const badges = (badgesData as Badge[]).sort((a, b) => {
+        const wA = RARITY_WEIGHTS[a.rarity] || 99
+        const wB = RARITY_WEIGHTS[b.rarity] || 99
+        return wA - wB
+    })
+
+    console.log(`[Gamification] Fetching for user: ${userId}`)
 
     // Fetch user's earned badges
     const { data: userBadges, error: userBadgesError } = await supabase
@@ -30,7 +47,8 @@ export async function getBadges() {
 
     if (userBadgesError) {
         console.error("Error fetching user badges:", userBadgesError)
-        return { badges: (badges as Badge[]) || [], userBadges: [] }
+    } else {
+        console.log(`[Gamification] Found ${userBadges?.length} badges for user ${userId}`)
     }
 
     return {
