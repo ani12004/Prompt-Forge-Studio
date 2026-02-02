@@ -15,7 +15,7 @@ export async function analyzePromptIntent(prompt: string) {
     }
 
     try {
-        const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+        const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY_3 || process.env.GEMINI_API_KEY!);
         const model = genAI.getGenerativeModel({ model: "gemini-pro" });
 
         const systemInstruction = "You are an AI intent classifier. Analyze the user's prompt and return a SINGLE classification string from these options: 'Code Generation', 'Image Generation', 'Content Writing', 'Data Analysis', 'Creative Writing', 'General Query'. Return ONLY the classification.";
