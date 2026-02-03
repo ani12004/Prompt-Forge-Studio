@@ -87,6 +87,8 @@ export async function awardBadge(badgeCondition: string) {
     if (existing) return null // Already earned
 
     // 3. Award Badge
+    console.log(`[Gamification] Awarding badge ${badge.name} to ${userId}`)
+
     const { error } = await supabase
         .from('user_badges')
         .insert({
@@ -95,9 +97,12 @@ export async function awardBadge(badgeCondition: string) {
         })
 
     if (error) {
-        console.error(`Failed to award badge ${badge.name}:`, error)
+        console.error(`[Gamification] Failed to award badge ${badge.name}:`, error)
+        console.error(`[Gamification] Error Details:`, JSON.stringify(error, null, 2))
         return null
     }
+
+    console.log(`[Gamification] Badge awarded successfully!`)
 
     return badge
 }

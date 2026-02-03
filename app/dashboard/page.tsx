@@ -55,13 +55,7 @@ export default async function DashboardPage({
                 {/* Hero Greeting */}
                 <header className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
                     <div>
-                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 mb-4 backdrop-blur-md">
-                            <span className="relative flex h-2 w-2">
-                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                                <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
-                            </span>
-                            <span className="text-xs font-medium text-gray-300">System Operational</span>
-                        </div>
+
                         <h1 className="text-4xl md:text-5xl font-bold text-white mb-2 tracking-tight">
                             Welcome back, <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-purple to-indigo-400">{user.firstName || "Creator"}</span>
                         </h1>
