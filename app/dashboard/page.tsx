@@ -82,54 +82,57 @@ export default async function DashboardPage({
                 </header>
 
                 {/* Main Grid */}
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-12">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-16">
                     {/* Featured Card: AI Studio */}
                     <Link href="/studio" className="lg:col-span-2 group">
-                        <div className="h-full glass-panel p-8 rounded-3xl border border-white/10 bg-gradient-to-br from-white/[0.03] to-white/[0.01] hover:border-brand-purple/30 transition-all duration-500 relative overflow-hidden">
-                            <div className="absolute top-0 right-0 p-8 opacity-50 group-hover:opacity-100 group-hover:scale-110 transition-all duration-500">
-                                <div className="w-24 h-24 bg-brand-purple/20 rounded-full blur-2xl group-hover:bg-brand-purple/30" />
-                                <Command className="h-16 w-16 text-white/10 absolute top-8 right-8 group-hover:text-brand-purple/50 transition-colors" />
+                        <div className="h-full min-h-[320px] glass-panel p-10 rounded-[2rem] border border-white/10 bg-gradient-to-br from-white/[0.03] to-white/[0.01] hover:border-brand-purple/30 transition-all duration-500 relative overflow-hidden flex flex-col justify-between">
+                            <div className="absolute top-0 right-0 p-10 opacity-50 group-hover:opacity-100 group-hover:scale-110 transition-all duration-500">
+                                <div className="w-32 h-32 bg-brand-purple/20 rounded-full blur-3xl group-hover:bg-brand-purple/30" />
+                                <Command className="h-20 w-20 text-white/5 absolute top-10 right-10 group-hover:text-brand-purple/50 transition-colors" />
                             </div>
 
-                            <div className="relative z-10 h-full flex flex-col justify-between">
-                                <div>
-                                    <div className="h-12 w-12 rounded-2xl bg-brand-purple/10 border border-brand-purple/20 flex items-center justify-center mb-6 group-hover:rotate-6 transition-transform">
-                                        <Zap className="h-6 w-6 text-brand-purple" />
-                                    </div>
-                                    <h3 className="text-2xl font-bold text-white mb-2">Prompt Studio</h3>
-                                    <p className="text-gray-400 max-w-md">Access the advanced editor with real-time analysis, variable injection, and multi-model testing.</p>
+                            <div className="relative z-10">
+                                <div className="h-14 w-14 rounded-2xl bg-brand-purple/10 border border-brand-purple/20 flex items-center justify-center mb-8 group-hover:rotate-6 transition-transform">
+                                    <Zap className="h-7 w-7 text-brand-purple" />
                                 </div>
-                                <div className="mt-8 flex items-center gap-2 text-sm font-medium text-white group-hover:translate-x-2 transition-transform">
-                                    Launch Studio <ArrowRight className="h-4 w-4 text-brand-purple" />
-                                </div>
+                                <h3 className="text-3xl font-bold text-white mb-3 tracking-tight">Prompt Studio</h3>
+                                <p className="text-gray-400 max-w-lg text-lg leading-relaxed">Access the advanced editor with real-time analysis, variable injection, and multi-model testing capabilities.</p>
+                            </div>
+                            <div className="mt-10 flex items-center gap-3 text-base font-medium text-white group-hover:translate-x-2 transition-transform">
+                                Launch Studio <ArrowRight className="h-5 w-5 text-brand-purple" />
                             </div>
                         </div>
                     </Link>
 
                     {/* Secondary Card: Stats/Quick Actions */}
-                    <div className="space-y-6">
-                        <Link href="/profile">
-                            <div className="glass-panel p-6 rounded-3xl border border-white/10 bg-white/[0.02] hover:bg-white/[0.04] transition-all group h-full">
-                                <div className="flex items-center justify-between mb-4">
-                                    <div className="h-10 w-10 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400">
-                                        <Ghost className="h-5 w-5" />
-                                    </div>
-                                    <span className="text-xs font-mono text-gray-500 bg-white/5 px-2 py-1 rounded">PRO</span>
+                    <div className="flex flex-col gap-6 h-full">
+                        <Link href="/profile" className="flex-1 group">
+                            <div className="glass-panel p-8 rounded-[2rem] border border-white/10 bg-white/[0.02] hover:bg-white/[0.04] transition-all h-full flex flex-col justify-center relative overflow-hidden">
+                                <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <ArrowRight className="h-5 w-5 text-white/20 -rotate-45" />
                                 </div>
-                                <h3 className="text-lg font-bold text-white">My Profile</h3>
-                                <p className="text-sm text-gray-400 mt-1">Manage subscription and settings</p>
+                                <div className="flex items-center justify-between mb-6">
+                                    <div className="h-12 w-12 rounded-2xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400">
+                                        <Ghost className="h-6 w-6" />
+                                    </div>
+                                    <span className="text-[10px] font-bold tracking-wider font-mono text-gray-500 bg-white/5 px-3 py-1 rounded-full border border-white/5">PRO USER</span>
+                                </div>
+                                <div>
+                                    <h3 className="text-xl font-bold text-white mb-1">My Profile</h3>
+                                    <p className="text-sm text-gray-400">Manage subscription & settings</p>
+                                </div>
                             </div>
                         </Link>
 
-                        <div className="glass-panel p-6 rounded-3xl border border-white/10 bg-white/[0.02] relative overflow-hidden">
-                            <div className="absolute inset-0 bg-gradient-to-tr from-amber-500/5 to-transparent pointer-events-none" />
-                            <div className="flex items-center gap-4">
-                                <div className="h-10 w-10 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400">
-                                    <Crown className="h-5 w-5" />
+                        <div className="glass-panel p-8 rounded-[2rem] border border-white/10 bg-white/[0.02] relative overflow-hidden flex-1 flex flex-col justify-center">
+                            <div className="absolute inset-0 bg-gradient-to-tr from-amber-500/10 to-transparent pointer-events-none" />
+                            <div className="flex items-center gap-5 relative z-10">
+                                <div className="h-12 w-12 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 shadow-[0_0_15px_rgba(245,158,11,0.2)]">
+                                    <Crown className="h-6 w-6" />
                                 </div>
                                 <div>
-                                    <h3 className="font-bold text-white">Pro Plan Active</h3>
-                                    <p className="text-xs text-amber-400/80">Next billing: Mar 1, 2026</p>
+                                    <h3 className="text-lg font-bold text-white">Pro Plan Active</h3>
+                                    <p className="text-xs font-medium text-amber-400/90 mt-1">Next billing: Mar 1, 2026</p>
                                 </div>
                             </div>
                         </div>

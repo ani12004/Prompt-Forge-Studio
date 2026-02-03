@@ -11,6 +11,23 @@ export const metadata: Metadata = {
 // Data derived from CHANGELOG.md
 const RELEASES = [
     {
+        version: "1.4.0",
+        date: "February 03, 2026",
+        title: "Badge Notifications",
+        description: "A polish update introducing a sophisticated notification system for gamification achievements.",
+        type: "minor",
+        changes: [
+            {
+                type: "added",
+                items: [
+                    "**Badge Notification System**: New global popup system for earnable badges.",
+                    "**Visual Polish**: Rarity-colored toasts and confetti celebrations for high-tier achievements.",
+                    "**Global Context**: Centralized provider for triggering notifications from anywhere."
+                ]
+            }
+        ]
+    },
+    {
         version: "1.3.0",
         date: "February 03, 2026",
         title: "Strategy & Aesthetics",
