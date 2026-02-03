@@ -12,6 +12,7 @@ import { ModePrecision } from "./modes/ModePrecision"
 import { HowToPlay } from "./HowToPlay"
 import { awardBadge } from "@/app/actions/gamification"
 import { Toast, ToastType } from "@/components/ui/Toast"
+import { useBadgeNotification } from "@/components/gamification/BadgeProvider"
 
 
 export function PlaygroundClient() {
@@ -56,11 +57,14 @@ export function PlaygroundClient() {
         if (mode === "precision") await tryAwardBadge("precision_5_perfect")
     }
 
+    const { showBadge } = useBadgeNotification()
+
     const tryAwardBadge = async (condition: string) => {
         try {
             const badge = await awardBadge(condition)
             if (badge) {
-                showToast(`New Badge Unlocked: ${badge.name}!`, "success")
+                showBadge(badge)
+                // Toast is redundant now for badges, relying on the new popup
             }
         } catch (e) {
             console.error("Badge check failed", e)

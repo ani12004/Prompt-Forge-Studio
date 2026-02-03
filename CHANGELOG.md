@@ -2,6 +2,13 @@
 
 All notable changes to the **PromptForge AI** project will be documented in this file.
 
+## [1.4.0] - 2026-02-03
+### Added
+- **Badge Notification System**: Implemented a global "Toast" popup ecosystem for gamification.
+    - **BadgeToast**: Custom component to display earned badges with rarity-specific styles and animations.
+    - **Confetti**: Added celebration effects for high-tier badges (Legendary/Expert).
+    - **Global Context**: Wrapped app in `BadgeProvider` to allow triggering awards from anywhere.
+
 ## [1.2.0] - 2026-02-02
 ### Added
 - **Gamification System**: Created a comprehensive badge and achievement system.

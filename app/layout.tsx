@@ -62,6 +62,7 @@ export const metadata: Metadata = {
 };
 
 import { ClerkProvider } from "@clerk/nextjs";
+import { BadgeProvider } from "@/components/gamification/BadgeProvider";
 
 export default function RootLayout({
   children,
@@ -80,7 +81,9 @@ export default function RootLayout({
         >
           {/* Subtle global gradient background */}
           <div className="fixed inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-brand-purple/10 via-brand-dark to-brand-dark pointer-events-none z-[-1]" />
-          <Shell>{children}</Shell>
+          <BadgeProvider>
+            <Shell>{children}</Shell>
+          </BadgeProvider>
           <Analytics />
         </body>
       </html>
