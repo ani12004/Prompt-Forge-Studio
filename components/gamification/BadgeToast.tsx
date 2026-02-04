@@ -52,7 +52,7 @@ export function BadgeToast({ badge, isVisible, onClose }: BadgeToastProps) {
                     animate={{ opacity: 1, x: 0, scale: 1 }}
                     exit={{ opacity: 0, x: 50, scale: 0.95 }}
                     transition={{ type: "spring", damping: 20, stiffness: 300 }}
-                    className="fixed bottom-6 right-6 z-50 w-full max-w-sm"
+                    className="fixed bottom-6 right-6 z-[100] w-full max-w-sm"
                 >
                     <div className={cn(
                         "relative flex items-center gap-4 p-4 rounded-2xl border shadow-2xl backdrop-blur-xl bg-gradient-to-br overflow-hidden",

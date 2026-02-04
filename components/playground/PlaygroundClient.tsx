@@ -44,17 +44,33 @@ export function PlaygroundClient() {
     }
 
     const checkBadges = async (action: string) => {
-        // Simple client-side mapping for MVP
-        let condition = ""
-        if (action === "first_win") condition = "first_challenge"
-        if (action === "fixer_win") condition = "fixer_3" // Simplified
-        if (action === "precision_win") condition = "precision_5_perfect" // Simplified logic
-
-        // Always check "Prompt Rookie" for any first win
+        // ALWAYS check "Prompt Rookie" for first win
         await tryAwardBadge("first_challenge")
 
-        if (mode === "fixer") await tryAwardBadge("fixer_3")
-        if (mode === "precision") await tryAwardBadge("precision_5_perfect")
+        // Check Mode Specific Badges
+        if (mode === "fixer") {
+            await tryAwardBadge("fixer_1")
+            // In a real app we'd check stats, but for now we attempt to award milestones
+            // if the user has enough local session XP or just blindly for the 'try'
+            if (xp > 300) await tryAwardBadge("fixer_3")
+        }
+        if (mode === "builder") {
+            await tryAwardBadge("builder_1")
+            if (xp > 300) await tryAwardBadge("builder_3")
+        }
+        if (mode === "battle") {
+            await tryAwardBadge("battle_1")
+            if (xp > 300) await tryAwardBadge("battle_3")
+        }
+        if (mode === "precision") {
+            await tryAwardBadge("precision_1")
+            if (xp > 300) await tryAwardBadge("precision_3")
+        }
+
+        // Check XP Milestones
+        const newXp = xp + 100 // Estimate current win
+        if (newXp >= 1000) await tryAwardBadge("xp_1000")
+        if (newXp >= 5000) await tryAwardBadge("xp_5000")
     }
 
     const { showBadge } = useBadgeNotification()
