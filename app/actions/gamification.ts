@@ -4,6 +4,7 @@ import { auth } from "@clerk/nextjs/server"
 import { createClerkSupabaseClient } from "@/lib/supabaseClient"
 import { createAdminClient } from "@/lib/supabaseAdmin"
 import { Badge, UserBadge } from "@/components/playground/types"
+import { revalidatePath } from "next/cache"
 
 export async function getBadges() {
     const { userId } = await auth()
@@ -105,6 +106,9 @@ export async function awardBadge(badgeCondition: string) {
     }
 
     console.log(`[Gamification] Badge awarded successfully!`)
+
+    // Force revalidation of profile page so the new badge shows up immediately
+    revalidatePath('/profile')
 
     return badge
 }
