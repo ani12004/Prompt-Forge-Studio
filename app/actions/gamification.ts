@@ -63,7 +63,9 @@ export async function awardBadge(badgeCondition: string) {
     if (!userId) return null
 
     const token = await getToken({ template: "supabase" })
-    const supabase = createClerkSupabaseClient(token)
+    // Using Admin Client for inserts to ensure we can award badges even if RLS is strict
+    // RLS might prevent users from inserting into 'user_badges' directly
+    const supabase = createAdminClient()
 
     // 1. Find the badge by condition
     const { data: badgeData } = await supabase
