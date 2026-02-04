@@ -138,7 +138,7 @@ export async function sendEmailReply(to: string, subject: string, message: strin
 
     try {
         const { data, error } = await resend.emails.send({
-            from: 'PromptForge AI <admin@promptforgeai.com>', // Update this if user has custom domain
+            from: 'PromptForge AI <onboarding@resend.dev>', // Using testing domain as user has no custom domain
             to: [to],
             // Ensure subject starts with Re: if not present
             subject: subject.startsWith('Re:') ? subject : `Re: ${subject}`,
@@ -230,6 +230,10 @@ export async function banUser(userId: string) {
 export async function deleteUser(userId: string) {
     await checkAdmin()
     const supabase = createAdminClient()
+
+    // Explicitly delete from profiles first to ensure UI updates immediately
+    // ignoring error as the user might not have a profile or it might cascade
+    await supabase.from('profiles').delete().eq('id', userId)
 
     const { error } = await supabase.auth.admin.deleteUser(userId)
 
