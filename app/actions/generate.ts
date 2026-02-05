@@ -295,6 +295,17 @@ QUALITY BAR: Professional, Authoritative, Precise.
 
     } catch (error: any) {
         console.error("Critical Generation Error:", error);
-        return { success: false, error: "System overload. Please try again." };
+
+        const msg = error.message || "";
+        let userError = "System overload. Please try again.";
+
+        if (msg.includes("SAFETY") || msg.includes("blocked")) {
+            userError = "Generation blocked by safety filters. Please refine your prompt.";
+        } else if (msg) {
+            // Remove scary stack trace info if present, keep it readable
+            userError = msg.replace(/\[.*?\]/g, "").trim();
+        }
+
+        return { success: false, error: userError };
     }
 }
