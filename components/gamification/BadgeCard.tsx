@@ -1,6 +1,6 @@
 import React from "react"
 import { Badge, UserBadge } from "@/components/playground/types"
-import { Lock, Trophy, Wrench, Hammer, Swords, Crosshair, Zap, Crown, Star } from "lucide-react"
+import { Lock } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 interface BadgeCardProps {
@@ -16,23 +16,9 @@ const RARITY_COLORS = {
     Legendary: "text-amber-400 border-amber-500/50 bg-amber-500/10 shadow-[0_0_15px_rgba(245,158,11,0.2)]",
 }
 
-const ICON_MAP: Record<string, any> = {
-    'Trophy': Trophy,
-    'Wrench': Wrench,
-    'Hammer': Hammer,
-    'Swords': Swords,
-    'Crosshair': Crosshair,
-    'Zap': Zap,
-    'Crown': Crown,
-    'Star': Star
-}
-
 export function BadgeCard({ badge, userBadge }: BadgeCardProps) {
     const isUnlocked = !!userBadge
     const isImage = badge.icon.includes("/") || badge.icon.includes(".")
-
-    // Resolve Icon Component
-    const IconComponent = ICON_MAP[badge.icon] || Trophy
 
     return (
         <div className="group relative">
@@ -65,11 +51,7 @@ export function BadgeCard({ badge, userBadge }: BadgeCardProps) {
                             "w-12 h-12 rounded-full flex items-center justify-center",
                             isUnlocked ? "bg-white/5 shadow-inner" : "bg-white/5"
                         )}>
-                            {isUnlocked ? (
-                                <IconComponent className={cn("w-6 h-6", RARITY_COLORS[badge.rarity].split(' ')[0])} />
-                            ) : (
-                                <Lock className="w-5 h-5 text-gray-600" />
-                            )}
+                            <Lock className="w-5 h-5 text-gray-600" />
                         </div>
                     )}
                 </div>
