@@ -11,6 +11,23 @@ export const metadata: Metadata = {
 // Data derived from CHANGELOG.md
 const RELEASES = [
     {
+        version: "1.5.0",
+        date: "February 06, 2026",
+        title: "Security & Education",
+        description: "Focus on platform integrity and user education with a new workflow guide and hardened security protocols.",
+        type: "minor",
+        changes: [
+            {
+                type: "added",
+                items: [
+                    "**How-to Guide**: New interactive 'How it Works' page visualizing the prompt engineering workflow.",
+                    "**Security Headers**: Implemented strict CSP, HSTS, and XSS protection headers.",
+                    "**Log Redaction**: Automatic scrubbing of sensitive API keys from server-side usage logs."
+                ]
+            }
+        ]
+    },
+    {
         version: "1.4.0",
         date: "February 03, 2026",
         title: "Badge Notifications",

@@ -213,9 +213,17 @@ QUALITY BAR: Professional, Authoritative, Precise.
                 } catch (err: any) {
                     lastError = err;
                     const msg = (err.message || "").toLowerCase();
+                    // Scrub potential keys from logs
+                    const sanitizedError = JSON.stringify(err, (key, value) => {
+                        if (typeof value === 'string' && value.includes("AIza")) {
+                            return "REDACTED_KEY";
+                        }
+                        return value;
+                    });
+
                     // If Key error, break to next key
                     if (msg.includes("429") || msg.includes("quota") || msg.includes("key")) {
-                        console.warn(`Key exhausted, switching...`);
+                        console.warn(`Key exhausted, switching... (Detail: ${sanitizedError})`);
                         break; // Try next key
                     }
                     // If Model error (503), try next model with SAME key
@@ -294,7 +302,12 @@ QUALITY BAR: Professional, Authoritative, Precise.
         };
 
     } catch (error: any) {
-        console.error("Critical Generation Error:", error);
+        // Scrub keys from critical logs
+        const safeError = JSON.stringify(error, (key, value) => {
+            if (typeof value === 'string' && value.includes("AIza")) return "***";
+            return value;
+        });
+        console.error("Critical Generation Error:", safeError);
 
         const msg = error.message || "";
         let userError = "System overload. Please try again.";
