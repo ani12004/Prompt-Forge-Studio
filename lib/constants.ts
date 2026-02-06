@@ -8,6 +8,6 @@ export const NAV_LINKS = [
 ];
 
 export const SITE_CONFIG = {
-    name: "PromptForge Studio",
+    name: "PromptForge AI",
     description: "Transform raw user intent into high-quality, optimized AI prompts with precision.",
 };
