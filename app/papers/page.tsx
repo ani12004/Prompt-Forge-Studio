@@ -6,7 +6,7 @@ import { Shell } from "@/components/layout/Shell"
 
 export default function ResearchPaperPage() {
     return (
-        <div className="min-h-screen bg-white text-black font-serif">
+        <div className="min-h-screen bg-[#050508] py-12 flex justify-center">
             {/* Hide the main navbar/shell usually, or just wrap it. 
           The user said "dont keep any link in ui make it lik adding /papers to access"
           which usually means just a standalone page, but keeping the shell context (auth etc) might be useful.
@@ -14,7 +14,7 @@ export default function ResearchPaperPage() {
           I will make it a clean white page.
       */}
 
-            <div className="max-w-[8.5in] mx-auto p-12 custom-print-styles">
+            <div className="w-full max-w-[8.5in] bg-white text-black font-serif p-12 shadow-2xl relative custom-print-styles">
                 {/* Header */}
                 <header className="text-center mb-12 border-b-2 border-black pb-4">
                     <h1 className="text-4xl font-bold mb-4 uppercase tracking-wide" style={{ fontFamily: '"Times New Roman", Times, serif' }}>PromptForge AI: Bridging the Gap Between Intent and Execution in Large Language Models</h1>
