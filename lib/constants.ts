@@ -8,6 +8,13 @@ export const NAV_LINKS = [
     { name: "Contact", href: "/contact" },
 ];
 
+export const NAVBAR_LINKS = [
+    { name: "Studio", href: "/studio" },
+    { name: "Features", href: "/features" },
+    { name: "How it Works", href: "/how-it-works" },
+    { name: "Pricing", href: "/pricing" },
+];
+
 export const SITE_CONFIG = {
     name: "PromptForge AI",
     description: "Transform raw user intent into high-quality, optimized AI prompts with precision.",
