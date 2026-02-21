@@ -1,6 +1,7 @@
 # promptforge-server-sdk
 
 [![npm version](https://img.shields.io/npm/v/promptforge-server-sdk.svg)](https://www.npmjs.com/package/promptforge-server-sdk)
+[![Socket Badge](https://badge.socket.dev/npm/package/promptforge-server-sdk/1.0.6)](https://badge.socket.dev/npm/package/promptforge-server-sdk/1.0.6)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 Official Node.js / Edge SDK for **PromptForge Studio**. 
