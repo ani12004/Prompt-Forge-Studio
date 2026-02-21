@@ -229,7 +229,7 @@ export default function ExamplesPage() {
                         Check out our community examples or join our Discord to see how other teams are using PromptForge.
                     </p>
                     <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                        <a href="https://github.com/ani12004/promptforge-server-sdk" target="_blank" className="text-sm font-bold text-brand-purple hover:underline">View on GitHub</a>
+                        <a href="https://github.com/ani12004/Prompt-Forge-Studio/tree/main/promptforge-sdk" target="_blank" className="text-sm font-bold text-brand-purple hover:underline">View on GitHub</a>
                         <span className="hidden sm:inline text-gray-700">•</span>
                         <a href="/contact" className="text-sm font-bold text-gray-400 hover:text-white transition-all">Contact Support</a>
                     </div>
