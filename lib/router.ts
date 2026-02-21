@@ -5,15 +5,19 @@ const getAIClient = () => {
     return new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 };
 
-interface RouterResult {
+export interface RouterResult {
     output: string;
     modelUsed: string;
+    tokensInput: number;
+    tokensOutput: number;
+    costMicroUsd: number;
 }
 
 export async function routeAndExecutePrompt(
     systemPrompt: string,
     template: string,
-    variables: Record<string, string>
+    variables: Record<string, string>,
+    forcedModel?: string
 ): Promise<RouterResult> {
     const ai = getAIClient();
 
@@ -27,15 +31,15 @@ export async function routeAndExecutePrompt(
     }
 
     // 2. Cascading Model Router Logic
-    // Token approximation: 1 token ~= 4 chars. 
+    // Token approximation: 1 token ~= 4 chars.
     // If the prompt is massive (>4000 chars roughly 1k tokens) or explicitly asks for deep reasoning, route to Pro.
     const isMassive = finalPrompt.length > 4000;
     const requiresDeepLogic = systemPrompt.toLowerCase().includes("step-by-step") || template.toLowerCase().includes("<think>");
 
-    // Default to the fast, cheap model. Upgrade based on heuristics.
-    const modelName = (isMassive || requiresDeepLogic)
+    // Default to the fast, cheap model. Upgrade based on heuristics or forced override.
+    const modelName = forcedModel || ((isMassive || requiresDeepLogic)
         ? "gemini-2.0-pro-exp-02-05"
-        : "gemini-2.5-flash";
+        : "gemini-2.5-flash");
 
     // 3. LLM Execution
     const geminiModel = ai.getGenerativeModel({
@@ -56,8 +60,22 @@ export async function routeAndExecutePrompt(
         throw new Error("LLM returned an empty response.");
     }
 
+    // 4. Token & Cost Calculation
+    const usage = response.response.usageMetadata || (response as any).usageMetadata;
+    const tokensInput = usage?.promptTokenCount || 0;
+    const tokensOutput = usage?.candidatesTokenCount || 0;
+
+    const isPro = modelName.includes('pro');
+    const costIn = isPro ? 1.25 : 0.075;
+    const costOut = isPro ? 5.00 : 0.30;
+
+    const costMicroUsd = Math.round((tokensInput * costIn) + (tokensOutput * costOut));
+
     return {
         output: text,
-        modelUsed: modelName
+        modelUsed: modelName,
+        tokensInput,
+        tokensOutput,
+        costMicroUsd
     };
 }
