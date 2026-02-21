@@ -8,11 +8,11 @@ PromptForge is a "Prompt-as-a-Service" platform that lets you manage, optimize, 
 
 ## 📖 Full Documentation
 
-Visit our [Documentation Hub](https://promptforge.com/docs) for the complete experience:
+Visit our [Documentation Hub](https://prompt-forge-studio.vercel.app/docs) for the complete experience:
 
-- [Core Concepts](https://promptforge.com/docs/introduction) — Learn about Variable Injection, Semantic Caching, and Model Routing.
-- [Node.js SDK Guide](https://promptforge.com/docs/sdk) — Detailed reference for this library.
-- [REST API Reference](https://promptforge.com/docs/api) — For non-JS environments.
+- [Core Concepts](https://prompt-forge-studio.vercel.app/docs/introduction) — Learn about Variable Injection, Semantic Caching, and Model Routing.
+- [Node.js SDK Guide](https://prompt-forge-studio.vercel.app/docs/sdk) — Detailed reference for this library.
+- [REST API Reference](https://prompt-forge-studio.vercel.app/docs/api) — For non-JS environments.
 
 ---
 
@@ -25,7 +25,7 @@ npm install promptforge-server-sdk
 ```
 
 ### 2. Get your API Key
-Go to the **Settings** sidebar in [PromptForge Studio](https://promptforge.com/studio) and generate a new API Key.
+Go to the **Settings** sidebar in [PromptForge Studio](https://prompt-forge-studio.vercel.app/studio) and generate a new API Key.
 
 ### 3. Usage
 
@@ -58,4 +58,4 @@ main();
 
 ## 🛡️ Support
 - [Issue Tracker](https://github.com/ani12004/Prompt-Forge-Studio/issues)
-- [Discord Community](https://promptforge.com/community)
+- [Discord Community](https://prompt-forge-studio.vercel.app/community)
