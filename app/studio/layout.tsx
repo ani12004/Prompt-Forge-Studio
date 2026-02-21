@@ -9,12 +9,7 @@ export default async function StudioLayout({
 }: {
     children: React.ReactNode
 }) {
-    const { userId, getToken } = await auth();
-    if (userId) {
-        // Hydrate Clerk Supabase Client
-        const token = await getToken({ template: "supabase" });
-        createClerkSupabaseClient(token);
-    }
+    const { userId } = await auth();
 
     return (
         <div className="flex h-[calc(100vh-6rem)] bg-[#050508] overflow-hidden">

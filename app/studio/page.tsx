@@ -16,6 +16,7 @@ import { AuditModal } from "@/components/studio/AuditModal"
 import { SavePromptModal } from "@/components/studio/SavePromptModal"
 import { useSearchParams } from "next/navigation"
 import { getPrompt } from "@/app/actions/save-prompt"
+import { Suspense } from "react"
 
 // Types
 interface Version {
@@ -27,7 +28,7 @@ interface Version {
     versionId?: string
 }
 
-export default function StudioPage() {
+function StudioPageContent() {
     // Core State
     const [prompt, setPrompt] = useState("")
     const [detailLevel, setDetailLevel] = useState("Medium")
@@ -313,5 +314,17 @@ export default function StudioPage() {
                 onClose={() => setShowUpgradeModal(false)}
             />
         </div>
+    )
+}
+
+export default function StudioPage() {
+    return (
+        <Suspense fallback={
+            <div className="h-full w-full flex items-center justify-center bg-[#050508]">
+                <div className="animate-spin h-8 w-8 border-2 border-brand-purple border-t-transparent rounded-full" />
+            </div>
+        }>
+            <StudioPageContent />
+        </Suspense>
     )
 }
