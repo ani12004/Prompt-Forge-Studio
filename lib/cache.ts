@@ -12,7 +12,7 @@ const getRedisClient = () => {
     });
 };
 
-const redis = getRedisClient();
+export const redis = getRedisClient();
 
 export async function withCache<T>(
     key: string,

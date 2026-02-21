@@ -3,6 +3,8 @@ import { getSupabaseAdmin } from '@/lib/supabase';
 import { routeAndExecutePrompt } from '@/lib/router';
 import { withCache } from '@/lib/cache';
 import { runGuardrails, validateSchema } from '@/lib/guardrails';
+import { validateApiKey } from '@/lib/api-keys';
+import { checkRateLimit } from '@/lib/rate-limit';
 import crypto from 'crypto';
 import { z } from 'zod';
 
@@ -16,6 +18,23 @@ const executeSchema = z.object({
 
 export async function POST(req: Request) {
     const startTime = Date.now();
+
+    // Authenticate Request
+    const apiKeyHeader = req.headers.get('x-api-key');
+    if (!apiKeyHeader) {
+        return NextResponse.json({ error: "Missing x-api-key header" }, { status: 401 });
+    }
+
+    const keyContext = await validateApiKey(apiKeyHeader);
+    if (!keyContext || keyContext.revoked) {
+        return NextResponse.json({ error: "Invalid or revoked API key" }, { status: 403 });
+    }
+
+    // Rate Limiting: 120 execution requests per minute per API key
+    const isAllowed = await checkRateLimit(`exec_key_${keyContext.id}`, 120, 60);
+    if (!isAllowed) {
+        return NextResponse.json({ error: "Rate limit exceeded (120 req/min). Please slow down." }, { status: 429 });
+    }
 
     try {
         // 1. Parse & Validate Request
@@ -82,6 +101,7 @@ export async function POST(req: Request) {
         // 5. Asynchronous Telemetry Logging (Fire and forget to not block the response)
         supabase.from('v2_execution_logs').insert({
             version_id: active_version_id,
+            api_key_id: keyContext.id, // Link execution to the API Key
             latency_ms: latencyMs,
             model_used: result.modelUsed,
             cached_hit: cached,

@@ -1,0 +1,18 @@
+{
+    "name": "@promptforge/sdk",
+    "version": "1.0.0",
+    "description": "The official SDK for Prompt Forge Studio API.",
+    "main": "./dist/index.js",
+    "module": "./dist/index.mjs",
+    "types": "./dist/index.d.ts",
+    "scripts": {
+        "build": "tsup src/index.ts --format cjs,esm --dts --clean"
+    },
+    "devDependencies": {
+        "tsup": "^8.0.2",
+        "typescript": "^5.0.0"
+    },
+    "engines": {
+        "node": ">=18.0.0"
+    }
+}
