@@ -58,6 +58,15 @@ export async function refinePrompt(
 
     try {
         const { userId, getToken } = await auth();
+
+        // --- HARD SECURITY GATE ---
+        if (!userId) {
+            return {
+                success: false,
+                error: "Authentication Required: Please sign in to use the engine and protect against unauthorized usage."
+            };
+        }
+
         let userTier = "free";
         let isPro = false;
 
@@ -244,9 +253,21 @@ QUALITY BAR: Professional, Authoritative, Precise.
         if (!generatedText) {
             // Soft Error Handling
             const errString = lastError?.message || "";
-            if (errString.includes("429") || errString.includes("quota")) {
-                return { success: false, error: "High traffic server load. Please try again in 10 seconds." };
+            const isQuotaError = errString.includes("429") || errString.includes("quota");
+
+            if (isQuotaError) {
+                if (provider === "openai") {
+                    return {
+                        success: false,
+                        error: "OpenAI Quota Reached: Please check your OpenAI billing balance or plan limits."
+                    };
+                }
+                return {
+                    success: false,
+                    error: "High traffic server load. Please try again in 10 seconds."
+                };
             }
+
             throw new Error(errString || "Generation failed");
         }
 

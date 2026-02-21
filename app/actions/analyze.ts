@@ -1,7 +1,10 @@
-"use server"
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { auth } from "@clerk/nextjs/server";
 
 export async function analyzePromptIntent(prompt: string) {
+    const { userId } = await auth();
+    if (!userId) return null;
+
     if (!prompt || prompt.length < 5) return null;
 
     if (!process.env.GEMINI_API_KEY) {

@@ -1,6 +1,8 @@
 "use server"
 
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { auth } from "@clerk/nextjs/server";
+import { createClerkSupabaseClient } from "@/lib/supabaseClient";
 
 const API_KEYS = [
     process.env.GEMINI_API_KEY as string,
@@ -20,8 +22,30 @@ export async function auditPrompt(prompt: string): Promise<{ success: boolean, d
     }
 
     try {
-        const apiKey = API_KEYS[0]; // Simple selection for now
-        if (!apiKey) return { success: false, error: "API Key missing" };
+        const { userId, getToken } = await auth();
+
+        // --- SECURITY: Mandatory Auth ---
+        if (!userId) {
+            return { success: false, error: "Authentication Required: Please sign in to audit prompts." };
+        }
+
+        const token = await getToken({ template: "supabase" });
+        const supabase = createClerkSupabaseClient(token);
+
+        // --- RATE LIMITING ---
+        const oneMinuteAgo = new Date(Date.now() - 60000).toISOString();
+        const { count: recentAudits } = await supabase
+            .from('prompts') // Re-using prompts table check for now as a proxy for activity
+            .select('*', { count: 'exact', head: true })
+            .eq('user_id', userId)
+            .gte('created_at', oneMinuteAgo);
+
+        if (recentAudits !== null && recentAudits >= 5) {
+            return { success: false, error: "Audit limit reached. Please wait a minute." };
+        }
+
+        const apiKey = API_KEYS[0];
+        if (!apiKey) return { success: false, error: "System Configuration Error: API Key missing" };
 
         const genAI = new GoogleGenerativeAI(apiKey);
         const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
