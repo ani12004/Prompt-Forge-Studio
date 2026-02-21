@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useState } from "react"
-import { Book, Code, Terminal, Zap, Layers, Shield, Cpu, Key, FileJson, Package, ArrowRight, ExternalLink, Globe, Server } from "lucide-react"
+import { Book, Code, Terminal, Zap, Layers, Shield, Cpu, Key, FileJson, Package, ArrowRight, ExternalLink, Globe, Server, CheckCircle, XCircle } from "lucide-react"
 import { Button } from "@/components/ui/Button"
 import { Card } from "@/components/ui/Card"
 import Link from "next/link"
@@ -52,6 +52,7 @@ export function DocumentationPageClient() {
                                     <li><a href="#sdk-install" className="flex items-center gap-2 px-3 py-2 rounded-lg text-gray-400 hover:text-white hover:bg-white/5 transition-all">Installation</a></li>
                                     <li><a href="#sdk-usage" className="flex items-center gap-2 px-3 py-2 rounded-lg text-gray-400 hover:text-white hover:bg-white/5 transition-all">Initialization</a></li>
                                     <li><a href="#sdk-execute" className="flex items-center gap-2 px-3 py-2 rounded-lg text-gray-400 hover:text-white hover:bg-white/5 transition-all">Executing Prompts</a></li>
+                                    <li><a href="#sdk-best-practices" className="flex items-center gap-2 px-3 py-2 rounded-lg text-gray-400 hover:text-white hover:bg-white/5 transition-all">Best Practices</a></li>
                                     <li><a href="#sdk-types" className="flex items-center gap-2 px-3 py-2 rounded-lg text-gray-400 hover:text-white hover:bg-white/5 transition-all">Type Definitions</a></li>
                                 </>
                             ) : (
@@ -60,8 +61,12 @@ export function DocumentationPageClient() {
                                     <li><a href="#api-endpoint" className="flex items-center gap-2 px-3 py-2 rounded-lg text-gray-400 hover:text-white hover:bg-white/5 transition-all">Endpoint Details</a></li>
                                     <li><a href="#api-request" className="flex items-center gap-2 px-3 py-2 rounded-lg text-gray-400 hover:text-white hover:bg-white/5 transition-all">Request Schema</a></li>
                                     <li><a href="#api-response" className="flex items-center gap-2 px-3 py-2 rounded-lg text-gray-400 hover:text-white hover:bg-white/5 transition-all">Response Format</a></li>
+                                    <li><a href="#api-best-practices" className="flex items-center gap-2 px-3 py-2 rounded-lg text-gray-400 hover:text-white hover:bg-white/5 transition-all">Best Practices</a></li>
                                 </>
                             )}
+                            <li className="pt-4 mt-4 border-t border-white/5">
+                                <a href="#comparison" className="flex items-center gap-2 px-3 py-2 rounded-lg text-brand-purple hover:bg-brand-purple/5 transition-all font-bold">SDK vs API</a>
+                            </li>
                         </ul>
 
                         <div className="mt-8 pt-6 border-t border-white/5 text-center">
@@ -141,6 +146,33 @@ const pf = new PromptForgeClient({
 }`}
                                 />
                             </section>
+
+                            {/* SDK Best Practices */}
+                            <section id="sdk-best-practices" className="scroll-mt-32 space-y-8">
+                                <h2 className="text-3xl font-bold text-white tracking-tight">Best Practices</h2>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div className="p-6 rounded-2xl bg-emerald-500/5 border border-emerald-500/10 space-y-4">
+                                        <h4 className="flex items-center gap-2 text-emerald-400 font-bold uppercase tracking-widest text-xs">
+                                            <CheckCircle className="w-4 h-4" /> Do's
+                                        </h4>
+                                        <ul className="space-y-3 text-sm text-gray-400">
+                                            <li className="flex gap-2"><span>•</span> <span>Use environment variables for API keys.</span></li>
+                                            <li className="flex gap-2"><span>•</span> <span>Implement the Singleton pattern for the client in Serverless.</span></li>
+                                            <li className="flex gap-2"><span>•</span> <span>Wrap calls in try/catch to handle network failures gracefully.</span></li>
+                                        </ul>
+                                    </div>
+                                    <div className="p-6 rounded-2xl bg-rose-500/5 border border-rose-500/10 space-y-4">
+                                        <h4 className="flex items-center gap-2 text-rose-400 font-bold uppercase tracking-widest text-xs">
+                                            <XCircle className="w-4 h-4" /> Don'ts
+                                        </h4>
+                                        <ul className="space-y-3 text-sm text-gray-400">
+                                            <li className="flex gap-2"><span>•</span> <span>Never call the SDK from the browser/client-side.</span></li>
+                                            <li className="flex gap-2"><span>•</span> <span>Don't hardcode prompt content; use Version IDs.</span></li>
+                                            <li className="flex gap-2"><span>•</span> <span>Don't ignore the <code className="text-white">success</code> boolean in the response.</span></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </section>
                         </div>
                     ) : (
                         <div className="space-y-24 animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -199,13 +231,93 @@ const pf = new PromptForgeClient({
     "cached": false,
     "latency_ms": 1240,
     "tokens_input": 45,
-    "tokens_output": 112
+      "tokens_output": 112
+    }
   }
 }`}
                                 />
                             </section>
+
+                            {/* API Best Practices */}
+                            <section id="api-best-practices" className="scroll-mt-32 space-y-8">
+                                <h2 className="text-3xl font-bold text-white tracking-tight">Best Practices</h2>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div className="p-6 rounded-2xl bg-emerald-500/5 border border-emerald-500/10 space-y-4">
+                                        <h4 className="flex items-center gap-2 text-emerald-400 font-bold uppercase tracking-widest text-xs">
+                                            <CheckCircle className="w-4 h-4" /> Do's
+                                        </h4>
+                                        <ul className="space-y-3 text-sm text-gray-400">
+                                            <li className="flex gap-2"><span>•</span> <span>Use the <code className="text-white">x-api-key</code> header for auth.</span></li>
+                                            <li className="flex gap-2"><span>•</span> <span>Set a reasonable timeout (e.g. 30s) for LLM wait times.</span></li>
+                                            <li className="flex gap-2"><span>•</span> <span>Use the <code className="text-white">meta</code> fields for tracking usage costs.</span></li>
+                                        </ul>
+                                    </div>
+                                    <div className="p-6 rounded-2xl bg-rose-500/5 border border-rose-500/10 space-y-4">
+                                        <h4 className="flex items-center gap-2 text-rose-400 font-bold uppercase tracking-widest text-xs">
+                                            <XCircle className="w-4 h-4" /> Don'ts
+                                        </h4>
+                                        <ul className="space-y-3 text-sm text-gray-400">
+                                            <li className="flex gap-2"><span>•</span> <span>Expose your API key in public Git repositories.</span></li>
+                                            <li className="flex gap-2"><span>•</span> <span>Ignore token usage stats (could lead to budget overruns).</span></li>
+                                            <li className="flex gap-2"><span>•</span> <span>Manually inject variables; let the engine handle delimeters.</span></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </section>
                         </div>
                     )}
+                </div>
+            </div>
+
+            {/* Comparison Section */}
+            <div id="comparison" className="max-w-6xl mx-auto mt-32 relative z-10 scroll-mt-32">
+                <div className="text-center mb-16">
+                    <h2 className="text-4xl font-bold text-white mb-4">When to use which?</h2>
+                    <p className="text-gray-400">Choose the integration method that fits your architecture.</p>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div className="p-8 rounded-3xl bg-white/[0.02] border border-white/5 hover:border-brand-purple/30 transition-all group">
+                        <div className="w-12 h-12 rounded-2xl bg-brand-purple/10 flex items-center justify-center mb-6 border border-brand-purple/20 group-hover:scale-110 transition-transform">
+                            <Package className="w-6 h-6 text-brand-purple" />
+                        </div>
+                        <h3 className="text-2xl font-bold text-white mb-4">Node.js SDK</h3>
+                        <ul className="space-y-4">
+                            <li className="flex items-start gap-3">
+                                <CheckCircle className="w-5 h-5 text-emerald-500 mt-1 shrink-0" />
+                                <span className="text-gray-400">Perfect for **Next.js**, **Vercel**, or **Node** backends.</span>
+                            </li>
+                            <li className="flex items-start gap-3">
+                                <CheckCircle className="w-5 h-5 text-emerald-500 mt-1 shrink-0" />
+                                <span className="text-gray-400">Includes **TypeScript Types** for complete safety.</span>
+                            </li>
+                            <li className="flex items-start gap-3">
+                                <CheckCircle className="w-5 h-5 text-emerald-500 mt-1 shrink-0" />
+                                <span className="text-gray-400">Built-in mapping for snake_case/CamelCase issues.</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div className="p-8 rounded-3xl bg-white/[0.02] border border-white/5 hover:border-blue-500/30 transition-all group">
+                        <div className="w-12 h-12 rounded-2xl bg-blue-500/10 flex items-center justify-center mb-6 border border-blue-500/20 group-hover:scale-110 transition-transform">
+                            <Globe className="w-6 h-6 text-blue-400" />
+                        </div>
+                        <h3 className="text-2xl font-bold text-white mb-4">REST API</h3>
+                        <ul className="space-y-4">
+                            <li className="flex items-start gap-3">
+                                <CheckCircle className="w-5 h-5 text-emerald-500 mt-1 shrink-0" />
+                                <span className="text-gray-400">Use with **Python, Python, Rust, Go**, or PHP.</span>
+                            </li>
+                            <li className="flex items-start gap-3">
+                                <CheckCircle className="w-5 h-5 text-emerald-500 mt-1 shrink-0" />
+                                <span className="text-gray-400">Ideal for **Standard Microservices** and webhooks.</span>
+                            </li>
+                            <li className="flex items-start gap-3">
+                                <CheckCircle className="w-5 h-5 text-emerald-500 mt-1 shrink-0" />
+                                <span className="text-gray-400">Zero dependencies; just standard HTTP calls.</span>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>

@@ -121,7 +121,34 @@ If enabled, PromptForge will check if a semantically similar request has been ma
 
 ---
 
-## 5. Troubleshooting
+## 6. SDK vs API: When to Use?
+
+| Feature | Node.js SDK | REST API |
+| :--- | :--- | :--- |
+| **Language** | JavaScript/TypeScript | Any (Python, Go, etc.) |
+| **TypeScript** | Native Support | Manual Types |
+| **Caching** | Built-in | Manual |
+| **Ease of Use** | High (Method calls) | Moderate (HTTP requests) |
+| **Best For** | Next.js, Node, Vercel | Python, PHP, Microservices |
+
+---
+
+## 7. Best Practices (Do's & Don'ts)
+
+### ✅ The Do's
+- **Use Environment Variables**: Always store your API keys in `.env` files (e.g. `PROMPTFORGE_API_KEY`).
+- **Check Success Flag**: Always verify `result.success` before attempting to access `result.data`.
+- **Use TypeScript**: If using the SDK, take advantage of our internal types for better IDE autocompletion.
+- **Implement Singletons**: In serverless environments, initialize the `PromptForgeClient` once and reuse it to optimize memory.
+
+### ❌ The Don'ts
+- **Never Call from Client-Side**: Do not call the SDK or API from the browser. Your API keys will be exposed to users in the Network tab.
+- **Don't Hardcode Prompts**: Keep your prompt logic in **PromptForge Studio** and reference them by **Version ID**. This allows you to update prompts without redeploying code.
+- **Don't Ignore Metadata**: Fields like `meta.latency_ms` and `meta.tokens_input` are vital for monitoring performance and costs.
+
+---
+
+## 8. Troubleshooting
 
 - **401 Unauthorized**: Ensure your `X-API-Key` is correct and active.
 - **404 Version Not Found**: Ensure the `version_id` exists in your workspace.
