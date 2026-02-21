@@ -1,6 +1,6 @@
 {
     "name": "promptforge-server-sdk",
-    "version": "1.0.6",
+    "version": "1.0.7",
     "description": "The official SDK for Prompt Forge Studio API.",
     "keywords": [
         "prompt engineering",
