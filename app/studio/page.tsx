@@ -13,6 +13,7 @@ import { getUserSubscription } from "@/app/actions/subscription"
 import { Sparkles, Trophy } from "lucide-react"
 import { auditPrompt, type AuditResult } from "@/app/actions/audit"
 import { AuditModal } from "@/components/studio/AuditModal"
+import { SavePromptModal } from "@/components/studio/SavePromptModal"
 
 // Types
 interface Version {
@@ -50,10 +51,12 @@ export default function StudioPage() {
         msg: "", type: "success", visible: false
     })
 
-    // Audit State
     const [isAuditing, setIsAuditing] = useState(false)
     const [auditResult, setAuditResult] = useState<AuditResult | null>(null)
     const [showAuditModal, setShowAuditModal] = useState(false)
+
+    // Save Prompt State
+    const [showSaveModal, setShowSaveModal] = useState(false)
 
     const showToast = (msg: string, type: ToastType = "success") => {
         setToast({ msg, type, visible: true })
@@ -222,6 +225,7 @@ export default function StudioPage() {
                             setGranularOptions={setGranularOptions}
                             onAudit={handleAudit}
                             isAuditing={isAuditing}
+                            onSaveClick={() => setShowSaveModal(true)}
                         />
                     </div>
                 </div>
@@ -272,6 +276,16 @@ export default function StudioPage() {
                 isOpen={showAuditModal}
                 onClose={() => setShowAuditModal(false)}
                 result={auditResult}
+            />
+
+            {/* Save Prompt Modal */}
+            <SavePromptModal
+                isOpen={showSaveModal}
+                onClose={() => setShowSaveModal(false)}
+                template={prompt}
+                onSaved={(promptId, versionId, name) => {
+                    showToast(`Successfully saved prompt: ${name}`)
+                }}
             />
 
             {/* Upgrade Modal */}

@@ -1,12 +1,27 @@
 {
     "name": "promptforge-server-sdk",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "The official SDK for Prompt Forge Studio API.",
+    "author": "Anil Suthar <anil@promptforge.com>",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/ani12004/Prompt-Forge-Studio.git",
+        "directory": "promptforge-sdk"
+    },
+    "publishConfig": {
+        "access": "public"
+    },
     "main": "./dist/index.js",
     "module": "./dist/index.mjs",
     "types": "./dist/index.d.ts",
+    "files": [
+        "dist"
+    ],
     "scripts": {
-        "build": "tsup src/index.ts --format cjs,esm --dts --clean"
+        "build": "tsup src/index.ts --format cjs,esm --dts --clean",
+        "dev": "tsup src/index.ts --format cjs,esm --watch --dts",
+        "lint": "tsc --noEmit"
     },
     "devDependencies": {
         "tsup": "^8.0.2",

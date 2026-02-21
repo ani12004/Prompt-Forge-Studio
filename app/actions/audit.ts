@@ -24,7 +24,7 @@ export async function auditPrompt(prompt: string): Promise<{ success: boolean, d
         if (!apiKey) return { success: false, error: "API Key missing" };
 
         const genAI = new GoogleGenerativeAI(apiKey);
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
         const systemPrompt = `
         You are a harsh but fair Prompt Engineering Critic. 
@@ -61,6 +61,6 @@ export async function auditPrompt(prompt: string): Promise<{ success: boolean, d
 
     } catch (error: any) {
         console.error("Audit Error:", error);
-        return { success: false, error: "Failed to audit prompt." };
+        return { success: false, error: `Failed to audit: ${error.message || "Unknown error"}` };
     }
 }

@@ -295,6 +295,6 @@ QUALITY BAR: Professional, Authoritative, Precise.
 
     } catch (error: any) {
         console.error("Critical Generation Error:", error);
-        return { success: false, error: "System overload. Please try again." };
+        return { success: false, error: `Generation failed: ${error.message || "Unknown error"}` };
     }
 }

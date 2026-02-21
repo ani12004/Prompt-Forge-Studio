@@ -18,10 +18,10 @@ export interface ExecuteResponse {
     meta: {
         model: string;
         cached: boolean;
-        latency_ms: number;
-        tokens_input: number;
-        tokens_output: number;
-        cost_micro_usd: number;
-        served_version: string;
+        latencyMs: number;
+        tokensInput: number;
+        tokensOutput: number;
+        costMicroUsd: number;
+        servedVersion: string;
     };
 }

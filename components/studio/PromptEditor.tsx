@@ -1,6 +1,6 @@
 "use client"
 import { useState, useRef } from "react"
-import { Sparkles, Zap, Layers, Target, Shield, ArrowRight, Settings2, Fingerprint, Activity } from "lucide-react"
+import { Sparkles, Zap, Layers, Target, Shield, ArrowRight, Settings2, Fingerprint, Activity, Save } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 import { AdvancedControls, GranularOptions } from "./AdvancedControls"
 
@@ -15,6 +15,7 @@ interface PromptEditorProps {
     setGranularOptions: (opts: GranularOptions) => void
     onAudit: () => void
     isAuditing: boolean
+    onSaveClick: () => void
 }
 
 const DETAIL_LEVELS = [
@@ -34,7 +35,8 @@ export function PromptEditor({
     granularOptions,
     setGranularOptions,
     onAudit,
-    isAuditing
+    isAuditing,
+    onSaveClick
 }: PromptEditorProps) {
     const textareaRef = useRef<HTMLTextAreaElement>(null)
     const [focused, setFocused] = useState(false)
@@ -162,6 +164,16 @@ export function PromptEditor({
                         >
                             {isAuditing ? <Activity className="w-3 h-3 animate-spin" /> : <Activity className="w-3 h-3" />}
                             {isAuditing ? "SCANNING..." : "AUDIT"}
+                        </button>
+
+                        <button
+                            onClick={onSaveClick}
+                            disabled={!prompt.trim()}
+                            className="px-4 py-2 rounded-lg border border-white/10 text-xs font-bold text-gray-400 hover:text-brand-purple hover:border-brand-purple/50 hover:bg-brand-purple/10 transition-colors disabled:opacity-50 flex items-center gap-2"
+                            title="Save Prompt to Database"
+                        >
+                            <Save className="w-3 h-3" />
+                            SAVE
                         </button>
 
                         <button

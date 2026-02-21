@@ -34,7 +34,7 @@ export function Navbar() {
         <>
             <header
                 className={cn(
-                    "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
+                    "fixed top-0 left-0 right-0 z-40 transition-all duration-300",
                     scrolled ? "py-4" : "py-6"
                 )}
             >
@@ -48,7 +48,7 @@ export function Navbar() {
                         )}
                     >
                         {/* Logo */}
-                        <Link href="/" className="flex items-center gap-3 group z-50">
+                        <Link href="/" className="flex items-center gap-3 group z-40">
                             <div className="relative h-10 w-32 md:h-14 md:w-60 transition-all duration-300">
                                 <Image
                                     src="/logo_navi.png"
@@ -87,7 +87,7 @@ export function Navbar() {
                         </nav>
 
                         {/* Actions */}
-                        <div className="flex items-center gap-3 z-50">
+                        <div className="flex items-center gap-3 z-40">
                             <SignedOut>
                                 <Link href="/login">
                                     <Button variant="ghost" className="hidden sm:inline-flex text-gray-300 hover:text-white hover:bg-white/5">

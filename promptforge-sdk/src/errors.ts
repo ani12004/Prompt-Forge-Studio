@@ -1,5 +1,10 @@
 export class PromptForgeError extends Error {
-    constructor(public statusCode: number, message: string, public details?: any) {
+    constructor(
+        public statusCode: number,
+        message: string,
+        public code?: string,
+        public details?: any
+    ) {
         super(message);
         this.name = 'PromptForgeError';
     }

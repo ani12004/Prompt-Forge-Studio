@@ -1,1 +1,8 @@
-{}
+{
+  "/(marketing)/page": "app/(marketing)/page.js",
+  "/api/v1/keys/route": "app/api/v1/keys/route.js",
+  "/dashboard/page": "app/dashboard/page.js",
+  "/login/page": "app/login/page.js",
+  "/studio/keys/page": "app/studio/keys/page.js",
+  "/studio/page": "app/studio/page.js"
+}

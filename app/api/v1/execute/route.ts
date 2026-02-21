@@ -22,12 +22,12 @@ export async function POST(req: Request) {
     // Authenticate Request
     const apiKeyHeader = req.headers.get('x-api-key');
     if (!apiKeyHeader) {
-        return NextResponse.json({ error: "Missing x-api-key header" }, { status: 401 });
+        return NextResponse.json({ error: "Missing x-api-key header", code: "MISSING_API_KEY" }, { status: 401 });
     }
 
     const keyContext = await validateApiKey(apiKeyHeader);
     if (!keyContext || keyContext.revoked) {
-        return NextResponse.json({ error: "Invalid or revoked API key" }, { status: 403 });
+        return NextResponse.json({ error: "Invalid or revoked API key", code: "INVALID_API_KEY" }, { status: 403 });
     }
 
     // Rate Limiting: 120 execution requests per minute per API key

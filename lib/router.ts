@@ -1,8 +1,13 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
+let aiInstance: GoogleGenerativeAI | null = null;
+
 const getAIClient = () => {
     if (!process.env.GEMINI_API_KEY) throw new Error("Missing GEMINI_API_KEY");
-    return new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+    if (!aiInstance) {
+        aiInstance = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+    }
+    return aiInstance;
 };
 
 export interface RouterResult {

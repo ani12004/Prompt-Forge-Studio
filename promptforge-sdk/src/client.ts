@@ -38,6 +38,7 @@ export class PromptForgeClient {
                     throw new PromptForgeError(
                         response.status,
                         errorData?.error || response.statusText,
+                        errorData?.code,
                         errorData?.details || errorData?.reason
                     );
                 }
@@ -57,7 +58,7 @@ export class PromptForgeClient {
     }
 
     async execute(params: ExecuteParams): Promise<ExecuteResponse> {
-        return this.request<ExecuteResponse>('/api/v1/execute', {
+        const response = await this.request<any>('/api/v1/execute', {
             method: 'POST',
             body: JSON.stringify({
                 version_id: params.versionId,
@@ -66,6 +67,21 @@ export class PromptForgeClient {
                 required_schema: params.requiredSchema,
             })
         });
+
+        // Map snake_case backend response to CamelCase SDK response
+        return {
+            success: response.success,
+            data: response.data,
+            meta: {
+                model: response.meta.model,
+                cached: response.meta.cached,
+                latencyMs: response.meta.latency_ms,
+                tokensInput: response.meta.tokens_input,
+                tokensOutput: response.meta.tokens_output,
+                costMicroUsd: response.meta.cost_micro_usd,
+                servedVersion: response.meta.served_version,
+            }
+        };
     }
 
     async abTest(params: { experimentId: string; variables?: Record<string, string> }): Promise<any> {

@@ -11,6 +11,39 @@ export const metadata: Metadata = {
 // Data derived from CHANGELOG.md
 const RELEASES = [
     {
+        version: "2.0.0",
+        date: "February 21, 2026",
+        title: "Prompt-as-a-Service (SDK & API)",
+        description: "A transformative internal engineering update that turns PromptForge into a production-ready Service. Introducing the official SDK, unified API schema, and a multi-page Documentation Hub.",
+        type: "major",
+        changes: [
+            {
+                type: "added",
+                items: [
+                    "**Official Node.js SDK**: Released `promptforge-server-sdk` on npm with full TypeScript support, intelligent caching, and sub-50ms latency.",
+                    "**Developer Center**: Created a multi-page documentation hub with dedicated paths for SDK (`/docs/sdk`) and REST API (`/docs/api`).",
+                    "**REST API v1**: Standardized the public execution endpoint with rich metadata, token usage stats, and cascaded model routing.",
+                    "**Rich Error Objects**: New machine-readable error handling system with actionable fixes for faster integration."
+                ]
+            },
+            {
+                type: "changed",
+                items: [
+                    "**Unified Naming**: Standardized on `PromptForgeClient` for better developer experience across all platforms.",
+                    "**Schema Calibration**: Synchronized internal snake_case API fields with SDK CamelCase properties for seamless DX.",
+                    "**Documentation Overhaul**: Premium, high-performance documentation layout with breadcrumbs and contextual navigation."
+                ]
+            },
+            {
+                type: "fixed",
+                items: [
+                    "**Memory & Performance**: Implemented Singleton patterns for backend AI clients, resolving high RAM usage and improving stability.",
+                    "**Timeout Resolution**: Fixed intermittent timeouts on prompt execution through optimized injection logic."
+                ]
+            }
+        ]
+    },
+    {
         version: "1.4.0",
         date: "February 03, 2026",
         title: "Badge Notifications",
