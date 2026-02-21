@@ -14,6 +14,8 @@ import { Sparkles, Trophy } from "lucide-react"
 import { auditPrompt, type AuditResult } from "@/app/actions/audit"
 import { AuditModal } from "@/components/studio/AuditModal"
 import { SavePromptModal } from "@/components/studio/SavePromptModal"
+import { useSearchParams } from "next/navigation"
+import { getPrompt } from "@/app/actions/save-prompt"
 
 // Types
 interface Version {
@@ -45,9 +47,24 @@ export default function StudioPage() {
     const [showUpgradeModal, setShowUpgradeModal] = useState(false)
     const [subscriptionTier, setSubscriptionTier] = useState<string | null>(null)
 
+    const searchParams = useSearchParams()
+
     useEffect(() => {
         getUserSubscription().then(setSubscriptionTier)
-    }, [])
+
+        // Handle prompt loading from history
+        const loadId = searchParams.get('id')
+        const loadType = searchParams.get('type') as 'v1' | 'v2' | null
+
+        if (loadId) {
+            getPrompt(loadId, loadType || 'v1').then(res => {
+                if (res.success && res.content) {
+                    setPrompt(res.content)
+                    showToast(`Loaded prompt: ${res.metadata?.name || 'from history'}`)
+                }
+            })
+        }
+    }, [searchParams])
 
     const [toast, setToast] = useState<{ msg: string; type: ToastType; visible: boolean }>({
         msg: "", type: "success", visible: false

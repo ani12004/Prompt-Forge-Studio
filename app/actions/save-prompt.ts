@@ -70,3 +70,54 @@ export async function savePrompt(params: {
         return { success: false, error: e.message || "Internal server error" };
     }
 }
+
+export async function getPrompt(id: string, type: 'v1' | 'v2' = 'v1') {
+    const { userId } = await auth();
+    if (!userId) {
+        return { success: false, error: "Unauthorized" };
+    }
+
+    try {
+        const supabase = getSupabaseAdmin();
+
+        if (type === 'v2') {
+            const { data, error } = await supabase
+                .from('v2_prompt_versions')
+                .select('template, v2_prompts(name, description)')
+                .eq('id', id)
+                .single();
+
+            if (error || !data) {
+                return { success: false, error: "Saved prompt version not found." };
+            }
+
+            return {
+                success: true,
+                content: data.template,
+                metadata: {
+                    name: (data.v2_prompts as any)?.name,
+                    description: (data.v2_prompts as any)?.description
+                }
+            };
+        } else {
+            const { data, error } = await supabase
+                .from('prompts')
+                .select('original_prompt, refined_prompt')
+                .eq('id', id)
+                .single();
+
+            if (error || !data) {
+                return { success: false, error: "Playground prompt not found." };
+            }
+
+            return {
+                success: true,
+                content: data.original_prompt, // Users usually want to edit the input again
+                refinedContent: data.refined_prompt
+            };
+        }
+    } catch (e: any) {
+        console.error("Get prompt exception:", e);
+        return { success: false, error: "Internal server error" };
+    }
+}
