@@ -98,21 +98,13 @@ export default function UniversalSettingsPage() {
                             <p className="text-sm text-gray-500">Choose the look and feel of your studio interface.</p>
                         </div>
 
-                        {/* API Keys */}
+                        {/* API Keys (Future Proofing) */}
                         <div className="glass-panel p-6 rounded-xl border border-white/10 bg-white/[0.02]">
                             <div className="flex items-center gap-2 mb-4">
-                                <Key className="h-4 w-4 text-yellow-400" />
-                                <h3 className="font-medium text-white">API Configuration</h3>
+                                <Key className="h-4 w-4 text-brand-purple" />
+                                <h3 className="font-medium text-white">Project Keys</h3>
                             </div>
-                            <div>
-                                <label className="block text-sm text-gray-400 mb-2">OpenAI API Key (Optional)</label>
-                                <input
-                                    type="password"
-                                    placeholder="sk-..."
-                                    className="w-full bg-black/40 border border-white/10 rounded-lg px-4 py-2 text-white outline-none focus:border-brand-purple placeholder:text-gray-700 font-mono text-sm"
-                                />
-                                <p className="text-xs text-gray-500 mt-2">Used for running improved models directly from your account.</p>
-                            </div>
+                            <p className="text-sm text-gray-500 italic">API Key management for your projects will appear here soon.</p>
                         </div>
                     </div>
                 </section>
