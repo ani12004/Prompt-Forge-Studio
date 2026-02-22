@@ -6,7 +6,7 @@ import { motion } from "framer-motion"
 import { Info, ChevronDown, Cpu, Globe } from "lucide-react"
 
 export interface GranularOptions {
-    provider?: "gemini"
+    provider?: "gemini" | "nvidia"
     model?: string
     temperature: number
     topP: number
@@ -37,6 +37,9 @@ export function AdvancedControls({ options, onChange }: AdvancedControlsProps) {
             { id: "gemini-2-flash", name: "Gemini 2 Flash" },
             { id: "gemini-1.5-pro", name: "Gemini 1.5 Pro" },
             { id: "gemini-1.5-flash", name: "Gemini 1.5 Flash" },
+        ],
+        nvidia: [
+            { id: "nvidia/nemotron-3-nano-30b-a3b", name: "Nemotron-3 Nano 30B" }
         ]
     }
 
@@ -65,7 +68,7 @@ export function AdvancedControls({ options, onChange }: AdvancedControlsProps) {
                         <Globe className="w-3 h-3" /> AI Provider
                     </label>
                     <div className="flex p-1 bg-black/40 rounded-xl border border-white/10 gap-1">
-                        {["gemini"].map((p) => {
+                        {["gemini", "nvidia"].map((p) => {
                             const active = currentProvider === p
 
                             return (
@@ -75,14 +78,14 @@ export function AdvancedControls({ options, onChange }: AdvancedControlsProps) {
                                         const newModels = PROVIDERS[p as keyof typeof PROVIDERS]
                                         onChange({
                                             ...options,
-                                            provider: p as "gemini",
+                                            provider: p as "gemini" | "nvidia",
                                             model: newModels[0].id
                                         })
                                     }}
-                                    className={`relative flex-1 py-2 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-2 
+                                    className={`relative flex-1 py-1.5 rounded-lg text-[10px] font-bold transition-all flex items-center justify-center gap-2 
                                         ${active ? "bg-brand-purple text-white shadow-lg shadow-brand-purple/20" : "text-gray-500 hover:text-gray-300 hover:bg-white/5"}`}
                                 >
-                                    Google Gemini
+                                    {p === "gemini" ? "Google Gemini" : "NVIDIA AI"}
                                 </button>
                             )
                         })}

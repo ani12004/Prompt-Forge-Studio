@@ -25,6 +25,7 @@ export async function refinePrompt(
     prompt: string,
     detailLevel: string,
     options: {
+        provider?: "gemini" | "nvidia";
         model?: string;
         temperature?: number;
         topP?: number;
@@ -168,20 +169,6 @@ export async function refinePrompt(
         let generatedText = "";
         let usedModel = "";
 
-        // Gemini Logic
-        const MODELS_TO_TRY = model ? [model] : [
-            "gemini-3.1-pro",
-            "gemini-3-pro",
-            "gemini-3-flash",
-            "gemini-2.5-pro",
-            "gemini-2.5-flash",
-            "gemini-2-pro-exp",
-            "gemini-2-flash",
-            "gemini-1.5-pro",
-            "gemini-1.5-flash"
-        ];
-
-        // --- GENERATION LOOP ---
         // System Prompt Construction
         let modifier = "";
         switch (detailLevel) {
@@ -208,38 +195,86 @@ DETAIL LEVEL: ${modifier}
 QUALITY BAR: Professional, Authoritative, Precise.
 `;
 
-        outerLoop:
-        for (const apiKey of API_KEYS) {
-            const genAI = new GoogleGenerativeAI(apiKey);
+        // --- GENERATION LOOP ---
+        if (options.provider === "nvidia") {
+            try {
+                const response = await fetch("https://integrate.api.nvidia.com/v1/chat/completions", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${process.env.NVIDIA_API_KEY}`
+                    },
+                    body: JSON.stringify({
+                        model: options.model || "nvidia/nemotron-3-nano-30b-a3b",
+                        messages: [
+                            { role: "system", content: systemInstruction },
+                            { role: "user", content: `RAW USER INPUT: \n${prompt}` }
+                        ],
+                        temperature: options.temperature ?? 0.7,
+                        top_p: options.topP ?? 0.9,
+                        max_tokens: 1024,
+                    })
+                });
 
-            for (const modelName of MODELS_TO_TRY) {
-                try {
-                    const geminiModel = genAI.getGenerativeModel({
-                        model: modelName,
-                        generationConfig: { temperature, topP, topK }
-                    });
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({}));
+                    throw new Error(errorData.error?.message || `NVIDIA API error: ${response.status}`);
+                }
 
-                    const result = await geminiModel.generateContent([
-                        systemInstruction,
-                        `RAW USER INPUT: \n${prompt} `
-                    ]);
+                const data = await response.json();
+                generatedText = data.choices[0]?.message?.content || "";
+                usedModel = options.model || "nvidia/nemotron-3-nano-30b-a3b";
+            } catch (err: any) {
+                console.error("NVIDIA Generation Error:", err);
+                lastError = err;
+            }
+        } else {
+            // Gemini Logic (Existing)
+            const MODELS_TO_TRY = model ? [model] : [
+                "gemini-3.1-pro",
+                "gemini-3-pro",
+                "gemini-3-flash",
+                "gemini-2.5-pro",
+                "gemini-2.5-flash",
+                "gemini-2-pro-exp",
+                "gemini-2-flash",
+                "gemini-1.5-pro",
+                "gemini-1.5-flash"
+            ];
 
-                    const text = result.response.text();
-                    if (text) {
-                        generatedText = text;
-                        usedModel = modelName;
-                        break outerLoop; // Success!
-                    }
+            outerLoop:
+            for (const apiKey of API_KEYS) {
+                const genAI = new GoogleGenerativeAI(apiKey);
 
-                } catch (err: any) {
-                    lastError = err;
-                    const msg = (err.message || "").toLowerCase();
-                    console.error(`Gemini Error [${modelName}]:`, err.message);
+                for (const modelName of MODELS_TO_TRY) {
+                    try {
+                        const geminiModel = genAI.getGenerativeModel({
+                            model: modelName,
+                            generationConfig: { temperature, topP, topK }
+                        });
 
-                    // If Key error or model not found, try next
-                    if (msg.includes("429") || msg.includes("quota") || msg.includes("key") || msg.includes("not found")) {
-                        console.warn(`Model/Key issue with ${modelName}, switching...`);
-                        continue; // Try next model in current key context
+                        const result = await geminiModel.generateContent([
+                            systemInstruction,
+                            `RAW USER INPUT: \n${prompt} `
+                        ]);
+
+                        const text = result.response.text();
+                        if (text) {
+                            generatedText = text;
+                            usedModel = modelName;
+                            break outerLoop; // Success!
+                        }
+
+                    } catch (err: any) {
+                        lastError = err;
+                        const msg = (err.message || "").toLowerCase();
+                        console.error(`Gemini Error [${modelName}]:`, err.message);
+
+                        // If Key error or model not found, try next
+                        if (msg.includes("429") || msg.includes("quota") || msg.includes("key") || msg.includes("not found")) {
+                            console.warn(`Model/Key issue with ${modelName}, switching...`);
+                            continue; // Try next model in current key context
+                        }
                     }
                 }
             }

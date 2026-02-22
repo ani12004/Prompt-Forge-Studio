@@ -29,17 +29,9 @@ export default function HomePage() {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.5, delay: 0.1 }}
-                            className="block"
-                        >
-                            Master the Art of
-                        </motion.span>
-                        <motion.span
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.5, delay: 0.2 }}
                             className="text-gradient block mt-2 pb-4"
                         >
-                            Prompt Engineering
+                            Prompt-as-a-Service Infrastructure
                         </motion.span>
                     </h1>
 
@@ -49,7 +41,7 @@ export default function HomePage() {
                         transition={{ duration: 0.5, delay: 0.3 }}
                         className="text-xl md:text-2xl text-gray-400 mb-12 max-w-2xl mx-auto leading-relaxed"
                     >
-                        Transform vague ideas into production-ready AI prompts in seconds using our advanced intent analysis engine.
+                        Design, version, audit, and deploy AI prompts at production scale. Transform raw intent into structured, model-ready intelligence.
                     </motion.p>
 
                     {/* Interactive Demo */}
@@ -67,7 +59,7 @@ export default function HomePage() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5, delay: 0.5 }}
-                        className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-8 mb-8"
+                        className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-8 mb-4"
                     >
                         <Link href="/studio">
                             <Button size="lg" className="h-14 px-10 text-lg shadow-glow hover:scale-105 transition-all duration-300 bg-brand-purple hover:bg-brand-purple/90 rounded-full">
@@ -84,6 +76,15 @@ export default function HomePage() {
                             </Button>
                         </Link>
                     </motion.div>
+
+                    <motion.p
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 0.7 }}
+                        transition={{ duration: 1, delay: 0.8 }}
+                        className="text-sm text-gray-400 mb-8"
+                    >
+                        Powered by NVIDIA-accelerated AI infrastructure
+                    </motion.p>
                 </div>
             </section>
 
