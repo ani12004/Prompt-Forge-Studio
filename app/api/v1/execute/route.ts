@@ -122,8 +122,13 @@ export async function POST(req: Request) {
             const { data: v1VersionExists } = await supabase.from('prompt_versions').select('id, created_by').eq('id', active_version_id).maybeSingle();
             const { data: v1PromptExists } = await supabase.from('prompts').select('id, user_id').eq('id', active_version_id).maybeSingle();
 
-            console.log(`[Execute] Diagnostic - ID: ${active_version_id}, Workspace: ${keyContext.user_id}`);
-            console.log(`[Execute] Diagnostic - v2Exists: ${!!v2Exists}, v1VersionExists: ${!!v1VersionExists}, v1PromptExists: ${!!v1PromptExists}`);
+            // Check how many keys/prompts this user has in total
+            const { count: totalKeys } = await supabase.from('v2_api_keys').select('*', { count: 'exact', head: true }).eq('user_id', keyContext.user_id);
+            const { count: totalPrompts } = await supabase.from('v2_prompts').select('*', { count: 'exact', head: true }).eq('user_id', keyContext.user_id);
+
+            console.log(`[Execute] 404 Diagnostic - ID: ${active_version_id} | KeyUser: ${keyContext.user_id}`);
+            console.log(`[Execute] Diagnostic - v2Exists: ${!!v2Exists}, v1VExists: ${!!v1VersionExists}, v1PExists: ${!!v1PromptExists}`);
+            console.log(`[Execute] User Stats - Total Keys: ${totalKeys}, Total V2 Prompts: ${totalPrompts}`);
 
             return NextResponse.json({
                 success: false,
@@ -132,11 +137,11 @@ export async function POST(req: Request) {
                     receivedVersionId: active_version_id,
                     workspaceId: keyContext.user_id,
                     existsInV2: !!v2Exists,
-                    existsInV1Version: !!v1VersionExists,
-                    existsInV1Prompt: !!v1PromptExists,
                     v2Owner: (v2Exists as any)?.v2_prompts?.user_id || null,
+                    existsInV1Version: !!v1VersionExists,
                     v1VersionOwner: v1VersionExists?.created_by || null,
-                    v1PromptOwner: v1PromptExists?.user_id || null,
+                    totalKeysForUser: totalKeys || 0,
+                    totalV2PromptsForUser: totalPrompts || 0
                 }
             }, { status: 404 });
         }
