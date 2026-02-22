@@ -210,9 +210,11 @@ QUALITY BAR: Professional, Authoritative, Precise.
                             { role: "system", content: systemInstruction },
                             { role: "user", content: `RAW USER INPUT: \n${prompt}` }
                         ],
-                        temperature: options.temperature ?? 0.7,
-                        top_p: options.topP ?? 0.9,
-                        max_tokens: 1024,
+                        temperature: options.temperature ?? (options.model?.includes("253b") ? 0.6 : 0.7),
+                        top_p: options.topP ?? (options.model?.includes("253b") ? 0.95 : 0.9),
+                        max_tokens: options.model?.includes("253b") ? 4096 : 1024,
+                        frequency_penalty: 0,
+                        presence_penalty: 0,
                         stream: false
                     })
                 });
