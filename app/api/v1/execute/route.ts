@@ -57,61 +57,66 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: "Guardrail blocked input", reason: guardrailResult.reason }, { status: 400 });
         }
 
-        // 2. Fetch Prompt Definition (Bypassing RLS with Admin key for programmatic access)
+        // 2. Fetch Prompt Definition (Bypassing RLS with Admin key)
         const supabase = getSupabaseAdmin();
+        console.log(`[Execute] Lookup - ID: ${active_version_id} | ClientUser: ${keyContext.user_id}`);
 
-        console.log(`[Execute] Incoming Request - VersionID: ${active_version_id}, WorkspaceID: ${keyContext.user_id}`);
+        let systemPrompt: string | null = null;
+        let template: string | null = null;
+        let dbError: any = null; // Initialize dbError
 
-        // Try V2 table first (production-saved prompts)
-        // We join with v2_prompts to verify ownership by user_id
-        let { data: version, error: dbError } = await supabase
+        // Try V2 table
+        const { data: v2Version, error: v2Error } = await supabase
             .from('v2_prompt_versions')
-            .select(`
-                system_prompt, 
-                template, 
-                published,
-                v2_prompts!inner(user_id)
-            `)
+            .select('system_prompt, template, v2_prompts!inner(user_id)')
             .eq('id', active_version_id)
-            .eq('v2_prompts.user_id', keyContext.user_id)
-            .single();
+            .maybeSingle();
 
-        let systemPrompt = version?.system_prompt;
-        let template = version?.template;
+        if (v2Version) {
+            const ownerId = (v2Version as any).v2_prompts?.user_id;
+            if (ownerId === keyContext.user_id) {
+                console.log(`[Execute] Match Found in V2`);
+                systemPrompt = v2Version.system_prompt;
+                template = v2Version.template;
+            } else {
+                console.log(`[Execute] Ownership Mismatch (V2): Prompt owned by ${ownerId}, Key belongs to ${keyContext.user_id}`);
+                dbError = { message: `Ownership mismatch: expected ${keyContext.user_id}, got ${ownerId}` } as any;
+            }
+        }
 
-        // Fallback to Playground tables (V1 history)
-        if (!version || dbError) {
-            console.log(`[Execute] Checking Playground Fallback for ID: ${active_version_id} | User: ${keyContext.user_id}`);
-
-            // 1. Try prompt_versions table (Specific historical version)
-            const { data: v1Version, error: v1Error } = await supabase
+        // Try V1 Fallback if V2 not found or didn't match
+        if (!template && !v2Error) { // Only proceed if V2 didn't provide a template and there wasn't a V2 DB error
+            // Check prompt_versions
+            const { data: v1Version } = await supabase
                 .from('prompt_versions')
                 .select('content, created_by')
                 .eq('id', active_version_id)
-                .single();
+                .maybeSingle();
 
-            if (v1Version && v1Version.created_by === keyContext.user_id) {
-                console.log(`[Execute] Found in prompt_versions`);
-                systemPrompt = "You are a highly capable AI assistant.";
-                template = v1Version.content;
-                dbError = null;
-            } else {
-                // 2. Try prompts table (Parent container/Playground root)
-                const { data: v1Prompt, error: pError } = await supabase
-                    .from('prompts')
-                    .select('refined_prompt, original_prompt, user_id')
-                    .eq('id', active_version_id)
-                    .single();
-
-                if (v1Prompt && v1Prompt.user_id === keyContext.user_id) {
-                    console.log(`[Execute] Found in prompts (V1 Root)`);
+            if (v1Version) {
+                if (v1Version.created_by === keyContext.user_id) {
+                    console.log(`[Execute] Match Found in V1 (Version)`);
                     systemPrompt = "You are a highly capable AI assistant.";
-                    template = v1Prompt.refined_prompt || v1Prompt.original_prompt;
-                    dbError = null;
+                    template = v1Version.content;
                 } else {
-                    console.log(`[Execute] Fallback failed. V1Error: ${v1Error?.message}, PError: ${pError?.message}`);
-                    if (v1Version) console.log(`[Execute] Ownership mismatch (Version): expected ${keyContext.user_id}, got ${v1Version.created_by}`);
-                    if (v1Prompt) console.log(`[Execute] Ownership mismatch (Prompt): expected ${keyContext.user_id}, got ${v1Prompt.user_id}`);
+                    console.log(`[Execute] Ownership Mismatch (V1V): expected ${keyContext.user_id}, got ${v1Version.created_by}`);
+                }
+            } else {
+                // Check prompts table (V1 Root)
+                const { data: v1Prompt } = await supabase
+                    .from('prompts')
+                    .select('refined_prompt, user_id')
+                    .eq('id', active_version_id)
+                    .maybeSingle();
+
+                if (v1Prompt) {
+                    if (v1Prompt.user_id === keyContext.user_id) {
+                        console.log(`[Execute] Match Found in V1 (Root)`);
+                        systemPrompt = "You are a highly capable AI assistant.";
+                        template = v1Prompt.refined_prompt;
+                    } else {
+                        console.log(`[Execute] Ownership Mismatch (V1P): expected ${keyContext.user_id}, got ${v1Prompt.user_id}`);
+                    }
                 }
             }
         }
