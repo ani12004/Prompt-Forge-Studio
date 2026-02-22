@@ -26,7 +26,7 @@ export default function DocumentationPage() {
                     </p>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-5xl mx-auto">
                     {/* Introduction Card */}
                     <Link href="/docs/introduction" className="group">
                         <div className="glass-panel p-10 h-full rounded-[32px] border border-white/5 bg-white/[0.02] hover:bg-white/[0.05] hover:border-emerald-500/30 transition-all duration-500 relative overflow-hidden text-left">
