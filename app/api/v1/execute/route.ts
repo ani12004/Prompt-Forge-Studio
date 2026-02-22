@@ -74,7 +74,6 @@ export async function POST(req: Request) {
             `)
             .eq('id', active_version_id)
             .eq('v2_prompts.user_id', keyContext.user_id)
-            .eq('published', true)
             .single();
 
         let systemPrompt = version?.system_prompt;
