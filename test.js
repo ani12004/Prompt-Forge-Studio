@@ -1,7 +1,3 @@
-import { PromptForgeClient } from './promptforge-sdk/dist/index.mjs';
-import fs from 'fs';
-import path from 'path';
-
 import dotenv from "dotenv";
 import { PromptForgeClient } from "promptforge-server-sdk";
 
