@@ -165,8 +165,8 @@ export async function POST(req: Request) {
         // 4. Execute (With Route & Cache wrapping)
         const { data: result, cached } = await withCache(cacheKey, async () => {
             return await routeAndExecutePrompt(
-                systemPrompt,
-                template,
+                systemPrompt!,
+                template!,
                 variables
             );
         });
