@@ -6,113 +6,95 @@ import { cn } from "@/lib/utils"
 
 const EXAMPLES = [
     {
-        title: "Node.js (Server-Side)",
-        description: "The simplest way to use PromptForge in your backend applications.",
+        title: "Gemini Provider (Flash/Pro)",
+        description: "Standard execution using the default Google Gemini infrastructure.",
         icon: <Terminal className="w-5 h-5 text-emerald-400" />,
-        code: `import dotenv from "dotenv";
-import { PromptForgeClient } from "promptforge-server-sdk";
-
-dotenv.config();
+        code: `import { PromptForgeClient } from "promptforge-server-sdk";
 
 const client = new PromptForgeClient({
-  apiKey: process.env.PROMPTFORGE_API_KEY
+  apiKey: process.env.PROMPTFORGE_API_KEY,
+  baseURL: "https://your-studio.vercel.app" // 👈 Required
 });
 
-async function runPrompt() {
-  try {
-    const result = await client.execute({
-      versionId: "YOUR_VERSION_ID", // Find this in Studio History
-      variables: {
-        topic: "Artificial Intelligence",
-        tone: "friendly"
-      }
-    });
+async function run() {
+  const result = await client.execute({
+    versionId: "gemini-version-uuid",
+    variables: { topic: "AI", tone: "friendly" }
+  });
 
-    if (result.success) {
-      console.log("✅ Output:", result.data);
-    } else {
-      console.error("❌ Error:", result.error);
-    }
-  } catch (err) {
-    console.error("🔥 Fatal:", err.message);
-  }
+  if (result.success) console.log(result.data);
 }
 
-runPrompt();`
+run();`
     },
     {
-        title: "Next.js API Route",
-        description: "Securely generate prompts in a Next.js App Router API handler.",
+        title: "NVIDIA High-Performance",
+        description: "Deploy prompts to NVIDIA's accelerated infrastructure (Nemotron/Llama).",
+        icon: <Cpu className="w-5 h-5 text-purple-400" />,
+        code: `import { PromptForgeClient } from "promptforge-server-sdk";
+
+const client = new PromptForgeClient({
+  apiKey: process.env.PROMPTFORGE_API_KEY,
+  baseURL: "https://your-studio.vercel.app"
+});
+
+async function run() {
+  const result = await client.execute({
+    versionId: "nvidia-version-uuid", // Configured with NVIDIA model
+    variables: { 
+      project: "PromptForge",
+      goal: "democratize AI"
+    }
+  });
+
+  if (result.success) console.log(result.data);
+}
+
+run();`
+    },
+    {
+        title: "Next.js API Handler",
+        description: "Securely bridge your frontend with the PromptForge Studio backend.",
         icon: <Globe className="w-5 h-5 text-blue-400" />,
         code: `// app/api/generate/route.ts
 import { NextResponse } from "next/server";
 import { PromptForgeClient } from "promptforge-server-sdk";
 
 const client = new PromptForgeClient({
-  apiKey: process.env.PROMPTFORGE_API_KEY
+  apiKey: process.env.PROMPTFORGE_API_KEY,
+  baseURL: process.env.PROMPTFORGE_BASE_URL
 });
 
 export async function POST(req: Request) {
-  const { userInput } = await req.json();
+  const { input } = await req.json();
 
   const result = await client.execute({
-    versionId: process.env.PROMPTFORGE_V_ID!,
-    variables: { input: userInput }
+    versionId: process.env.PROMPTFORGE_VERSION_ID!,
+    variables: { input }
   });
 
   if (!result.success) {
     return NextResponse.json({ error: result.error }, { status: 500 });
   }
 
-  return NextResponse.json({ evaluation: result.data });
+  return NextResponse.json({ output: result.data });
 }`
     },
     {
-        title: "Usage Observability",
-        description: "Leverage the meta object to track token usage, model info, and latency.",
-        icon: <Cpu className="w-5 h-5 text-cyan-400" />,
+        title: "Usage & Cost Observability",
+        description: "Extract telemetry like token counts, specific models used, and latency.",
+        icon: <Braces className="w-5 h-5 text-cyan-400" />,
         code: `const result = await client.execute({
-  versionId: "d9e169ff-fe2a-4b9b-9986-833273105e7e",
-  variables: { topic: "AI Trends" }
+  versionId: "any-version-id",
+  variables: { name: "Anil" }
 });
 
 if (result.success) {
-  // Access detailed usage metrics
-  const { usage, model, latency } = result.meta;
+  const { model, latency_ms, tokens_total } = result.meta;
   
   console.log(\`Model: \${model}\`);
-  console.log(\`Tokens: \${usage.total_tokens}\`);
-  console.log(\`Latency: \${latency}ms\`);
-
-  // Perfect for internal billing or analytics
-  saveMetricsToLogs(usage, latency);
-}`
-    },
-    {
-        title: "Production Error Handling",
-        description: "Robust patterns for handling network issues, API timeouts, and failed generations.",
-        icon: <Braces className="w-5 h-5 text-purple-400" />,
-        code: `async function resilientFetch(input) {
-  try {
-    const result = await client.execute({
-      versionId: "prod-v1",
-      variables: { input }
-    });
-
-    if (!result.success) {
-      // Handle known SDK errors (e.g., Validation, Unauth)
-      throw new Error(\`SDK Error: \${result.error}\`);
-    }
-
-    return result.data;
-
-  } catch (err) {
-    if (err.message.includes("TIMEOUT")) {
-      return fallbackResponse(); // Recover gracefully
-    }
-    console.error("Critical Failure:", err.message);
-    throw err;
-  }
+  console.log(\`Latency: \${latency_ms}ms\`);
+  console.log(\`Tokens: \${tokens_total}\`);
 }`
     }
 ];
