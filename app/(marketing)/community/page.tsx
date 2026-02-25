@@ -5,7 +5,8 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { getCommunityPosts, createPost, createReply, toggleLike, CommunityPost, CommunityReply } from '@/app/actions/community'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
-import { MessageSquare, Heart, CornerDownRight, Send, Loader2, Sparkles } from 'lucide-react'
+import { MessageSquare, Heart, CornerDownRight, Send, Loader2, Sparkles, UserCircle } from 'lucide-react'
+import Image from 'next/image'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 export default function CommunityPage() {
@@ -166,12 +167,20 @@ function ThreadItem({ post, onRefresh }: { post: CommunityPost, onRefresh: () =>
         >
             <Card className="p-6 bg-[#0A0A0A] border-white/5 hover:border-white/10 transition-colors">
                 <div className="flex items-start gap-4">
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-brand-purple to-brand-indigo flex items-center justify-center font-bold text-white shrink-0">
-                        {post.user_id.slice(post.user_id.length - 2).toUpperCase()}
-                    </div>
+                    {post.user?.imageUrl ? (
+                        <div className="relative w-10 h-10 rounded-full overflow-hidden shrink-0 border border-white/10">
+                            <Image src={post.user.imageUrl} alt={post.user.username || 'User'} fill className="object-cover" />
+                        </div>
+                    ) : (
+                        <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-brand-purple to-brand-indigo flex items-center justify-center font-bold text-white shrink-0">
+                            {post.user?.username ? post.user.username.slice(0, 2).toUpperCase() : post.user_id.slice(post.user_id.length - 2).toUpperCase()}
+                        </div>
+                    )}
                     <div className="flex-1 space-y-3">
                         <div className="flex items-center justify-between">
-                            <span className="font-medium text-white/80 text-sm">User_{post.user_id.slice(-6)}</span>
+                            <span className="font-medium text-white/80 text-sm">
+                                {post.user?.username ? `@${post.user.username}` : post.user?.firstName || `User_${post.user_id.slice(-6)}`}
+                            </span>
                             <span className="text-xs text-gray-600">{new Date(post.created_at).toLocaleDateString()}</span>
                         </div>
                         <div className="prose prose-invert prose-sm md:prose-base max-w-none text-gray-300 leading-relaxed text-[15px]">
@@ -260,12 +269,20 @@ function ReplyItem({ reply }: { reply: CommunityReply }) {
 
     return (
         <div className="flex items-start gap-3 pl-4 border-l-2 border-white/10">
-            <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center font-bold text-gray-400 text-xs shrink-0">
-                {reply.user_id.slice(reply.user_id.length - 2).toUpperCase()}
-            </div>
+            {reply.user?.imageUrl ? (
+                <div className="relative w-8 h-8 rounded-full overflow-hidden shrink-0 border border-white/10">
+                    <Image src={reply.user.imageUrl} alt={reply.user.username || 'User'} fill className="object-cover" />
+                </div>
+            ) : (
+                <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center font-bold text-gray-400 text-xs shrink-0">
+                    {reply.user?.username ? reply.user.username.slice(0, 2).toUpperCase() : reply.user_id.slice(reply.user_id.length - 2).toUpperCase()}
+                </div>
+            )}
             <div className="flex-1 space-y-2">
                 <div className="flex items-center justify-between">
-                    <span className="font-medium text-gray-400 text-xs">User_{reply.user_id.slice(-6)}</span>
+                    <span className="font-medium text-gray-400 text-xs">
+                        {reply.user?.username ? `@${reply.user.username}` : reply.user?.firstName || `User_${reply.user_id.slice(-6)}`}
+                    </span>
                     <span className="text-[10px] text-gray-600">{new Date(reply.created_at).toLocaleTimeString()}</span>
                 </div>
                 <div className="prose prose-invert prose-sm max-w-none text-gray-300 leading-relaxed">

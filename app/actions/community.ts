@@ -1,6 +1,6 @@
 "use server"
 
-import { auth } from "@clerk/nextjs/server"
+import { auth, clerkClient } from "@clerk/nextjs/server"
 import { createClerkSupabaseClient } from "@/lib/supabaseClient"
 import { createAdminClient } from "@/lib/supabaseAdmin"
 import { revalidatePath } from "next/cache"
@@ -13,6 +13,13 @@ export interface CommunityLike {
     user_id: string;
 }
 
+export interface CommunityUser {
+    id: string;
+    username: string | null;
+    firstName: string | null;
+    imageUrl: string;
+}
+
 export interface CommunityReply {
     id: string;
     post_id: string;
@@ -22,6 +29,7 @@ export interface CommunityReply {
     likesData?: CommunityLike[];
     likeCount: number;
     hasLiked: boolean;
+    user?: CommunityUser;
 }
 
 export interface CommunityPost {
@@ -34,6 +42,7 @@ export interface CommunityPost {
     replies: CommunityReply[];
     likeCount: number;
     hasLiked: boolean;
+    user?: CommunityUser;
 }
 
 export async function getCommunityPosts() {
@@ -73,7 +82,7 @@ export async function getCommunityPosts() {
     }
 
     // Format the response to calculate like counts and 'hasLiked' booleans
-    const formattedPosts: CommunityPost[] = (postsData || []).map((post: any) => {
+    let formattedPosts: CommunityPost[] = (postsData || []).map((post: any) => {
 
         const formatReply = (reply: any): CommunityReply => ({
             ...reply,
@@ -90,6 +99,55 @@ export async function getCommunityPosts() {
             hasLiked: userId ? post.likesData?.some((l: CommunityLike) => l.user_id === userId) : false,
         };
     });
+
+    // Extract unique user IDs
+    const userIds = new Set<string>();
+    formattedPosts.forEach(post => {
+        userIds.add(post.user_id);
+        post.replies.forEach(reply => userIds.add(reply.user_id));
+    });
+
+    if (userIds.size > 0) {
+        try {
+            const client = await clerkClient();
+            const users = await client.users.getUserList({ userId: Array.from(userIds) });
+            const userMap = new Map<string, CommunityUser>();
+
+            users.data?.forEach(u => {
+                userMap.set(u.id, {
+                    id: u.id,
+                    username: u.username,
+                    firstName: u.firstName,
+                    imageUrl: u.imageUrl
+                });
+            });
+
+            // Inject users into posts and replies
+            formattedPosts = formattedPosts.map(post => ({
+                ...post,
+                user: userMap.get(post.user_id),
+                replies: post.replies.map(reply => ({
+                    ...reply,
+                    user: userMap.get(reply.user_id)
+                }))
+            }));
+
+            // For the seeded system admin post
+            formattedPosts.forEach(post => {
+                if (post.user_id === 'admin_forge_system') {
+                    post.user = {
+                        id: 'admin_forge_system',
+                        username: 'PromptForge',
+                        firstName: 'System',
+                        imageUrl: '/logo.png' // Make sure you have a logo.png in public
+                    }
+                }
+            });
+
+        } catch (error) {
+            console.error("Failed to fetch user profiles from Clerk:", error);
+        }
+    }
 
     return formattedPosts;
 }
