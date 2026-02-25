@@ -2,6 +2,7 @@
 
 import { auth } from "@clerk/nextjs/server"
 import { createClerkSupabaseClient } from "@/lib/supabaseClient"
+import { createAdminClient } from "@/lib/supabaseAdmin"
 import { revalidatePath } from "next/cache"
 
 // Interfaces for our return types
@@ -94,12 +95,11 @@ export async function getCommunityPosts() {
 }
 
 export async function createPost(content: string) {
-    const { userId, getToken } = await auth();
+    const { userId } = await auth();
     if (!userId) throw new Error("Unauthorized");
     if (!content.trim()) throw new Error("Content cannot be empty");
 
-    const token = await getToken({ template: "supabase" });
-    const supabase = createClerkSupabaseClient(token);
+    const supabase = createAdminClient();
 
     const { data, error } = await supabase
         .from('community_posts')
@@ -117,12 +117,11 @@ export async function createPost(content: string) {
 }
 
 export async function createReply(postId: string, content: string) {
-    const { userId, getToken } = await auth();
+    const { userId } = await auth();
     if (!userId) throw new Error("Unauthorized");
     if (!content.trim()) throw new Error("Content cannot be empty");
 
-    const token = await getToken({ template: "supabase" });
-    const supabase = createClerkSupabaseClient(token);
+    const supabase = createAdminClient();
 
     const { data, error } = await supabase
         .from('community_replies')
@@ -140,11 +139,10 @@ export async function createReply(postId: string, content: string) {
 }
 
 export async function toggleLike(targetType: 'post' | 'reply', targetId: string) {
-    const { userId, getToken } = await auth();
+    const { userId } = await auth();
     if (!userId) throw new Error("Unauthorized");
 
-    const token = await getToken({ template: "supabase" });
-    const supabase = createClerkSupabaseClient(token);
+    const supabase = createAdminClient();
 
     const columnMatch = targetType === 'post' ? 'post_id' : 'reply_id';
 
