@@ -194,6 +194,21 @@
       },
       "exportedName": "savePrompt",
       "filename": "app/actions/save-prompt.ts"
+    },
+    "6010f1f02584f796b9733e2f86726d8782cb3a8948": {
+      "workers": {
+        "app/studio/page": {
+          "moduleId": 44483,
+          "async": false,
+          "exportedName": "getPrompt",
+          "filename": "app/actions/save-prompt.ts"
+        }
+      },
+      "layer": {
+        "app/studio/page": "action-browser"
+      },
+      "exportedName": "getPrompt",
+      "filename": "app/actions/save-prompt.ts"
     }
   },
   "edge": {}

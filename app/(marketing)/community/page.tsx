@@ -6,7 +6,8 @@ import { getCommunityPosts, createPost, createReply, toggleLike, CommunityPost, 
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { MessageSquare, Heart, CornerDownRight, Send, Loader2, Sparkles } from 'lucide-react'
-
+import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
 export default function CommunityPage() {
     const [posts, setPosts] = useState<CommunityPost[]>([])
     const [isLoading, setIsLoading] = useState(true)
@@ -173,7 +174,9 @@ function ThreadItem({ post, onRefresh }: { post: CommunityPost, onRefresh: () =>
                             <span className="font-medium text-white/80 text-sm">User_{post.user_id.slice(-6)}</span>
                             <span className="text-xs text-gray-600">{new Date(post.created_at).toLocaleDateString()}</span>
                         </div>
-                        <p className="text-gray-300 leading-relaxed text-[15px]">{post.content}</p>
+                        <div className="prose prose-invert prose-sm md:prose-base max-w-none text-gray-300 leading-relaxed text-[15px]">
+                            <ReactMarkdown remarkPlugins={[remarkGfm]}>{post.content}</ReactMarkdown>
+                        </div>
 
                         <div className="flex items-center gap-6 pt-2">
                             <button
@@ -265,7 +268,9 @@ function ReplyItem({ reply }: { reply: CommunityReply }) {
                     <span className="font-medium text-gray-400 text-xs">User_{reply.user_id.slice(-6)}</span>
                     <span className="text-[10px] text-gray-600">{new Date(reply.created_at).toLocaleTimeString()}</span>
                 </div>
-                <p className="text-gray-300 text-sm leading-relaxed">{reply.content}</p>
+                <div className="prose prose-invert prose-sm max-w-none text-gray-300 leading-relaxed">
+                    <ReactMarkdown remarkPlugins={[remarkGfm]}>{reply.content}</ReactMarkdown>
+                </div>
                 <div className="flex items-center pt-1">
                     <button
                         onClick={handleLike}

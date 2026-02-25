@@ -89,6 +89,12 @@
       "namedRegex": "^/changelog(?:/)?$"
     },
     {
+      "page": "/community",
+      "regex": "^/community(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/community(?:/)?$"
+    },
+    {
       "page": "/contact",
       "regex": "^/contact(?:/)?$",
       "routeKeys": {},
@@ -111,6 +117,12 @@
       "regex": "^/docs/api(?:/)?$",
       "routeKeys": {},
       "namedRegex": "^/docs/api(?:/)?$"
+    },
+    {
+      "page": "/docs/examples",
+      "regex": "^/docs/examples(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/docs/examples(?:/)?$"
     },
     {
       "page": "/docs/introduction",
