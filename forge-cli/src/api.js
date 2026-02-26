@@ -16,11 +16,10 @@ async function generateResponse(prompt, model) {
         }
 
         // Send request to your local or deployed Prompt Forge instance
-        // Assuming user runs local for now, but usually they'd specify a host.
-        // We'll default to 127.0.0.1 instead of localhost to bypass Node's IPv6 resolution delay on Windows.
+        // We default to the production URL, but users can override this in their forge.config.json
         const { getConfig } = require('./config');
         const config = getConfig() || {};
-        const baseUrl = config.host || 'http://127.0.0.1:3000';
+        const baseUrl = config.host || 'https://www.promptforgestudio.com';
 
         const payload = { prompt };
         if (model) {
