@@ -1,6 +1,6 @@
 {
   "name": "prompt-forge-studio-cli",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "Professional terminal-native prompt engineering studio",
   "main": "src/index.js",
   "bin": {

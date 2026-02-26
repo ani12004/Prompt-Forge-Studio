@@ -28,7 +28,7 @@ function getAuth() {
 function setAuth(key) {
     ensureForgeHomeDir();
     const currentAuth = getAuth();
-    currentAuth['promptforge'] = key;
+    currentAuth['promptforge'] = key.trim();
     fs.writeFileSync(AUTH_FILE, JSON.stringify(currentAuth, null, 2), { mode: 0o600 });
 }
 
