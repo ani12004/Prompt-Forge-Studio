@@ -6,11 +6,12 @@ const { startStudio } = require('./studio');
 const { showBanner } = require('./ui');
 const fs = require('fs');
 const path = require('path');
+const pkg = require('../package.json');
 
 program
     .name('forge')
     .description('Prompt Forge Studio - Professional Terminal-Native Prompt Engineering Studio')
-    .version('1.0.0');
+    .version(pkg.version);
 
 // Command: init
 program
