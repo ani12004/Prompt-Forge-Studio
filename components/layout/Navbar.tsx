@@ -100,9 +100,11 @@ export function Navbar() {
                                     </Button>
                                 </Link>
                             </SignedOut>
-                            <SignedIn>
-                                <UserMenu direction="down" />
-                            </SignedIn>
+                            <div className="relative z-50">
+                                <SignedIn>
+                                    <UserMenu direction="down" />
+                                </SignedIn>
+                            </div>
 
                             <button
                                 onClick={() => setIsOpen(!isOpen)}
