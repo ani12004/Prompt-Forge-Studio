@@ -85,16 +85,17 @@ async function executeWithFailover(prompt, primaryModel, autoFailover) {
         const allModels = ['nvidia', 'gemini'].filter(m => m !== primaryModel);
 
         // Find next healthy model (simulated)
+        let lastError = error;
         for (const backup of allModels) {
             try {
                 console.log(chalk.dim(`Attempting fallback to ${backup}...`));
                 return await generateResponse(prompt, backup);
             } catch (backupError) {
-                // continue
+                lastError = backupError;
             }
         }
 
-        throw new Error('All failover attempts exhausted.');
+        throw new Error(`All failover attempts exhausted. Last Error: ${lastError.message}`);
     }
 }
 
