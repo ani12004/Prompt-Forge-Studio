@@ -110,7 +110,7 @@ async function handleCommand(input) {
 
                     formatAIResponse(result.text, result.metadata);
                 } catch (error) {
-                    showErrorBox('Generation Failed', error.message);
+                    showErrorBox('Generation Failed', error.message || String(error));
                     if (!state.autoFailover) {
                         console.log(chalk.cyan('Hint: Try running `:test all` to check model health, or enable auto-failover with `:auto`.\n'));
                     }

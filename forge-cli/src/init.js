@@ -35,10 +35,12 @@ function initProject(projectName) {
         // Create files
         spinner.start('Generating configuration files...');
 
+        const pkg = require('../package.json');
+
         const configContent = {
             project: projectName,
-            version: '1.0.0',
-            defaultModel: 'gpt-4o',
+            version: pkg.version,
+            defaultModel: 'nvidia',
             autoFailover: true
         };
         fs.writeFileSync(
