@@ -76,13 +76,7 @@ export default function LoginPage() {
         }
     }
 
-    if (!isLoaded) {
-        return (
-            <div className="flex h-screen items-center justify-center bg-[#0A0A0A]">
-                <Loader2 className="h-8 w-8 animate-spin text-brand-purple" />
-            </div>
-        )
-    }
+    const clerkReady = isLoaded
 
     return (
         <div className="flex min-h-screen items-center justify-center bg-[#050508] py-12 relative overflow-hidden">
@@ -101,7 +95,7 @@ export default function LoginPage() {
                                 variant="secondary"
                                 className="w-full h-11 flex items-center justify-center gap-2"
                                 onClick={handleGoogleLogin}
-                                disabled={isLoading}
+                                disabled={isLoading || !clerkReady}
                             >
                                 <svg className="h-5 w-5" viewBox="0 0 24 24">
                                     <path
@@ -127,7 +121,7 @@ export default function LoginPage() {
                                 variant="secondary"
                                 className="w-full h-11 flex items-center justify-center gap-2"
                                 onClick={handleGitHubLogin}
-                                disabled={isLoading}
+                                disabled={isLoading || !clerkReady}
                             >
                                 <Github className="h-5 w-5" />
                                 GitHub
@@ -150,7 +144,7 @@ export default function LoginPage() {
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 required
-                                disabled={isLoading}
+                                disabled={isLoading || !clerkReady}
                             />
                             <Input
                                 label="Password"
@@ -158,7 +152,7 @@ export default function LoginPage() {
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 required
-                                disabled={isLoading}
+                                disabled={isLoading || !clerkReady}
                             />
 
                             {error && (
@@ -170,7 +164,7 @@ export default function LoginPage() {
                             <Button
                                 type="submit"
                                 className="w-full h-11 text-base"
-                                disabled={isLoading}
+                                disabled={isLoading || !clerkReady}
                             >
                                 {isLoading ? (
                                     <Loader2 className="h-5 w-5 animate-spin" />
