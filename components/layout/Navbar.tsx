@@ -9,12 +9,13 @@ import { cn } from "@/lib/utils"
 import { NAV_LINKS } from "@/lib/constants"
 import { Button } from "@/components/ui/Button"
 import { UserMenu } from "@/components/layout/UserMenu"
-import { SignedIn, SignedOut } from "@clerk/nextjs"
+import { useUser } from "@clerk/nextjs"
 
 export function Navbar() {
     const [isOpen, setIsOpen] = React.useState(false)
     const pathname = usePathname()
     const [scrolled, setScrolled] = React.useState(false)
+    const { isSignedIn, isLoaded } = useUser()
 
     React.useEffect(() => {
         const handleScroll = () => setScrolled(window.scrollY > 20)
@@ -88,23 +89,27 @@ export function Navbar() {
 
                         {/* Actions */}
                         <div className="flex items-center gap-3 z-40">
-                            <SignedOut>
-                                <Link href="/login">
-                                    <Button variant="ghost" className="hidden sm:inline-flex text-gray-300 hover:text-white hover:bg-white/5">
-                                        Log in
-                                    </Button>
-                                </Link>
-                                <Link href="/signup" className="hidden md:block">
-                                    <Button className="h-10 px-5 bg-white text-brand-dark hover:bg-gray-100 font-semibold shadow-xl shadow-white/5 border-0 rounded-xl">
-                                        Get Started
-                                    </Button>
-                                </Link>
-                            </SignedOut>
-                            <div className="relative z-50">
-                                <SignedIn>
+                            {/* Show UserMenu when signed in */}
+                            {isLoaded && isSignedIn && (
+                                <div className="relative z-50">
                                     <UserMenu direction="down" />
-                                </SignedIn>
-                            </div>
+                                </div>
+                            )}
+                            {/* Show Login/Signup by default — visible during SSR and when signed out */}
+                            {(!isLoaded || !isSignedIn) && (
+                                <>
+                                    <Link href="/login">
+                                        <Button variant="ghost" className="hidden sm:inline-flex text-gray-300 hover:text-white hover:bg-white/5">
+                                            Log in
+                                        </Button>
+                                    </Link>
+                                    <Link href="/signup" className="hidden md:block">
+                                        <Button className="h-10 px-5 bg-white text-brand-dark hover:bg-gray-100 font-semibold shadow-xl shadow-white/5 border-0 rounded-xl">
+                                            Get Started
+                                        </Button>
+                                    </Link>
+                                </>
+                            )}
 
                             <button
                                 onClick={() => setIsOpen(!isOpen)}
