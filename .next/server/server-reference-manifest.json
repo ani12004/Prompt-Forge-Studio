@@ -32,6 +32,12 @@
           "exportedName": "getUserSubscription",
           "filename": "app/actions/subscription.ts"
         },
+        "app/(marketing)/cli/page": {
+          "moduleId": 96390,
+          "async": false,
+          "exportedName": "getUserSubscription",
+          "filename": "app/actions/subscription.ts"
+        },
         "app/(marketing)/community/page": {
           "moduleId": 51153,
           "async": false,
@@ -195,6 +201,7 @@
         "app/(legal)/terms/page": "action-browser",
         "app/(marketing)/about/page": "action-browser",
         "app/(marketing)/changelog/page": "action-browser",
+        "app/(marketing)/cli/page": "action-browser",
         "app/(marketing)/community/page": "action-browser",
         "app/(marketing)/contact/page": "action-browser",
         "app/(marketing)/docs/api/page": "action-browser",
@@ -257,6 +264,12 @@
           "exportedName": "getUserRole",
           "filename": "app/actions/auth.ts"
         },
+        "app/(marketing)/cli/page": {
+          "moduleId": 96390,
+          "async": false,
+          "exportedName": "getUserRole",
+          "filename": "app/actions/auth.ts"
+        },
         "app/(marketing)/community/page": {
           "moduleId": 51153,
           "async": false,
@@ -420,6 +433,7 @@
         "app/(legal)/terms/page": "action-browser",
         "app/(marketing)/about/page": "action-browser",
         "app/(marketing)/changelog/page": "action-browser",
+        "app/(marketing)/cli/page": "action-browser",
         "app/(marketing)/community/page": "action-browser",
         "app/(marketing)/contact/page": "action-browser",
         "app/(marketing)/docs/api/page": "action-browser",
@@ -482,6 +496,12 @@
           "exportedName": "detectKeylessEnvDriftAction",
           "filename": "node_modules/@clerk/nextjs/dist/esm/app-router/keyless-actions.js"
         },
+        "app/(marketing)/cli/page": {
+          "moduleId": 96390,
+          "async": false,
+          "exportedName": "detectKeylessEnvDriftAction",
+          "filename": "node_modules/@clerk/nextjs/dist/esm/app-router/keyless-actions.js"
+        },
         "app/(marketing)/community/page": {
           "moduleId": 51153,
           "async": false,
@@ -645,6 +665,7 @@
         "app/(legal)/terms/page": "rsc",
         "app/(marketing)/about/page": "rsc",
         "app/(marketing)/changelog/page": "rsc",
+        "app/(marketing)/cli/page": "rsc",
         "app/(marketing)/community/page": "rsc",
         "app/(marketing)/contact/page": "rsc",
         "app/(marketing)/docs/api/page": "rsc",
@@ -707,6 +728,12 @@
           "exportedName": "invalidateCacheAction",
           "filename": "node_modules/@clerk/nextjs/dist/esm/app-router/server-actions.js"
         },
+        "app/(marketing)/cli/page": {
+          "moduleId": 96390,
+          "async": false,
+          "exportedName": "invalidateCacheAction",
+          "filename": "node_modules/@clerk/nextjs/dist/esm/app-router/server-actions.js"
+        },
         "app/(marketing)/community/page": {
           "moduleId": 51153,
           "async": false,
@@ -870,6 +897,7 @@
         "app/(legal)/terms/page": "action-browser",
         "app/(marketing)/about/page": "action-browser",
         "app/(marketing)/changelog/page": "action-browser",
+        "app/(marketing)/cli/page": "action-browser",
         "app/(marketing)/community/page": "action-browser",
         "app/(marketing)/contact/page": "action-browser",
         "app/(marketing)/docs/api/page": "action-browser",
@@ -932,6 +960,12 @@
           "exportedName": "createOrReadKeylessAction",
           "filename": "node_modules/@clerk/nextjs/dist/esm/app-router/keyless-actions.js"
         },
+        "app/(marketing)/cli/page": {
+          "moduleId": 96390,
+          "async": false,
+          "exportedName": "createOrReadKeylessAction",
+          "filename": "node_modules/@clerk/nextjs/dist/esm/app-router/keyless-actions.js"
+        },
         "app/(marketing)/community/page": {
           "moduleId": 51153,
           "async": false,
@@ -1095,6 +1129,7 @@
         "app/(legal)/terms/page": "rsc",
         "app/(marketing)/about/page": "rsc",
         "app/(marketing)/changelog/page": "rsc",
+        "app/(marketing)/cli/page": "rsc",
         "app/(marketing)/community/page": "rsc",
         "app/(marketing)/contact/page": "rsc",
         "app/(marketing)/docs/api/page": "rsc",
@@ -1157,6 +1192,12 @@
           "exportedName": "collectKeylessMetadata",
           "filename": "node_modules/@clerk/nextjs/dist/esm/server/keyless-custom-headers.js"
         },
+        "app/(marketing)/cli/page": {
+          "moduleId": 96390,
+          "async": false,
+          "exportedName": "collectKeylessMetadata",
+          "filename": "node_modules/@clerk/nextjs/dist/esm/server/keyless-custom-headers.js"
+        },
         "app/(marketing)/community/page": {
           "moduleId": 51153,
           "async": false,
@@ -1320,6 +1361,7 @@
         "app/(legal)/terms/page": "rsc",
         "app/(marketing)/about/page": "rsc",
         "app/(marketing)/changelog/page": "rsc",
+        "app/(marketing)/cli/page": "rsc",
         "app/(marketing)/community/page": "rsc",
         "app/(marketing)/contact/page": "rsc",
         "app/(marketing)/docs/api/page": "rsc",
@@ -1382,6 +1424,12 @@
           "exportedName": "formatMetadataHeaders",
           "filename": "node_modules/@clerk/nextjs/dist/esm/server/keyless-custom-headers.js"
         },
+        "app/(marketing)/cli/page": {
+          "moduleId": 96390,
+          "async": false,
+          "exportedName": "formatMetadataHeaders",
+          "filename": "node_modules/@clerk/nextjs/dist/esm/server/keyless-custom-headers.js"
+        },
         "app/(marketing)/community/page": {
           "moduleId": 51153,
           "async": false,
@@ -1545,6 +1593,7 @@
         "app/(legal)/terms/page": "rsc",
         "app/(marketing)/about/page": "rsc",
         "app/(marketing)/changelog/page": "rsc",
+        "app/(marketing)/cli/page": "rsc",
         "app/(marketing)/community/page": "rsc",
         "app/(marketing)/contact/page": "rsc",
         "app/(marketing)/docs/api/page": "rsc",
@@ -1607,6 +1656,12 @@
           "exportedName": "deleteKeylessAction",
           "filename": "node_modules/@clerk/nextjs/dist/esm/app-router/keyless-actions.js"
         },
+        "app/(marketing)/cli/page": {
+          "moduleId": 96390,
+          "async": false,
+          "exportedName": "deleteKeylessAction",
+          "filename": "node_modules/@clerk/nextjs/dist/esm/app-router/keyless-actions.js"
+        },
         "app/(marketing)/community/page": {
           "moduleId": 51153,
           "async": false,
@@ -1770,6 +1825,7 @@
         "app/(legal)/terms/page": "action-browser",
         "app/(marketing)/about/page": "action-browser",
         "app/(marketing)/changelog/page": "action-browser",
+        "app/(marketing)/cli/page": "action-browser",
         "app/(marketing)/community/page": "action-browser",
         "app/(marketing)/contact/page": "action-browser",
         "app/(marketing)/docs/api/page": "action-browser",
@@ -1832,6 +1888,12 @@
           "exportedName": "syncKeylessConfigAction",
           "filename": "node_modules/@clerk/nextjs/dist/esm/app-router/keyless-actions.js"
         },
+        "app/(marketing)/cli/page": {
+          "moduleId": 96390,
+          "async": false,
+          "exportedName": "syncKeylessConfigAction",
+          "filename": "node_modules/@clerk/nextjs/dist/esm/app-router/keyless-actions.js"
+        },
         "app/(marketing)/community/page": {
           "moduleId": 51153,
           "async": false,
@@ -1995,6 +2057,7 @@
         "app/(legal)/terms/page": "action-browser",
         "app/(marketing)/about/page": "action-browser",
         "app/(marketing)/changelog/page": "action-browser",
+        "app/(marketing)/cli/page": "action-browser",
         "app/(marketing)/community/page": "action-browser",
         "app/(marketing)/contact/page": "action-browser",
         "app/(marketing)/docs/api/page": "action-browser",

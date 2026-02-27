@@ -59,6 +59,12 @@
       "namedRegex": "^/api/playground/analyze(?:/)?$"
     },
     {
+      "page": "/api/v1/cli",
+      "regex": "^/api/v1/cli(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/v1/cli(?:/)?$"
+    },
+    {
       "page": "/api/v1/execute",
       "regex": "^/api/v1/execute(?:/)?$",
       "routeKeys": {},
@@ -87,6 +93,12 @@
       "regex": "^/changelog(?:/)?$",
       "routeKeys": {},
       "namedRegex": "^/changelog(?:/)?$"
+    },
+    {
+      "page": "/cli",
+      "regex": "^/cli(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/cli(?:/)?$"
     },
     {
       "page": "/community",
