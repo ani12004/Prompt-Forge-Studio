@@ -88,11 +88,6 @@ export function Navbar() {
 
                         {/* Actions */}
                         <div className="flex items-center gap-3 z-40">
-                            <SignedIn>
-                                <div className="relative z-50">
-                                    <UserMenu direction="down" />
-                                </div>
-                            </SignedIn>
                             <SignedOut>
                                 <Link href="/login">
                                     <Button variant="ghost" className="hidden sm:inline-flex text-gray-300 hover:text-white hover:bg-white/5">
@@ -105,6 +100,11 @@ export function Navbar() {
                                     </Button>
                                 </Link>
                             </SignedOut>
+                            <div className="relative z-50">
+                                <SignedIn>
+                                    <UserMenu direction="down" />
+                                </SignedIn>
+                            </div>
 
                             <button
                                 onClick={() => setIsOpen(!isOpen)}
