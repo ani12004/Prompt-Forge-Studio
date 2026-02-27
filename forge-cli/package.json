@@ -1,17 +1,28 @@
 {
-  "name": "prompt-forge-studio-cli",
-  "version": "1.0.9",
-  "description": "Professional terminal-native prompt engineering studio",
+  "name": "prompt-forge-ai-cli",
+  "version": "1.0.0",
+  "description": "Professional terminal-native prompt engineering and AI model evaluation studio",
   "main": "src/index.js",
   "bin": {
     "forge": "./src/index.js"
   },
   "scripts": {
+    "start": "node src/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "ai",
+    "prompt-engineering",
+    "cli",
+    "gemini",
+    "nvidia",
+    "forge"
+  ],
+  "author": "Anil Suthar",
   "license": "ISC",
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "dependencies": {
     "boxen": "^5.1.2",
     "chalk": "^4.1.2",
@@ -20,7 +31,6 @@
     "figlet": "^1.10.0",
     "gradient-string": "^3.0.0",
     "inquirer": "^8.2.7",
-    "ora": "^5.4.1",
-    "prompt-forge-studio-cli": "^1.0.4"
+    "ora": "^5.4.1"
   }
 }

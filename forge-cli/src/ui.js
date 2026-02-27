@@ -9,45 +9,29 @@ function showBanner() {
     console.log(gradient.pastel.multiline(bannerText));
 }
 
-function showSessionPanel(model, status, autoFailover) {
-    let statusColor;
-    switch (status.toLowerCase()) {
-        case 'active':
-            statusColor = chalk.green(status);
-            break;
-        case 'degraded':
-            statusColor = chalk.yellow(status);
-            break;
-        case 'offline':
-            statusColor = chalk.red(status);
-            break;
-        default:
-            statusColor = chalk.white(status);
-    }
+function showBottomStatusBar(model, status, latency, autoFailover, debugMode) {
+    const statusColor = status === 'Online' ? chalk.green('Online')
+        : status === 'Degraded' ? chalk.yellow('Degraded')
+            : chalk.red(status);
 
     const autoText = autoFailover ? chalk.green('ON') : chalk.red('OFF');
+    const debugText = debugMode ? chalk.green('ON') : chalk.gray('OFF');
+    const latencyText = latency ? `${latency}ms` : '-';
 
-    const content = [
-        chalk.bold.cyan('Forge Studio (beta)'),
-        `Model: ${chalk.white(model)}`,
+    const bar = [
+        chalk.cyan(`Model: ${model}`),
         `Status: ${statusColor}`,
-        `Auto-Failover: ${autoText}`
-    ].join('\n');
+        chalk.gray(`Latency: ${latencyText}`),
+        chalk.gray(`Auto: ${autoText}`),
+        chalk.gray(`Debug: ${debugText}`)
+    ].join(chalk.dim(' | '));
 
-    console.log(
-        boxen(content, {
-            padding: 1,
-            margin: { top: 1, bottom: 1 },
-            borderStyle: 'bold',
-            borderColor: 'blue',
-            dimBorder: true
-        })
-    );
+    console.log('\n' + bar + '\n');
 }
 
 function showModelComparison(modelsInfo) {
     const table = new Table({
-        head: [chalk.cyan('Model'), chalk.cyan('Status'), chalk.cyan('Latency')],
+        head: [chalk.cyan('Provider'), chalk.cyan('Status'), chalk.cyan('Latency'), chalk.cyan('Success Count'), chalk.cyan('Fail Measure')],
         chars: {
             'top': '─', 'top-mid': '┬', 'top-left': '┌', 'top-right': '┐',
             'bottom': '─', 'bottom-mid': '┴', 'bottom-left': '└', 'bottom-right': '┘',
@@ -59,18 +43,24 @@ function showModelComparison(modelsInfo) {
     modelsInfo.forEach(info => {
         let statusColor, latencyDisplay;
 
-        if (info.status === 'Active') {
+        if (info.status === 'Active' || info.status === 'Online') {
             statusColor = chalk.green(info.status);
-            latencyDisplay = info.latency ? chalk.white(`${info.latency}ms`) : '-';
+            latencyDisplay = info.avgLatency ? chalk.white(`${info.avgLatency}ms (avg)`) : '-';
         } else if (info.status === 'Degraded') {
             statusColor = chalk.yellow(info.status);
-            latencyDisplay = info.latency ? chalk.yellow(`${info.latency}ms`) : '-';
+            latencyDisplay = info.avgLatency ? chalk.yellow(`${info.avgLatency}ms (avg)`) : '-';
         } else {
             statusColor = chalk.red(info.status);
             latencyDisplay = chalk.dim('-');
         }
 
-        table.push([info.name, statusColor, latencyDisplay]);
+        table.push([
+            info.name,
+            statusColor,
+            latencyDisplay,
+            chalk.green(info.successCount),
+            chalk.red(info.failCount)
+        ]);
     });
 
     console.log('\n' + table.toString() + '\n');
@@ -85,8 +75,8 @@ function formatAIResponse(text, metadata = {}) {
         padding: 1,
         margin: { top: 1, bottom: 1 },
         borderStyle: 'round',
-        borderColor: 'magenta',
-        title: chalk.magenta.bold(' AI Response '),
+        borderColor: 'cyan',
+        title: chalk.cyan.bold(' AI Response '),
         titleAlignment: 'left'
     });
 
@@ -107,18 +97,18 @@ function showErrorBox(title, message) {
 
 function showInfoBox(message) {
     console.log(
-        boxen(chalk.cyan(message), {
+        boxen(chalk.white(message), {
             padding: 1,
             margin: 1,
             borderStyle: 'round',
-            borderColor: 'cyan'
+            borderColor: 'blue'
         })
     );
 }
 
 module.exports = {
     showBanner,
-    showSessionPanel,
+    showBottomStatusBar,
     showModelComparison,
     formatAIResponse,
     showErrorBox,

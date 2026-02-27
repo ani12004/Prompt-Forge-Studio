@@ -1,0 +1,5 @@
+node_modules/
+.forge/
+.env
+*.log
+logs/
