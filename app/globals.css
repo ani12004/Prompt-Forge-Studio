@@ -133,6 +133,20 @@
       opacity: 0.8;
     }
   }
+
+  @keyframes slideInLeft {
+    from {
+      transform: translateX(-100%);
+    }
+
+    to {
+      transform: translateX(0);
+    }
+  }
+
+  .animate-slide-in-left {
+    animation: slideInLeft 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  }
 }
 
 :root {
