@@ -28,18 +28,23 @@ export function AdvancedControls({ options, onChange }: AdvancedControlsProps) {
 
     const PROVIDERS: Record<string, { id: string; name: string }[]> = {
         gemini: [
-            { id: "gemini-3.1-pro", name: "Gemini 3.1 Pro" },
-            { id: "gemini-3-pro", name: "Gemini 3 Pro" },
-            { id: "gemini-3-flash", name: "Gemini 3 Flash" },
-            { id: "gemini-2.5-pro", name: "Gemini 2.5 Pro" },
-            { id: "gemini-2.5-flash", name: "Gemini 2.5 Flash" },
-            { id: "gemini-2-pro-exp", name: "Gemini 2 Pro Exp" },
-            { id: "gemini-2-flash", name: "Gemini 2 Flash" },
+            { id: "gemini-2.0-flash", name: "Gemini 2.0 Flash" },
+            { id: "gemini-2.0-pro-exp-02-05", name: "Gemini 2.0 Pro" },
             { id: "gemini-1.5-pro", name: "Gemini 1.5 Pro" },
             { id: "gemini-1.5-flash", name: "Gemini 1.5 Flash" },
         ],
         nvidia: [
-            { id: "nvidia/nemotron-3-nano-30b-a3b", name: "Nemotron-3 Nano 30B" }
+            { id: "nvidia/nemotron-3-nano-30b-a3b", name: "Nemotron-3 Nano 30B" },
+            { id: "nvidia/llama-3.1-405b-instruct", name: "Llama 3.1 405B" }
+        ],
+        groq: [
+            { id: "llama3-8b-8192", name: "Llama 3 8B (Fast)" },
+            { id: "llama3-70b-8192", name: "Llama 3 70B" },
+            { id: "mixtral-8x7b-32768", name: "Mixtral 8x7B" }
+        ],
+        deepseek: [
+            { id: "deepseek-chat", name: "DeepSeek Chat" },
+            { id: "deepseek-reasoner", name: "DeepSeek Reasoner" }
         ]
     }
 
@@ -67,8 +72,8 @@ export function AdvancedControls({ options, onChange }: AdvancedControlsProps) {
                     <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-2">
                         <Globe className="w-3 h-3" /> AI Provider
                     </label>
-                    <div className="flex p-1 bg-black/40 rounded-xl border border-white/10 gap-1">
-                        {["gemini", "nvidia"].map((p) => {
+                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-1 p-1 bg-black/40 rounded-xl border border-white/10">
+                        {Object.keys(PROVIDERS).map((p) => {
                             const active = currentProvider === p
 
                             return (
@@ -78,14 +83,14 @@ export function AdvancedControls({ options, onChange }: AdvancedControlsProps) {
                                         const newModels = PROVIDERS[p as keyof typeof PROVIDERS]
                                         onChange({
                                             ...options,
-                                            provider: p as "gemini" | "nvidia",
+                                            provider: p as any,
                                             model: newModels[0].id
                                         })
                                     }}
-                                    className={`relative flex-1 py-1.5 rounded-lg text-[10px] font-bold transition-all flex items-center justify-center gap-2 
+                                    className={`relative py-1.5 rounded-lg text-[10px] font-bold transition-all flex items-center justify-center gap-2 
                                         ${active ? "bg-brand-purple text-white shadow-lg shadow-brand-purple/20" : "text-gray-500 hover:text-gray-300 hover:bg-white/5"}`}
                                 >
-                                    {p === "gemini" ? "Google Gemini" : "NVIDIA AI"}
+                                    {p.toUpperCase()}
                                 </button>
                             )
                         })}

@@ -19,7 +19,7 @@ This document serves as the absolute, comprehensive single source of truth for t
 *   **Authentication:** Clerk (V1 App) + Supabase Auth
 *   **Database:** Supabase (PostgreSQL)
 *   **Caching Layer:** Upstash Redis (Serverless exact-match caching)
-*   **AI Engine Models:** `@google/generative-ai` SDK hooking into Google Gemini (1.5 Pro, 2.5 Flash, 2.0 Pro Exp)
+*   **AI Engine Models:** Gemini (Google), Llama/Nemotron (NVIDIA), Llama/Mixtral (Groq), DeepSeek-Chat/R1
 *   **Validation:** Zod
 
 ---
@@ -77,9 +77,10 @@ This document serves as the absolute, comprehensive single source of truth for t
 *   **Programmatic API Execution:** A robust `/api/v1/execute` REST endpoint designed for machine-to-machine calls.
 *   **Linear Versioning:** A straightforward, sequential prompt versioning system (no complex branching).
 *   **Cascading Model Router (`lib/router.ts`):** 
-    *   Dynamically selects the AI model based on the input.
-    *   If prompt length > 4000 chars OR contains reasoning keywords ("step-by-step", "<think>") => Routes to `gemini-2.0-pro-exp-02-05`.
-    *   Otherwise => Routes to `gemini-2.5-flash` for high-throughput, low-latency execution.
+    *   Dynamically selects the AI model via the modular `lib/ai` provider system.
+    *   Supports Google Gemini, NVIDIA, Groq, and DeepSeek.
+    *   Heuristics: If prompt length > 4000 chars OR contains reasoning keywords ("step-by-step", "<think>") => Routes to higher-tier models (e.g., Gemini Pro or DeepSeek R1).
+    *   Otherwise => Routes to lightweight models (Flash/Llama 8B) for high-throughput, low-latency execution.
 *   **Exact-Match Caching (`lib/cache.ts`):** 
     *   Powered by Upstash Redis.
     *   Generates MD5 hash of `version_id` + sorted variables.

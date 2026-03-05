@@ -133,7 +133,7 @@ export function DevDocsClient() {
                 </ul>
             </nav>
             <div className="p-3 border-t border-white/5 text-center">
-                <span className="text-[10px] text-gray-700 uppercase tracking-widest">v1.5.0 · March 2026</span>
+                <span className="text-[10px] text-gray-700 uppercase tracking-widest">v1.6.0 · March 2026</span>
             </div>
         </>
     )
@@ -392,6 +392,8 @@ const TechStackSection = React.memo(function TechStackSection() {
                 ["Supabase", "^2.91.0", "PostgreSQL database + auth"],
                 ["Upstash Redis", "^1.36.2", "Serverless caching & rate limiting"],
                 ["Google Generative AI", "^0.24.1", "Gemini LLM models"],
+                ["Groq & DeepSeek", "REST API", "Additional LLM providers"],
+                ["NVIDIA AI", "REST API", "Llama/Nemotron models"],
                 ["Zod", "^4.3.6", "Runtime schema validation"],
                 ["Resend", "^6.8.0", "Transactional email"],
                 ["Svix", "^1.84.1", "Webhook signature verification"],
@@ -445,8 +447,12 @@ const DirectorySection = React.memo(function DirectorySection() {
 │   ├── marketing/              # Landing, Pricing, Docs components
 │   ├── ui/                     # Reusable primitives (Button, Card, Toast, etc.)
 │   └── gamification/           # Badge system (BadgeProvider, BadgeToast)
-├── lib/ (13 files)             # Core utilities
-│   ├── router.ts               # Cascading AI model router
+├── lib/ (16 files)             # Core utilities
+│   ├── ai/                     # [NEW] Multi-provider AI system
+│   │   ├── providers/          # Specific implementations (Gemini, Nvidia, Groq, DeepSeek)
+│   │   ├── router.ts           # Provider selection logic
+│   │   └── types.ts            # Standardized AI interfaces
+│   ├── router.ts               # Cascading AI model router (Now uses lib/ai)
 │   ├── cache.ts                # Upstash Redis caching
 │   ├── rate-limit.ts           # Fixed-window rate limiter (fail-closed)
 │   ├── guardrails.ts           # 4-layer input safety (length, profanity, PII, prompt injection)
@@ -480,6 +486,8 @@ const EnvVarsSection = React.memo(function EnvVarsSection() {
                 ["GEMINI_API_KEY_4", "⚡", "Pro-tier priority (\"Viper\")"],
                 ["GEMINI_API_KEY_5", "⚡", "Additional fallback pool"],
                 ["NVIDIA_API_KEY", "⚡", "NVIDIA AI (Llama/Nemotron)"],
+                ["GROQ_API_KEY", "✅", "Groq AI (Llama 3/Mixtral)"],
+                ["DEEPSEEK_API_KEY", "✅", "DeepSeek AI (Chat/Reasoner)"],
                 ["UPSTASH_REDIS_REST_URL", "⚡", "Upstash Redis URL"],
                 ["UPSTASH_REDIS_REST_TOKEN", "⚡", "Upstash Redis token"],
                 ["RESEND_API_KEY", "⚡", "Email service (admin inbox)"],
@@ -658,7 +666,7 @@ const ServerActionsSection = React.memo(function ServerActionsSection() {
                 ["auth.ts", "getAuthUser()", "Auth helper utilities"],
             ]}
         />
-        <Callout type="tip">The <code>generate.ts</code> action is the most complex — it handles auth gating, tier detection, rate limiting (Free: 3/min, 15/day | Pro: 15/min, 500/day), feature gating (Granular = Pro only), API key pool selection, provider routing (Gemini/NVIDIA), cascading model fallback (9 Gemini models), and DB persistence.</Callout>
+        <Callout type="tip">The <code>generate.ts</code> action is the most complex — it now uses a <strong>modular provider system</strong> (Gemini, NVIDIA, Groq, DeepSeek). It handles auth gating, tier detection, rate limiting, feature gating (Granular = Pro only), and cascades through providers/models to ensure successful generation.</Callout>
     </>)
 })
 
@@ -721,6 +729,7 @@ const LibModulesSection = React.memo(function LibModulesSection() {
                 ["guardrails.ts", "runGuardrails()", "4-layer protection: length + profanity + PII (email, phone, SSN, CC) + prompt injection"],
                 ["security.ts", "escapeHtml(), sanitizeErrorForClient()", "Shared security utilities — HTML escaping, error sanitization, UUID validation, input limits"],
                 ["api-keys.ts", "generateApiKey()", "pf_live_ prefixed keys with SHA-256 storage"],
+                ["ai/index.ts", "generateResponse()", "[NEW] Unified AI provider entry point"],
                 ["intelligence.ts", "analyzePrompt()", "Heuristic prompt analysis + cost optimization stats"],
                 ["supabase.ts", "getSupabaseAdmin()", "Service Role client for V2 API engine (singleton)"],
                 ["supabaseAdmin.ts", "createAdminClient()", "Server-only admin client — webhooks, cron (singleton)"],
@@ -730,7 +739,7 @@ const LibModulesSection = React.memo(function LibModulesSection() {
                 ["utils.ts", "cn()", "clsx + tailwind-merge class merger"],
             ]}
         />
-        <Callout type="tip"><strong>Router Heuristics:</strong> prompt length &gt; 4000 chars OR &quot;step-by-step&quot; / &quot;&lt;think&gt;&quot; keywords → routes to <code>gemini-2.0-pro</code>. Otherwise → <code>gemini-2.5-flash</code>. Cost: Pro = 1.25/5.00 µUSD, Flash = 0.075/0.30 µUSD per token (input/output).</Callout>
+        <Callout type="tip"><strong>Router & Provider System:</strong> The system now uses a modular <code>lib/ai</code> architecture. It supports automatic provider selection and model-specific heuristics (e.g., routing &gt;4k tokens to Pro models). Supports 4 major providers: Google Gemini, NVIDIA, Groq, and DeepSeek.</Callout>
     </>)
 })
 
@@ -812,7 +821,8 @@ const V2PaaSSection = React.memo(function V2PaaSSection() {
   │   ├── HIT → Return cached (0 tokens, ~50ms)
   │   └── MISS → Continue to router
   ├── Router: Heuristic model selection
-  ├── Execute: LLM call (Gemini or NVIDIA)
+  ├── Provider: Multi-LLM adapter (Gemini, NVIDIA, Groq, DeepSeek)
+  ├── Execute: Standardized provider implementation
   ├── Schema Validate: Optional JSON output check
   ├── Telemetry: Async insert to v2_execution_logs
   └── Return: JSON { success, data, meta }`} />

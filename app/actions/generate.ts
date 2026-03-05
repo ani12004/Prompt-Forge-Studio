@@ -1,8 +1,8 @@
 "use server";
 
-import { GoogleGenerativeAI } from "@google/generative-ai";
 import { auth } from "@clerk/nextjs/server";
 import { createClerkSupabaseClient } from "@/lib/supabaseClient";
+import { generateResponse } from "@/lib/ai";
 
 export interface GenerateResponse {
     success: boolean;
@@ -25,7 +25,7 @@ export async function refinePrompt(
     prompt: string,
     detailLevel: string,
     options: {
-        provider?: "gemini" | "nvidia";
+        provider?: "gemini" | "nvidia" | "groq" | "deepseek";
         model?: string;
         temperature?: number;
         topP?: number;
@@ -138,41 +138,6 @@ export async function refinePrompt(
             }
         }
 
-        // --- KEY ROUTING STRATEGY ---
-        // 4-Key System:
-        // Key 1 (Mechanic) -> Fixer (Low usage)
-        // Key 2 (Gamer) -> Playground/General (High usage)
-        // Key 3 (Analyst) -> Analysis (Handled in analyze.ts)
-        // Key 4 (Viper) -> Pro Exclusive
-
-        let API_KEYS: string[] = [];
-
-        if (isPro) {
-            // Pro gets Viper first, then pooling
-            API_KEYS = [
-                process.env.GEMINI_API_KEY_4,
-                process.env.GEMINI_API_KEY,
-                process.env.GEMINI_API_KEY_2,
-                process.env.GEMINI_API_KEY_5
-            ].filter(Boolean) as string[];
-        } else {
-            // Free gets Gamer first, then Mechanic
-            API_KEYS = [
-                process.env.GEMINI_API_KEY_2, // Gamer
-                process.env.GEMINI_API_KEY    // Mechanic (Fallback)
-            ].filter(Boolean) as string[];
-        }
-
-        if (API_KEYS.length === 0) {
-            // Fallback for dev if specific keys aren't set
-            API_KEYS = [process.env.GEMINI_API_KEY!].filter(Boolean);
-        }
-
-        // --- GENERATION ROUTING ---
-        let lastError: any = null;
-        let generatedText = "";
-        let usedModel = "";
-
         // System Prompt Construction
         let modifier = "";
         switch (detailLevel) {
@@ -199,117 +164,21 @@ DETAIL LEVEL: ${modifier}
 QUALITY BAR: Professional, Authoritative, Precise.
 `;
 
-        // --- GENERATION LOOP ---
-        if (options.provider === "nvidia") {
-            try {
-                const response = await fetch("https://integrate.api.nvidia.com/v1/chat/completions", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": `Bearer ${process.env.NVIDIA_API_KEY}`
-                    },
-                    body: JSON.stringify({
-                        model: options.model || "nvidia/nemotron-3-nano-30b-a3b",
-                        messages: [
-                            { role: "system", content: systemInstruction },
-                            { role: "user", content: `RAW USER INPUT: \n${prompt}` }
-                        ],
-                        temperature: options.temperature ?? (options.model?.includes("253b") ? 0.6 : 0.7),
-                        top_p: options.topP ?? (options.model?.includes("253b") ? 0.95 : 0.9),
-                        max_tokens: options.model?.includes("253b") ? 4096 : 1024,
-                        frequency_penalty: 0,
-                        presence_penalty: 0,
-                        stream: false
-                    })
-                });
+        // --- GENERATION ROUTING ---
+        const result = await generateResponse(options.provider || "gemini", {
+            model: options.model || (options.provider === "nvidia" ? "nvidia/nemotron-3-nano-30b-a3b" : "gemini-2.0-flash"),
+            prompt: prompt,
+            systemPrompt: systemInstruction,
+            temperature: options.temperature ?? 0.7,
+            topP: options.topP ?? 0.95,
+            topK: options.topK ?? 40,
+        });
 
-                if (!response.ok) {
-                    const errorText = await response.text();
-                    console.error("NVIDIA API Error Response:", errorText);
-                    let errorData;
-                    try { errorData = JSON.parse(errorText); } catch (e) { }
-                    throw new Error(errorData?.error?.message || `NVIDIA API error: ${response.status} ${response.statusText}`);
-                }
-
-                const data = await response.json();
-                generatedText = data.choices[0]?.message?.content || "";
-
-                if (!generatedText && (options.model || "").includes("reward")) {
-                    // Reward models return scores, not content. 
-                    // For the sake of the Studio, we'll return its usage/metadata if content is empty.
-                    generatedText = `[REWARD MODEL OUTPUT]\n\nThe selected model (${options.model}) is a reward/scoring model. It does not generate text but evaluates the input. \n\nAPI Response: ${JSON.stringify(data.usage || data.choices[0] || data)}`;
-                }
-
-                usedModel = options.model || "nvidia/nemotron-3-nano-30b-a3b";
-            } catch (err: any) {
-                console.error("NVIDIA Execution Failure:", err);
-                lastError = err;
-            }
-        } else {
-            // Gemini Logic (Existing)
-            const MODELS_TO_TRY = model ? [model] : [
-                "gemini-3.1-pro",
-                "gemini-3-pro",
-                "gemini-3-flash",
-                "gemini-2.5-pro",
-                "gemini-2.5-flash",
-                "gemini-2-pro-exp",
-                "gemini-2-flash",
-                "gemini-1.5-pro",
-                "gemini-1.5-flash"
-            ];
-
-            outerLoop:
-            for (const apiKey of API_KEYS) {
-                const genAI = new GoogleGenerativeAI(apiKey);
-
-                for (const modelName of MODELS_TO_TRY) {
-                    try {
-                        const geminiModel = genAI.getGenerativeModel({
-                            model: modelName,
-                            generationConfig: { temperature, topP, topK }
-                        });
-
-                        const result = await geminiModel.generateContent([
-                            systemInstruction,
-                            `RAW USER INPUT: \n${prompt} `
-                        ]);
-
-                        const text = result.response.text();
-                        if (text) {
-                            generatedText = text;
-                            usedModel = modelName;
-                            break outerLoop; // Success!
-                        }
-
-                    } catch (err: any) {
-                        lastError = err;
-                        const msg = (err.message || "").toLowerCase();
-                        console.error(`Gemini Error [${modelName}]:`, err.message);
-
-                        // If Key error or model not found, try next
-                        if (msg.includes("429") || msg.includes("quota") || msg.includes("key") || msg.includes("not found")) {
-                            console.warn(`Model/Key issue with ${modelName}, switching...`);
-                            continue; // Try next model in current key context
-                        }
-                    }
-                }
-            }
-        }
+        const generatedText = result.output;
+        const usedModel = result.modelUsed;
 
         if (!generatedText) {
-            // Soft Error Handling
-            const errString = lastError?.message || "";
-            const isQuotaError = errString.includes("429") || errString.includes("quota");
-
-            if (isQuotaError) {
-                return {
-                    success: false,
-                    error: "High traffic server load. Please try again in 10 seconds."
-                };
-            }
-
-            throw new Error(errString || "Generation failed");
+            throw new Error("Generation failed: Empty response");
         }
 
         // --- DB PERSISTENCE (Async / Blocking) ---

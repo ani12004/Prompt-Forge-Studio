@@ -1,6 +1,6 @@
 # PromptForge Studio — Complete Developer Documentation
 
-> **Version:** 1.4.0 | **Last Updated:** March 2026 | **Author:** Anil Suthar  
+> **Version:** 1.6.0 | **Last Updated:** March 2026 | **Author:** Anil Suthar  
 > **Live URL:** [prompt-forge-studio.vercel.app](https://prompt-forge-studio.vercel.app)  
 > **Repository:** [github.com/ani12004/Prompt-Forge-Studio](https://github.com/ani12004/Prompt-Forge-Studio)
 
@@ -73,7 +73,8 @@ The platform automatically restructures user intent into optimized prompts that 
 | **Supabase SSR** | @supabase/ssr | ^0.8.0 |
 | **Caching** | Upstash Redis | ^1.36.2 |
 | **AI Engine** | Google Generative AI SDK | ^0.24.1 |
-| **AI Engine (alt)** | @google/genai | ^1.42.0 |
+| **AI Providers** | Groq & DeepSeek REST APIs | latest |
+| **AI Engine (alt)** | NVIDIA AI APIs | latest |
 | **Validation** | Zod | ^4.3.6 |
 | **Email** | Resend | ^6.8.0 |
 | **Webhook Verification** | Svix | ^1.84.1 |
@@ -113,10 +114,11 @@ The application follows a **three-layer architecture**:
 │  │  Clerk  │  │ Supabase │  │  Upstash Redis   │  │
 │  │  Auth   │  │ Postgres │  │  (Cache + Rate)  │  │
 │  └─────────┘  └──────────┘  └──────────────────┘  │
-│                    ┌──────────────────┐              │
-│                    │ Google Gemini AI │              │
-│                    │ NVIDIA AI APIs   │              │
-│                    └──────────────────┘              │
+│                    ┌──────────────────────┐          │
+│                    │ AI PROVIDER SYSTEM   │          │
+│                    │ Gemini, NVIDIA, Groq │          │
+│                    │ DeepSeek (R1/Chat)   │          │
+│                    └──────────────────────┘          │
 └─────────────────────────────────────────────────────┘
 ```
 
@@ -132,8 +134,8 @@ SDK/CLI → POST /api/v1/execute
   → Ownership Verification (key.user_id === prompt.user_id)
   → Variable Injection ({{var}} replacement)
   → Exact-Match Cache Check (MD5 hash → Redis)
-  → [Cache Miss] → Model Router (Flash vs Pro heuristics)
-  → LLM Execution (Gemini or NVIDIA)
+  → [Cache Miss] → AI Router (Modular Provider System)
+  → LLM Execution (Gemini, NVIDIA, Groq, or DeepSeek)
   → Schema Validation (optional)
   → Async Telemetry Log (v2_execution_logs)
   → JSON Response
@@ -204,8 +206,12 @@ PromptForge AI/
 │   ├── studio/                   # Editor, Controls, Modals, Result panels
 │   └── ui/                       # Reusable primitives (Button, Card, Toast, etc.)
 │
-├── lib/                          # Core utility libraries (12 files)
-│   ├── router.ts                 # Cascading AI model router
+├── lib/                          # Core utility libraries (16 files)
+│   ├── ai/                       # [NEW] Multi-provider AI system
+│   │   ├── providers/            # Specific implementations (Gemini, Nvidia, Groq, DeepSeek)
+│   │   ├── router.ts             # Provider selection logic
+│   │   └── types.ts              # Standardized AI interfaces
+│   ├── router.ts                 # Cascading AI model router (integrated with lib/ai)
 │   ├── cache.ts                  # Upstash Redis caching layer
 │   ├── rate-limit.ts             # Fixed-window rate limiter
 │   ├── guardrails.ts             # Input safety checks (PII, profanity)
@@ -276,6 +282,8 @@ Create a `.env.local` file in the project root with the following required varia
 | `GEMINI_API_KEY_4` | ⚡ | Priority key for Pro users ("Viper") |
 | `GEMINI_API_KEY_5` | ⚡ | Additional fallback key |
 | `NVIDIA_API_KEY` | ⚡ | NVIDIA AI API key for Llama/Nemotron models |
+| `GROQ_API_KEY` | ✅ | Groq AI (Llama 3/Mixtral) |
+| `DEEPSEEK_API_KEY` | ✅ | DeepSeek AI (Chat/Reasoner) |
 | `UPSTASH_REDIS_REST_URL` | ⚡ | Upstash Redis REST URL (caching + rate limiting) |
 | `UPSTASH_REDIS_REST_TOKEN` | ⚡ | Upstash Redis REST token |
 | `RESEND_API_KEY` | ⚡ | Resend email service key (admin inbox replies) |
@@ -682,7 +690,7 @@ Analyzes prompt structure for the Playground learning environment.
 |---|---|---|
 | Gemini Pro | 1.25 µUSD | 5.00 µUSD |
 | Gemini Flash | 0.075 µUSD | 0.30 µUSD |
-| NVIDIA | ~0.1 µUSD | ~0.3 µUSD |
+| NVIDIA/Groq/DeepSeek | ~0.1 µUSD | ~0.3 µUSD |
 
 ### `cache.ts` — Exact-Match Caching
 **Function:** `withCache<T>(key, fetcher, ttlSeconds?)`
