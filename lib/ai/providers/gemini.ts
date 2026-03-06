@@ -4,16 +4,24 @@ import { IAIProvider, AIProviderName, CompletionOptions, ProviderResult } from "
 
 export class GeminiProvider implements IAIProvider {
     name: AIProviderName = "gemini";
-    private genAI: GoogleGenerativeAI;
+    private genAI: GoogleGenerativeAI | null = null;
+    private apiKey: string | undefined;
 
     constructor() {
-        const apiKey = process.env.GEMINI_API_KEY;
-        if (!apiKey) throw new Error("Missing GEMINI_API_KEY");
-        this.genAI = new GoogleGenerativeAI(apiKey);
+        this.apiKey = process.env.GEMINI_API_KEY;
+    }
+
+    private getGenAI() {
+        if (!this.genAI) {
+            if (!this.apiKey) throw new Error("Missing GEMINI_API_KEY: Please configure your environment variables.");
+            this.genAI = new GoogleGenerativeAI(this.apiKey);
+        }
+        return this.genAI;
     }
 
     async generateResponse(options: CompletionOptions): Promise<ProviderResult> {
-        const model = this.genAI.getGenerativeModel({
+        const genAI = this.getGenAI();
+        const model = genAI.getGenerativeModel({
             model: options.model,
             systemInstruction: options.systemPrompt,
         });
@@ -41,8 +49,10 @@ export class GeminiProvider implements IAIProvider {
 
         const costMicroUsd = Math.round((tokensInput * costIn) + (tokensOutput * costOut));
 
+        const cleanText = this.beautify(text);
+
         return {
-            output: text,
+            output: cleanText,
             modelUsed: options.model,
             usage: {
                 promptTokens: tokensInput,
@@ -51,5 +61,19 @@ export class GeminiProvider implements IAIProvider {
             },
             costMicroUsd
         };
+    }
+
+    private beautify(text: string): string {
+        if (!text) return "";
+        let clean = text.replace(/```json\s?([\s\S]*?)```/g, '$1')
+            .replace(/```\s?([\s\S]*?)```/g, '$1')
+            .trim();
+        if (clean.startsWith('{') && clean.endsWith('}')) {
+            try {
+                const parsed = JSON.parse(clean);
+                return parsed.refined_prompt || parsed.prompt || parsed.content || parsed.output || clean;
+            } catch (e) { }
+        }
+        return clean;
     }
 }

@@ -8,9 +8,17 @@ export class AIRouter {
     private providers: Map<AIProviderName, IAIProvider> = new Map();
 
     constructor() {
-        this.providers.set("gemini", new GeminiProvider());
-        this.providers.set("nvidia", new NvidiaProvider());
-        this.providers.set("groq", new GroqProvider());
+        this.registerProvider("gemini", () => new GeminiProvider());
+        this.registerProvider("nvidia", () => new NvidiaProvider());
+        this.registerProvider("groq", () => new GroqProvider());
+    }
+
+    private registerProvider(name: AIProviderName, factory: () => IAIProvider) {
+        try {
+            this.providers.set(name, factory());
+        } catch (error) {
+            console.error(`[AIRouter] Failed to initialize provider ${name}:`, error);
+        }
     }
 
     async generateResponse(providerName: AIProviderName, options: CompletionOptions): Promise<ProviderResult> {

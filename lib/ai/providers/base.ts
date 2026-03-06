@@ -34,10 +34,16 @@ export abstract class BaseAIProvider implements IAIProvider {
         }
 
         const data = await response.json();
-        const text = data.choices[0]?.message?.content || "";
+
+        if (!data.choices || data.choices.length === 0) {
+            throw new Error(`${this.name} API error: No completion choices returned.`);
+        }
+
+        const rawText = data.choices[0]?.message?.content || "";
+        const cleanText = this.beautify(rawText);
 
         return {
-            output: text,
+            output: cleanText,
             modelUsed: options.model,
             usage: {
                 promptTokens: data.usage?.prompt_tokens || 0,
@@ -45,6 +51,31 @@ export abstract class BaseAIProvider implements IAIProvider {
                 totalTokens: data.usage?.total_tokens || 0,
             },
         };
+    }
+
+    /**
+     * Cleans AI response from "dirty" formatting like Markdown blocks or JSON wrappers.
+     */
+    protected beautify(text: string): string {
+        if (!text) return "";
+
+        // 1. Remove Markdown JSON blocks if present
+        let clean = text.replace(/```json\s?([\s\S]*?)```/g, '$1')
+            .replace(/```\s?([\s\S]*?)```/g, '$1')
+            .trim();
+
+        // 2. Heuristic: If it looks like JSON, try to parse it
+        if (clean.startsWith('{') && clean.endsWith('}')) {
+            try {
+                const parsed = JSON.parse(clean);
+                // If it's a wrapped response often seen in prompt engineering tasks
+                return parsed.refined_prompt || parsed.prompt || parsed.content || parsed.output || clean;
+            } catch (e) {
+                // Not valid JSON, return as is
+            }
+        }
+
+        return clean;
     }
 
     abstract generateResponse(options: CompletionOptions): Promise<ProviderResult>;
