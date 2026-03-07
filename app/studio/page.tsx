@@ -90,8 +90,8 @@ function StudioPageContent() {
         setIsPublishingToHub(true);
         try {
             const result = await publishToHub({
-                name: "Audited Prompt",
-                description: `Automatically published after audit. Score: ${auditResult.score}`,
+                name: auditResult.title || "New Audited Prompt",
+                description: auditResult.description || `Automatically published after audit. Score: ${auditResult.score}`,
                 template: prompt,
                 category: "General",
                 tags: ["Audited"]

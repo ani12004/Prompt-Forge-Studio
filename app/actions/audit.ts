@@ -14,6 +14,8 @@ export interface AuditResult {
     strengths: string[];
     weaknesses: string[];
     suggestions: string[];
+    title?: string;
+    description?: string;
 }
 
 export async function auditPrompt(prompt: string): Promise<{ success: boolean, data?: AuditResult, error?: string }> {
@@ -59,7 +61,9 @@ export async function auditPrompt(prompt: string): Promise<{ success: boolean, d
             "score": number (0-100),
             "strengths": [ "point 1", "point 2" ],
             "weaknesses": [ "point 1", "point 2" ],
-            "suggestions": [ "actionable advice 1", "actionable advice 2" ]
+            "suggestions": [ "actionable advice 1", "actionable advice 2" ],
+            "title": "A catchy, pro-level title for this prompt (max 5 words)",
+            "description": "A compelling 1-sentence marketing description for the marketplace"
         }
 
         Scoring Criteria:

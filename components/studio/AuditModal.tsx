@@ -47,8 +47,8 @@ export function AuditModal({ isOpen, onClose, onPublish, isPublishing = false, r
                             {/* Header */}
                             <div className="p-6 border-b border-white/5 flex justify-between items-start">
                                 <div>
-                                    <h2 className="text-xl font-bold text-white">Prompt Audit Report</h2>
-                                    <p className="text-sm text-gray-500 mt-1">AI-powered critique of your current input.</p>
+                                    <h2 className="text-xl font-bold text-white">{result.title || "Prompt Audit Report"}</h2>
+                                    <p className="text-sm text-gray-400 mt-1">{result.description || "AI-powered critique of your current input."}</p>
                                 </div>
                                 <button onClick={onClose} className="p-2 hover:bg-white/10 rounded-lg text-gray-400 hover:text-white transition-colors">
                                     <X className="w-5 h-5" />
