@@ -4,7 +4,8 @@ export const NAV_LINKS = [
     { name: "Community", href: "/community" },
     { name: "Docs", href: "/docs" },
     { name: "Pricing", href: "/pricing" },
-    { name: "Hub", href: "/marketplace" },
+    { name: "Prompt Hub", href: "https://prompt-forge-hub.vercel.app/" },
+    { name: "CLI", href: "/cli" },
     { name: "Contact", href: "/contact" },
 ];
 

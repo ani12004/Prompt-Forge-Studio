@@ -1,6 +1,6 @@
 import { Metadata } from "next"
 import Link from "next/link"
-import { Package, Globe, ArrowRight, Book, Zap, Shield, Cpu, Layers, BookOpen, Braces } from "lucide-react"
+import { Package, Globe, ArrowRight, Book, Zap, Shield, Cpu, Layers, BookOpen, Braces, Terminal } from "lucide-react"
 import { Button } from "@/components/ui/Button"
 
 export const metadata: Metadata = {
@@ -99,6 +99,25 @@ export default function DocumentationPage() {
                             </p>
                             <div className="flex items-center gap-2 text-amber-400 font-bold group-hover:gap-4 transition-all">
                                 Browse Examples <ArrowRight className="h-4 w-4" />
+                            </div>
+                        </div>
+                    </Link>
+
+                    {/* CLI Card */}
+                    <Link href="/cli" className="group">
+                        <div className="glass-panel p-10 h-full rounded-[32px] border border-white/5 bg-white/[0.02] hover:bg-white/[0.05] hover:border-brand-indigo/30 transition-all duration-500 relative overflow-hidden text-left">
+                            <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity">
+                                <Terminal className="h-32 w-32 text-brand-indigo" />
+                            </div>
+                            <div className="p-4 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 w-fit mb-8">
+                                <Terminal className="h-8 w-8 text-indigo-500" />
+                            </div>
+                            <h2 className="text-3xl font-bold text-white mb-4 group-hover:text-indigo-400 transition-colors">Forge CLI</h2>
+                            <p className="text-gray-400 text-lg mb-8 leading-relaxed">
+                                Interact with the execution engine directly from your terminal. Manage models, test prompts, and integrate into bash scripts.
+                            </p>
+                            <div className="flex items-center gap-2 text-indigo-400 font-bold group-hover:gap-4 transition-all">
+                                View CLI Guide <ArrowRight className="h-4 w-4" />
                             </div>
                         </div>
                     </Link>
