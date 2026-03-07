@@ -5,6 +5,7 @@ import { X, Trophy, Split, FlaskConical, Copy } from "lucide-react"
 import { createPortal } from "react-dom"
 import { cn } from "@/lib/utils"
 import { motion, AnimatePresence } from "framer-motion"
+import { Select } from "@/components/ui/Select"
 
 interface Version {
     id: string
@@ -142,21 +143,16 @@ export function VersionComparator({ versions, onClose }: VersionComparatorProps)
                                             </div>
 
                                             <div className="relative flex-1 max-w-sm">
-                                                <select
+                                                <Select
+                                                    placeholder="-- Select Iteration --"
                                                     value={vId || ""}
-                                                    onChange={(e) => handleSelect(idx as 0 | 1, e.target.value)}
-                                                    className="w-full bg-[#1A1A1A] border border-white/10 text-white text-xs rounded-lg px-3 py-2 appearance-none focus:outline-none focus:border-white/20 font-mono"
-                                                >
-                                                    <option value="" disabled>-- Select Iteration --</option>
-                                                    {versions.map(v => (
-                                                        <option key={v.id} value={v.id}>
-                                                            {new Date(v.timestamp).toLocaleTimeString()} - {v.detailLevel} ({v.content.length} chars)
-                                                        </option>
-                                                    ))}
-                                                </select>
-                                                <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-gray-500">
-                                                    <svg width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1L5 5L9 1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
-                                                </div>
+                                                    options={versions.map(v => ({
+                                                        label: `${new Date(v.timestamp).toLocaleTimeString()} - ${v.detailLevel} (${v.content.length} chars)`,
+                                                        value: v.id
+                                                    }))}
+                                                    onChange={(val) => handleSelect(idx as 0 | 1, val)}
+                                                    className="bg-transparent"
+                                                />
                                             </div>
                                         </div>
 

@@ -3,7 +3,8 @@
 import React from "react"
 import { Slider } from "@/components/ui/Slider"
 import { motion } from "framer-motion"
-import { Info, ChevronDown, Cpu, Globe } from "lucide-react"
+import { Info, Cpu, Globe } from "lucide-react"
+import { Select } from "@/components/ui/Select"
 
 export interface GranularOptions {
     provider?: "gemini" | "nvidia"
@@ -99,18 +100,15 @@ export function AdvancedControls({ options, onChange }: AdvancedControlsProps) {
                     <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-2">
                         <Cpu className="w-3 h-3" /> Model Version
                     </label>
-                    <div className="relative group/select">
-                        <select
-                            value={currentModel}
-                            onChange={(e) => handleChange("model", e.target.value)}
-                            className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-2.5 text-xs font-bold text-white appearance-none focus:outline-none focus:border-brand-purple/50 transition-all cursor-pointer"
-                        >
-                            {PROVIDERS[currentProvider as keyof typeof PROVIDERS].map((m) => (
-                                <option key={m.id} value={m.id} className="bg-[#0A0A0A]">{m.name}</option>
-                            ))}
-                        </select>
-                        <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-3 h-3 text-gray-500 pointer-events-none transition-transform group-hover/select:translate-y-[-40%]" />
-                    </div>
+                    <Select
+                        options={PROVIDERS[currentProvider as keyof typeof PROVIDERS].map(m => ({
+                            label: m.name,
+                            value: m.id
+                        }))}
+                        value={currentModel}
+                        onChange={(val) => handleChange("model", val)}
+                        className="bg-transparent"
+                    />
                 </div>
             </div>
 

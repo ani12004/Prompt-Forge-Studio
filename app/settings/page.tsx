@@ -4,13 +4,15 @@ import { useUser, useClerk } from "@clerk/nextjs"
 import { Settings, User, Key, Shield, Monitor, LogOut, Github, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/Button"
 import { useRouter } from "next/navigation"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
+import { Select } from "@/components/ui/Select"
 import Link from "next/link"
 
 export default function UniversalSettingsPage() {
     const { user, isLoaded, isSignedIn } = useUser()
     const { signOut } = useClerk()
     const router = useRouter()
+    const [theme, setTheme] = useState("Dark (Default)")
 
     useEffect(() => {
         if (isLoaded && !isSignedIn) {
@@ -88,12 +90,15 @@ export default function UniversalSettingsPage() {
                         {/* Theme */}
                         <div className="glass-panel p-6 rounded-xl border border-white/10 bg-white/[0.02]">
                             <div className="flex items-center justify-between mb-2">
-                                <label className="font-medium text-white">Theme</label>
-                                <select className="bg-black/40 border border-white/10 rounded-lg px-3 py-1.5 text-sm text-white outline-none focus:border-brand-purple">
-                                    <option>Dark (Default)</option>
-                                    <option>Midnight</option>
-                                    <option>OLED</option>
-                                </select>
+                                <label className="font-medium text-white">Theme Preference</label>
+                                <div className="w-48">
+                                    <Select
+                                        options={['Dark (Default)', 'Midnight', 'OLED']}
+                                        value={theme}
+                                        onChange={setTheme}
+                                        className="h-10"
+                                    />
+                                </div>
                             </div>
                             <p className="text-sm text-gray-500">Choose the look and feel of your studio interface.</p>
                         </div>
