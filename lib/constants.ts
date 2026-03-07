@@ -4,6 +4,7 @@ export const NAV_LINKS = [
     { name: "Community", href: "/community" },
     { name: "Docs", href: "/docs" },
     { name: "Pricing", href: "/pricing" },
+    { name: "Hub", href: "/marketplace" },
     { name: "Contact", href: "/contact" },
 ];
 

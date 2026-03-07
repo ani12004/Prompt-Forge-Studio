@@ -17,6 +17,7 @@ import { SavePromptModal } from "@/components/studio/SavePromptModal"
 import { useSearchParams } from "next/navigation"
 import { getPrompt } from "@/app/actions/save-prompt"
 import { Suspense } from "react"
+import { publishToHub } from "@/app/actions/hub"
 
 // Types
 interface Version {
@@ -77,9 +78,36 @@ function StudioPageContent() {
 
     // Save Prompt State
     const [showSaveModal, setShowSaveModal] = useState(false)
+    const [isPublishingToHub, setIsPublishingToHub] = useState(false)
 
     const showToast = (msg: string, type: ToastType = "success") => {
         setToast({ msg, type, visible: true })
+    }
+
+    const handlePublishToHub = async () => {
+        if (!prompt || !auditResult) return;
+
+        setIsPublishingToHub(true);
+        try {
+            const result = await publishToHub({
+                name: "Audited Prompt",
+                description: `Automatically published after audit. Score: ${auditResult.score}`,
+                template: prompt,
+                category: "General",
+                tags: ["Audited"]
+            });
+
+            if (result.success) {
+                showToast("Prompt published to Hub successfully!");
+                setShowAuditModal(false);
+            } else {
+                showToast(result.error || "Failed to publish", "error");
+            }
+        } catch (e) {
+            showToast("System Error during publication", "error");
+        } finally {
+            setIsPublishingToHub(false);
+        }
     }
 
     const handleAudit = async () => {
@@ -295,6 +323,8 @@ function StudioPageContent() {
             <AuditModal
                 isOpen={showAuditModal}
                 onClose={() => setShowAuditModal(false)}
+                onPublish={handlePublishToHub}
+                isPublishing={isPublishingToHub}
                 result={auditResult}
             />
 

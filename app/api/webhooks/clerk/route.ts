@@ -54,7 +54,7 @@ export async function POST(req: Request) {
     const eventType = evt.type;
 
     if (eventType === 'user.created' || eventType === 'user.updated') {
-        const { id, email_addresses, first_name, last_name, image_url, ...attributes } = evt.data;
+        const { id, email_addresses, first_name, last_name, image_url, username } = evt.data;
 
         const email = email_addresses && email_addresses.length > 0 ? email_addresses[0].email_address : null;
         const fullName = `${first_name || ''} ${last_name || ''}`.trim();
@@ -66,6 +66,7 @@ export async function POST(req: Request) {
                 email: email,
                 full_name: fullName,
                 avatar_url: image_url,
+                username: username || email?.split('@')[0] || id, // Fallback if no username
             })
 
         if (error) console.error('Supabase upsert error:', error);

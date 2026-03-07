@@ -1,6 +1,6 @@
 {
   "name": "prompt-forge-ai-cli",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Professional terminal-native prompt engineering and AI model evaluation studio",
   "main": "src/index.js",
   "bin": {

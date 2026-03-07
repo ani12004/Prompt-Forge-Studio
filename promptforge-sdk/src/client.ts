@@ -100,4 +100,27 @@ export class PromptForgeClient {
     async getCosts(): Promise<any> {
         return this.request<any>('/api/v1/costs', { method: 'GET' });
     }
+
+    /**
+     * Pull a prompt definition from the registry (e.g., "user/my-prompt")
+     */
+    async pull(identifier: string): Promise<any> {
+        return this.request<any>(`/api/v1/registry/pull?identifier=${encodeURIComponent(identifier)}`, {
+            method: 'GET'
+        });
+    }
+
+    /**
+     * Execute a prompt directly from the registry by its full name identifier
+     */
+    async executeManaged(identifier: string, variables: Record<string, string> = {}): Promise<ExecuteResponse> {
+        // 1. Resolve prompt from registry
+        const promptInfo = await this.pull(identifier);
+
+        // 2. Execute using the resolved version ID
+        return this.execute({
+            versionId: promptInfo.data.version.id,
+            variables
+        });
+    }
 }

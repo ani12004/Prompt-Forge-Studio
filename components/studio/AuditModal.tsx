@@ -7,10 +7,12 @@ import type { AuditResult } from "@/app/actions/audit"
 interface AuditModalProps {
     isOpen: boolean
     onClose: () => void
+    onPublish: () => void
+    isPublishing?: boolean
     result: AuditResult | null
 }
 
-export function AuditModal({ isOpen, onClose, result }: AuditModalProps) {
+export function AuditModal({ isOpen, onClose, onPublish, isPublishing = false, result }: AuditModalProps) {
     if (!isOpen || !result) return null
 
     // Determine color based on score
@@ -124,6 +126,33 @@ export function AuditModal({ isOpen, onClose, result }: AuditModalProps) {
                                         </ul>
                                     </div>
                                 )}
+                            </div>
+
+                            {/* Footer Actions */}
+                            <div className="p-6 border-t border-white/5 bg-white/[0.01] flex justify-end gap-3">
+                                <button
+                                    onClick={onClose}
+                                    className="px-6 py-2.5 rounded-xl border border-white/10 text-sm font-medium text-gray-400 hover:text-white hover:bg-white/5 transition-all"
+                                >
+                                    Dismiss
+                                </button>
+                                <button
+                                    onClick={onPublish}
+                                    disabled={isPublishing}
+                                    className="px-6 py-2.5 rounded-xl bg-brand-purple hover:bg-brand-purple/90 text-sm font-bold text-white shadow-glow transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                                >
+                                    {isPublishing ? (
+                                        <>
+                                            <div className="h-4 w-4 border-2 border-white/30 border-t-white animate-spin rounded-full" />
+                                            Publishing...
+                                        </>
+                                    ) : (
+                                        <>
+                                            <CheckCircle className="w-4 h-4" />
+                                            Publish to Hub
+                                        </>
+                                    )}
+                                </button>
                             </div>
                         </div>
                     </motion.div>

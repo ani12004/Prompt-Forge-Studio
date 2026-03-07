@@ -21,6 +21,33 @@ program
         initProject(project || 'prompt-forge-project');
     });
 
+// Command: pull
+program
+    .command('pull <identifier>')
+    .description('Pull a prompt from the registry (e.g., user/slug)')
+    .action((identifier) => {
+        const { pullPrompt } = require('./registry');
+        pullPrompt(identifier);
+    });
+
+// Command: push
+program
+    .command('push <file>')
+    .description('Push a local prompt version to the registry')
+    .action((file) => {
+        const { pushPrompt } = require('./registry');
+        pushPrompt(file);
+    });
+
+// Command: search
+program
+    .command('search <query>')
+    .description('Search the global prompt registry')
+    .action((query) => {
+        const { searchRegistry } = require('./registry');
+        searchRegistry(query);
+    });
+
 // Default behavior: Studio mode
 program
     .action(() => {
